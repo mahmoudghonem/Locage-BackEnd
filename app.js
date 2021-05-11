@@ -51,9 +51,9 @@ var credentials = {
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 // eslint-disable-next-line no-undef
-const HTTPPORT = process.env.ENVIRONMENT == 'dev' ? 8080 : process.env.HTTPPORT;
+const HTTPPORT = process.env.NODE_ENV == 'development' ? 8080 : process.env.HTTPPORT;
 // eslint-disable-next-line no-undef
-const HTTPSPORT = process.env.ENVIRONMENT == 'dev' ? 8443 : process.env.HTTPSPORT;
+const HTTPSPORT = process.env.NODE_ENV == 'development' ? 8443 : process.env.HTTPSPORT;
 httpServer.listen(HTTPPORT, () => {
     console.log(`Server Is Working On Http Port http://localhost:${HTTPPORT}`);
 });
