@@ -2,3 +2,6 @@ node_modules
 .env
 selfsigned.key
 selfsigned.crt
+package.json
+package-lock.json
+.gitignore

@@ -35,5 +35,13 @@
   "devDependencies": {
     "eslint": "7.26.0",
     "nodemon": "2.0.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salmarakha/Locage-BackEnd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/salmarakha/Locage-BackEnd/issues"
+  },
+  "homepage": "https://github.com/salmarakha/Locage-BackEnd#readme"
 }
