@@ -2,28 +2,28 @@ const mongoose = require('mongoose') ;
 
 const { Schema } = mongoose ;
 
-const storeSchema = new Schema({
-    Name: {
+const StoreSchema = new Schema({
+    name: {
         type: String,
         require:true,
         unique: true,
         min:2
     },
-    Alies: {
+    alies: {
         type: String
     },
-    Address: {
-        City: String,
-        State: String,
-        Country: String,
-        ZipCode:{
+    address: {
+        city: String,
+        state: String,
+        country: String,
+        zipCode:{
             type : Number ,
             Min : 5 ,
             Max :5,
         },
         require: true
     },
-    PhoneNumber: {
+    phoneNumber: {
         unique: true,
         require:true,
         validate: {
@@ -33,7 +33,7 @@ const storeSchema = new Schema({
         },
         type: String
     },
-    Email: {
+    email: {
         require:true,
         validator : {
             validate: function(v){
@@ -42,28 +42,25 @@ const storeSchema = new Schema({
         },
         type: String,
     },
-    Photo: {
+    photo: {
         type: String
-    }
-    // _id: {
-    //     type: Schema.Types.ObjectId
-    // },
-    // User_id: {
-    //     type: Schema.Types.ObjectId
-    // },
+    },
+      user: {
+        type: Schema.Types.ObjectId,
+        ref:'users',
+    },
+    versionkey:false,
+    virsuals:true,
+    collection : 'stores',
+  
+  
    
 
 });
-storeSchema.method('transform', function() {
-    var obj = this.toObject();
-    
-    //Rename fields
-    obj.id = obj._id;
-    delete obj._id;
 
-    return obj;
+Schema.virsual("id").get(function(){
+   return this._id.toHexString;
 });
+const stores = mongoose.model('Store',StoreSchema);
 
-const storeModel = mongoose.model('store',storeSchema);
-
-module.exports = storeModel ;
+module.exports = stores ;
