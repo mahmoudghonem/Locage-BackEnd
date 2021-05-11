@@ -10,6 +10,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 // eslint-disable-next-line no-unused-vars
 const { mongoose } = require('./loaders/db');
+//get all routes from routes/index.js
+const routes = require('./routes')
 //init express servers
 const app = express();
 
@@ -33,10 +35,8 @@ function shouldCompress(req, res) {
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-
-app.get('/', (req, res) => {
-    res.send('This is test');
-})
+//set init route link to /api/v1/---
+app.use('/api/v1/', routes);
 
 //reading ssl credentials to enable https servers
 // eslint-disable-next-line no-undef
