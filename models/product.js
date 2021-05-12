@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 // Product schema definition
-const productSchema = new Schema({
+const ProductSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -56,6 +56,6 @@ const productSchema = new Schema({
 });
 
 // Model creation
-const products = mongoose.model("Product", productSchema);
+const products = mongoose.model("Product", ProductSchema);
 
 module.exports = products;
