@@ -8,7 +8,7 @@ const PaymentMethodsSchema = new Schema({
     }
 }, {
     collection: 'paymentmethods'
-})
+});
 
 const paymentmethods = mongoose.model('PaymentMethods', PaymentMethodsSchema);
 module.exports = paymentmethods;
