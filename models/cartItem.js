@@ -17,7 +17,7 @@ const CartItemSchema = new Schema({
     },
     cartId: {
       type: Schema.Types.ObjectId,
-      ref: "cart",
+      ref: "carts",
     },
 }, {
     versionKey: false,
