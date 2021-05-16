@@ -9,7 +9,7 @@ const CartSchema = new Schema({
     }
 }, {
     versionKey: false,
-    collection: "cart",
+    collection: "carts",
 });
 
 const cart = mongoose.Model("Cart", CartSchema);
