@@ -21,7 +21,7 @@ const CartItemSchema = new Schema({
     },
 }, {
     versionKey: false,
-    collection: "cartItem",
+    collection: "cartItems",
 });
 
 const cartItem = mongoose.Model("CartItem", CartItemSchema);
