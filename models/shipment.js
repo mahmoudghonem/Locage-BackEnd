@@ -21,7 +21,7 @@ const ShipmentSchema = new Schema({
         ref: 'orders'
     },
 }, {
-    collection: 'shipment'
+    collection: 'shipments'
 });
 
 const shipment = mongoose.model('Shipment', ShipmentSchema);
