@@ -12,7 +12,7 @@ const DiscountSchema = new Schema({
   },
 }, {
     versionKey: false,
-    collection: 'discount'
+    collection: 'discounts'
 });
 
 const discount = mongoose.Model('Discount', DiscountSchema);
