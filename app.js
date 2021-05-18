@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //read env variables
 require('dotenv').config();
 const express = require('express');
@@ -37,7 +38,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //set init route link to /api/v1/---
 app.use('/api/v1/', routes);
-
+//set error handler middleware
+app.use((error, req, res, next) => {
+    console.log(error);
+    const status = error.statusCode;
+    const message = error.message;
+    res.status(status).json({ message: message });
+});
 //reading ssl credentials to enable https servers
 // eslint-disable-next-line no-undef
 var key = fs.readFileSync('./certs/selfsigned.key');
