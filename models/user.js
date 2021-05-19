@@ -42,7 +42,7 @@ const UserSchema = new Schema({
     },
     createAt: {
         type: Date,
-        default: date.now
+        default: Date.now
     },
     address: {
         type: String,
@@ -79,23 +79,26 @@ const UserSchema = new Schema({
             delete ret.password;
             return ret;
         },
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
     },
     versionKey: false,
-    virtuals: true,
     collection: 'users'
 });
 
 //return virtual data of user called id equals _id not saved in mongo database
-Schema.virtual('id').get(function () {
+UserSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 //middleware to hash password before save function called
-UserModel.pre('save', async function preSave(next) {
+UserSchema.pre('save', async function preSave(next) {
     this.password = await argon.hash(this.password);
     next();
 });
 //middleware to hash password before update function called if updated password
-UserModel.pre('findOneAndUpdate', async function preSave(next) {
+UserSchema.pre('findOneAndUpdate', async function preSave(next) {
     if (!this._update.password) {
         return;
     }
@@ -103,7 +106,7 @@ UserModel.pre('findOneAndUpdate', async function preSave(next) {
     next();
 });
 //function to verfiy hashed password with entered return true if equals
-UserModel.methods.validatePassword = function validatePassword(password) {
+UserSchema.methods.validatePassword = function validatePassword(password) {
     return argon.verify(password, this.password);
 };
 

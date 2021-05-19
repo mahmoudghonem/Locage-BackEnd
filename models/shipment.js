@@ -14,7 +14,7 @@ const ShipmentSchema = new Schema({
     },
     sentAt: {
         type: Date,
-        default: date.now
+        default: Date.now
     },
     orderId: {
         type: Schema.Types.ObjectId,
