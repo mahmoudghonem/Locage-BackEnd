@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const jwt = require('jsonwebtoken');
-const CustomError = require('./errorHandler');
+const CustomError = require('../functions/errorHandler');
 
 const auth = async (req, res, next) => {
     const { authorization } = req.headers
