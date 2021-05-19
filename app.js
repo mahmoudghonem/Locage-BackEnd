@@ -42,7 +42,6 @@ app.use('/api/v1/', routes);
 //set not found router middleware
 app.use((req, res, next) => {
     new CustomError('NOT_FOUND', 404);
-    new Error
 })
 //set error handler middleware
 app.use((error, req, res, next) => {
