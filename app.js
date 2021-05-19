@@ -39,9 +39,9 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 //set init route link to /api/v1/---
-app.use('/api/v1/', routes);
+app.use('/api/v1', routes);
 //set not found router middleware
-app.use((req, res, next) => {
+app.get((req, res, next) => {
     new CustomError('NOT_FOUND', 404);
 })
 //set error handler middleware

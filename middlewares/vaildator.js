@@ -17,19 +17,18 @@ const loginValidationRules = () => {
     return [
         // Email Validation
         body('email')
-            .isEmail()
             .notEmpty()
-            .withMessage("EMAIL_REQUIRED"),
+            .withMessage("EMAIL_REQUIRED")
+            .isEmail()
+            .withMessage("WRONG_EMAIL_FORMAT"),
+
         // Password Validation must be at least 8 chars long
         body('password')
             .notEmpty()
             .withMessage('PASSWORD_REQUIRED')
-            .isStrongPassword({
-                minLength: 8,
-                minLowercase: 1,
-                minUppercase: 1,
-                minNumbers: 1
-            }),
+            .isLength({ min: 8 })
+            .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
+
     ]
 }
 

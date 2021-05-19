@@ -2,6 +2,9 @@
 /* eslint-disable no-useless-escape */
 const mongoose = require('mongoose');
 const argon = require('argon2');
+const jwt = require('jsonwebtoken');
+const CustomError = require('../functions/errorHandler');
+
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
@@ -107,8 +110,23 @@ UserSchema.pre('findOneAndUpdate', async function preSave(next) {
     next();
 });
 //function to verfiy hashed password with entered return true if equals
-UserSchema.methods.validatePassword = function validatePassword(password) {
-    return argon.verify(password, this.password);
+UserSchema.methods.validatePassword = async (password) => {
+    return await argon.verify(password, this.password);
+};
+UserSchema.methods.createTokenAccess = async () => {
+    try {
+        return token = await jwt.sign({
+            user: {
+                email: loadedUser.email,
+                id: loadedUser.id.toString()
+            }
+        },
+            process.env.ACCESS_TOKEN_SECERT,
+            { expiresIn: '1h' }
+        );
+    } catch (err) {
+        new CustomError(err.toString(), 400);
+    }
 };
 
 const users = mongoose.model('User', UserSchema);
