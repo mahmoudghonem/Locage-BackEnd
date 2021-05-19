@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //read env variables
 require('dotenv').config();
@@ -62,13 +63,20 @@ var credentials = {
 //create express server
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
-// eslint-disable-next-line no-undef
+
 const HTTPPORT = process.env.NODE_ENV == 'development' ? 8080 : process.env.HTTPPORT;
-// eslint-disable-next-line no-undef
+
 const HTTPSPORT = process.env.NODE_ENV == 'development' ? 8443 : process.env.HTTPSPORT;
+
 httpServer.listen(HTTPPORT, () => {
     console.log(`Server Is Working On Http Port http://localhost:${HTTPPORT}`);
 });
+
 httpsServer.listen(HTTPSPORT, () => {
     console.log(`Server Is Working On Https Port https://localhost:${HTTPSPORT}`);
+});
+//Catch Any unhandled Rejection didn't catch an error
+process.on('unhandledRejection', (reason, promise) => {
+    console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Application specific logging, throwing an error, or other logic here
 });
