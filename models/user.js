@@ -110,16 +110,14 @@ UserSchema.pre('findOneAndUpdate', async function preSave(next) {
     next();
 });
 //function to verfiy hashed password with entered return true if equals
-UserSchema.methods.validatePassword = async (password) => {
-    return await argon.verify(password, this.password);
+UserSchema.methods.validatePassword = async function (password) {
+    return await argon.verify(this.password, password);
 };
-UserSchema.methods.createTokenAccess = async () => {
+UserSchema.methods.createTokenAccess = async function () {
     try {
-        return token = await jwt.sign({
-            user: {
-                email: loadedUser.email,
-                id: loadedUser.id.toString()
-            }
+        return token = jwt.sign({
+            email: this.email,
+            id: this.id
         },
             process.env.ACCESS_TOKEN_SECERT,
             { expiresIn: '1h' }
