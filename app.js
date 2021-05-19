@@ -9,6 +9,7 @@ const morgan = require('morgan');
 const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
+const CustomError = require('./functions/errorHandler');
 // eslint-disable-next-line no-unused-vars
 const { mongoose } = require('./loaders/db');
 //get all routes from routes/index.js
@@ -38,6 +39,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //set init route link to /api/v1/---
 app.use('/api/v1/', routes);
+//set not found router middleware
+app.use((req, res, next) => {
+    new CustomError('NOT_FOUND', 404);
+    new Error
+})
 //set error handler middleware
 app.use((error, req, res, next) => {
     console.log(error);
