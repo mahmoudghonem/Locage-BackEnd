@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const argon = require('argon2');
 const jwt = require('jsonwebtoken');
 const CustomError = require('../functions/errorHandler');
+const crypto = require('crypto');
 
 const { Schema } = mongoose;
 
@@ -76,6 +77,13 @@ const UserSchema = new Schema({
     isEmailVerfied: {
         type: Boolean,
         default: false
+    },
+    resetPasswordToken: {
+        type: String,
+    },
+
+    resetPasswordExpires: {
+        type: Date,
     }
 }, {
     toJSON: {
@@ -98,6 +106,7 @@ UserSchema.virtual('id').get(function () {
 });
 //middleware to hash password before save function called
 UserSchema.pre('save', async function preSave(next) {
+    if (!this.isModified('password')) return next();
     this.password = await argon.hash(this.password);
     next();
 });
@@ -113,7 +122,8 @@ UserSchema.pre('findOneAndUpdate', async function preSave(next) {
 UserSchema.methods.validatePassword = async function (password) {
     return await argon.verify(this.password, password);
 };
-UserSchema.methods.createTokenAccess = async function () {
+//function to Create Access Token
+UserSchema.methods.generateTokenAccess = async function () {
     try {
         return token = jwt.sign({
             email: this.email,
@@ -125,6 +135,12 @@ UserSchema.methods.createTokenAccess = async function () {
     } catch (err) {
         new CustomError(err.toString(), 400);
     }
+};
+//function to Generate Passowrd Reset Token
+UserSchema.methods.generatePasswordReset = async function () {
+    this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
+    this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+    this.save();
 };
 
 const users = mongoose.model('User', UserSchema);
