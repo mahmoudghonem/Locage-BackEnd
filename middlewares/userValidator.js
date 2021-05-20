@@ -31,6 +31,28 @@ const loginValidationRules = () => {
 
     ]
 }
+const resetValidationRules = () => {
+    return [
+        // Email Validation
+        body('email')
+            .notEmpty()
+            .withMessage("EMAIL_REQUIRED")
+            .isEmail()
+            .withMessage("WRONG_EMAIL_FORMAT"),
+
+    ]
+}
+const recoverValidationRules = () => {
+    return [
+        // Email Validation
+        body('password')
+            .notEmpty()
+            .withMessage('PASSWORD_REQUIRED')
+            .isLength({ min: 8 })
+            .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
+
+    ]
+}
 const registerValidationRules = () => {
     return [
         // Email Validation
@@ -71,5 +93,7 @@ const registerValidationRules = () => {
 module.exports = {
     loginValidationRules,
     registerValidationRules,
+    resetValidationRules,
+    recoverValidationRules,
     validate,
 }
