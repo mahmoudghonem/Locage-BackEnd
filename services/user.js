@@ -85,7 +85,7 @@ const recover = async (req, res) => {
     const mailOptions = {
         to: loadedUser.email,
         from: process.env.MAIL_FROM,
-        subject: 'Your password has been changed',
+        subject: 'Locage password has been changed',
         text: 'Hello,\n\n' +
             'This is a confirmation that the password for your account ' + loadedUser.email + ' has just been changed.\n'
     };
