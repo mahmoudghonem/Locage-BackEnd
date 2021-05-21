@@ -87,6 +87,35 @@ const registerValidationRules = () => {
 
     ]
 }
+const updateValidationRules = () => {
+    return [
+        // Email Validation
+        body('email')
+            .optional()
+            .isEmail()
+            .withMessage("WRONG_EMAIL_FORMAT"),
+        body('phoneNumber')
+            .optional()
+            .isMobilePhone()
+            .withMessage("WRONG_PHONE_NUMER_FORMAT"),
+        // firstName Validation
+        body('firstName')
+            .optional()
+            .isLength({ min: 3, max: 30 })
+            .withMessage('FIRSTNAME_MUST_3_CHARACTERS_MIN_30_CHARACTERS_MAX'),
+        // lastname Validation
+        body('lastName')
+            .optional()
+            .isLength({ min: 3, max: 30 })
+            .withMessage('LASTNAME_MUST_3_CHARACTERS_MIN_30_CHARACTERS_MAX'),
+        // Password Validation must be at least 8 chars long
+        body('password')
+            .optional()
+            .isLength({ min: 8 })
+            .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
+
+    ]
+}
 
 
 
@@ -95,5 +124,6 @@ module.exports = {
     registerValidationRules,
     resetValidationRules,
     recoverValidationRules,
+    updateValidationRules,
     validate,
 }

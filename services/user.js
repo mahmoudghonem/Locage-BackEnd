@@ -3,9 +3,13 @@ const User = require('../models/user');
 const CustomError = require('../functions/errorHandler');
 const nodemailer = require('nodemailer');
 
-//Function to query user by id from database
+//Function to query user by email from database
 const findOneUserByEmail = async (email) => {
     return await User.findOne({ email: email }).exec();
+}
+//Function to query user by id from database
+const findOneUserById = async (id) => {
+    return await User.findOne({ _id: id }).exec();
 }
 
 //login user and return token
@@ -34,7 +38,7 @@ const reset = async (req, res) => {
     const loadedUser = await findOneUserByEmail(email);
     //return error if email is not register
     if (!loadedUser)
-        new CustomError('USER_NOT_FOUND', 401);
+        new CustomError('USER_NOT_FOUND', 404);
 
     await loadedUser.generatePasswordReset();
 
@@ -113,11 +117,31 @@ const register = async (req, res) => {
         CustomError(error.toString(), 400);
     });
 }
+const update = async (req, res) => {
+    const id = req.userId;
+    const { body } = req;
+    console.log(id);
+    const loadedUser = await findOneUserById(id);
 
+    if (!loadedUser)
+        new CustomError('USER_NOT_FOUND', 404);
+
+    if (loadedUser.email !== body.email && await findOneUserByEmail(body.email))
+        new CustomError('EMAIL_ALREADY_REGISTER', 401);
+
+    await User.findByIdAndUpdate({ _id: id }, body).then((result) => {
+        return res.status(200).json({ message: "ACCOUNT_UPDATED", result: result });
+    }).catch((error) => {
+        CustomError(error.toString(), 400);
+
+    })
+
+}
 
 module.exports = {
     login,
     register,
     reset,
     recover,
+    update
 }
