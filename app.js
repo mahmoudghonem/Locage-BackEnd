@@ -40,10 +40,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //set init route link to /api/v1/---
 app.use('/api/v1', routes);
-//set not found router middleware
-app.get((req, res, next) => {
-    new CustomError('NOT_FOUND', 404);
-})
+
 //set error handler middleware
 app.use((error, req, res, next) => {
     console.log(error);
