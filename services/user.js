@@ -118,10 +118,13 @@ const register = async (req, res) => {
     });
 }
 const update = async (req, res) => {
-    const id = req.userId;
+    const userId = req.userId;
     const { body } = req;
-    console.log(id);
-    const loadedUser = await findOneUserById(id);
+    const { id } = req.params;
+    if (userId != id)
+        CustomError('BAD_REQUEST', 400);
+
+    const loadedUser = await findOneUserById(userId);
 
     if (!loadedUser)
         new CustomError('USER_NOT_FOUND', 404);
@@ -129,7 +132,7 @@ const update = async (req, res) => {
     if (loadedUser.email !== body.email && await findOneUserByEmail(body.email))
         new CustomError('EMAIL_ALREADY_REGISTER', 401);
 
-    await User.findByIdAndUpdate({ _id: id }, body).then((result) => {
+    await User.findByIdAndUpdate({ _id: userId }, body).then((result) => {
         return res.status(200).json({ message: "ACCOUNT_UPDATED", result: result });
     }).catch((error) => {
         CustomError(error.toString(), 400);

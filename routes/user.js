@@ -5,10 +5,10 @@ const { register, login, reset, recover, update } = require('../services/user');
 const { registerValidationRules, resetValidationRules, loginValidationRules, recoverValidationRules, updateValidationRules, validate } = require('../middlewares/userValidator');
 
 router.get('/login', loginValidationRules(), validate, userLoginFun);
-router.get('/reset-password', resetValidationRules(), validate, userResetFun);
+router.post('/reset-password', resetValidationRules(), validate, userResetFun);
 router.post('/recover/:token', recoverValidationRules(), validate, userRecoverFun);
 router.post('/register', registerValidationRules(), validate, userRegisterFun);
-router.post('/update', authjwt, updateValidationRules(), validate, userUpdateFun)
+router.post('/:id', authjwt, updateValidationRules(), validate, userUpdateFun)
 function userLoginFun(req, res, next) {
     login(req, res).then((result) => {
         res.json(result);
