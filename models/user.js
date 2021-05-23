@@ -126,13 +126,14 @@ UserSchema.methods.validatePassword = async function (password) {
 //function to Create Access Token
 UserSchema.methods.generateTokenAccess = async function () {
     try {
-        return token = jwt.sign({
+        const token = jwt.sign({
             email: this.email,
             id: this.id
         },
             process.env.ACCESS_TOKEN_SECERT,
             { expiresIn: '1h' }
         );
+        return token;
     } catch (err) {
         new CustomError(err.toString(), 400);
     }

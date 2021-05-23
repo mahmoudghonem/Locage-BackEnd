@@ -6,11 +6,12 @@ const nodemailer = require('nodemailer');
 //Function to query user by email from database
 const findOneUserByEmail = async (email) => {
     return await User.findOne({ email: email }).exec();
-}
+};
+
 //Function to query user by id from database
 const findOneUserById = async (id) => {
     return await User.findOne({ _id: id }).exec();
-}
+};
 
 //login user and return token
 const login = async (req, res) => {
@@ -31,7 +32,8 @@ const login = async (req, res) => {
     }).catch((error) => {
         CustomError(error.toString(), 400);
     });
-}
+};
+
 //send reset password token to mail
 const reset = async (req, res) => {
     const { email } = req.body;
@@ -66,7 +68,8 @@ const reset = async (req, res) => {
         CustomError(error.toString(), 400);
     });
 
-}
+};
+
 //update password if reset token is vaild or not expired
 const recover = async (req, res) => {
     const loadedUser = await User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).exec();
@@ -99,7 +102,8 @@ const recover = async (req, res) => {
         CustomError(error.toString(), 400);
     });
 
-}
+};
+
 //register user and return user data and token
 const register = async (req, res) => {
     const body = req.body;
@@ -116,7 +120,8 @@ const register = async (req, res) => {
     }).catch((error) => {
         CustomError(error.toString(), 400);
     });
-}
+};
+
 const update = async (req, res) => {
     const userId = req.userId;
     const { body } = req;
@@ -137,9 +142,9 @@ const update = async (req, res) => {
     }).catch((error) => {
         CustomError(error.toString(), 400);
 
-    })
+    });
 
-}
+};
 
 module.exports = {
     login,
@@ -147,4 +152,4 @@ module.exports = {
     reset,
     recover,
     update
-}
+};

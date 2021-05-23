@@ -8,41 +8,41 @@ router.get('/login', loginValidationRules(), validate, userLoginFun);
 router.post('/reset-password', resetValidationRules(), validate, userResetFun);
 router.post('/recover/:token', recoverValidationRules(), validate, userRecoverFun);
 router.post('/register', registerValidationRules(), validate, userRegisterFun);
-router.post('/:id', authjwt, updateValidationRules(), validate, userUpdateFun)
+router.post('/:id', authjwt, updateValidationRules(), validate, userUpdateFun);
 function userLoginFun(req, res, next) {
     login(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);
-    })
+    });
 }
 function userResetFun(req, res, next) {
     reset(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);
-    })
+    });
 }
 function userRecoverFun(req, res, next) {
     recover(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);
-    })
+    });
 }
 function userRegisterFun(req, res, next) {
     register(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);
-    })
+    });
 }
 function userUpdateFun(req, res, next) {
     update(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);
-    })
+    });
 }
 
 module.exports = router;

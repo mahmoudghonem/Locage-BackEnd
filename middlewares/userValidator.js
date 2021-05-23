@@ -1,17 +1,17 @@
-const { validationResult, body } = require('express-validator')
+const { validationResult, body } = require('express-validator');
 
 const validate = (req, res, next) => {
-    const errors = validationResult(req)
+    const errors = validationResult(req);
     if (errors.isEmpty()) {
-        return next()
+        return next();
     }
-    const extractedErrors = []
-    errors.array().map(err => extractedErrors.push({ [err.param]: err.msg }))
+    const extractedErrors = [];
+    errors.array().map(err => extractedErrors.push({ [err.param]: err.msg }));
 
     return res.status(422).json({
         errors: extractedErrors,
-    })
-}
+    });
+};
 
 const loginValidationRules = () => {
     return [
@@ -29,8 +29,9 @@ const loginValidationRules = () => {
             .isLength({ min: 8 })
             .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
 
-    ]
-}
+    ];
+};
+
 const resetValidationRules = () => {
     return [
         // Email Validation
@@ -40,8 +41,8 @@ const resetValidationRules = () => {
             .isEmail()
             .withMessage("WRONG_EMAIL_FORMAT"),
 
-    ]
-}
+    ];
+};
 const recoverValidationRules = () => {
     return [
         // Email Validation
@@ -51,8 +52,9 @@ const recoverValidationRules = () => {
             .isLength({ min: 8 })
             .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
 
-    ]
-}
+    ];
+};
+
 const registerValidationRules = () => {
     return [
         // Email Validation
@@ -85,8 +87,9 @@ const registerValidationRules = () => {
             .isLength({ min: 8 })
             .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
 
-    ]
-}
+    ];
+};
+
 const updateValidationRules = () => {
     return [
         // Email Validation
@@ -114,8 +117,8 @@ const updateValidationRules = () => {
             .isLength({ min: 8 })
             .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
 
-    ]
-}
+    ];
+};
 
 
 
@@ -126,4 +129,4 @@ module.exports = {
     recoverValidationRules,
     updateValidationRules,
     validate,
-}
+};

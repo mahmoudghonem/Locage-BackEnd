@@ -14,7 +14,7 @@ const CustomError = require('./functions/errorHandler');
 // eslint-disable-next-line no-unused-vars
 const { mongoose } = require('./loaders/db');
 //get all routes from routes/index.js
-const routes = require('./routes')
+const routes = require('./routes');
 //init express servers
 const app = express();
 
@@ -25,14 +25,14 @@ app.use(cors());
 //add security reforce
 app.use(helmet());
 //use compression middelware to reduce data bandwidth
-app.use(compression({ filter: shouldCompress }))
+app.use(compression({ filter: shouldCompress }));
 function shouldCompress(req, res) {
     if (req.headers['x-no-compression']) {
         // don't compress responses with this request header
-        return false
+        return false;
     }
     // fallback to standard filter function
-    return compression.filter(req, res)
+    return compression.filter(req, res);
 }
 // parse requests of content-type - application/json
 app.use(express.json());
