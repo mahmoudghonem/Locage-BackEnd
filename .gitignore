@@ -3,3 +3,4 @@ node_modules
 selfsigned.key
 selfsigned.crt
 .jshintrc
+.npmrc
