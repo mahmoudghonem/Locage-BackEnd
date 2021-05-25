@@ -35,7 +35,6 @@ const ProductSchema = new Schema({
     type: Number,
   },
   size: {
-    required: true,
     type: Number,
   },
   Weight: {
