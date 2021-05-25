@@ -2,8 +2,13 @@ const express = require('express');
 const CustomError = require('../functions/errorHandler');
 const router = express.Router();
 const userRouter = require('./user')
+const storeRouter = require('./store')
+
 
 router.use('/users', userRouter);
+
+router.use('/stores', storeRouter);
+
 
 
 //set not found router middleware
