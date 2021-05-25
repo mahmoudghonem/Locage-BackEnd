@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const { Schema } = mongoose;
 
@@ -21,8 +22,7 @@ const StoreSchema = new Schema(
         type: Number,
         Min: 5,
         Max: 5,
-      },
-      require: true,
+      }
     },
     phoneNumber: {
       unique: true,
@@ -51,14 +51,17 @@ const StoreSchema = new Schema(
       ref: "users",
     },
   },{
+    toObject: {
+      virtuals: true
+  },
     versionkey: false,
-    virsuals: true,
     collection: "stores",
   });
 
-Schema.virsual("id").get(function () {
-  return this._id.toHexString;
+StoreSchema.virtual('id').get(function () {
+  return this._id.toHexString();
 });
+StoreSchema.plugin(mongoosePaginate);
 const stores = mongoose.model("Store", StoreSchema);
 
 module.exports = stores;

@@ -3,7 +3,7 @@ const router = express.Router();
 const { register, login } = require('../services/user');
 const { registerValidationRules, loginValidationRules, validate } = require('../middlewares/vaildator');
 
-router.get('/login', loginValidationRules(), validate, userLoginFun);
+router.post('/login', loginValidationRules(), validate, userLoginFun);
 router.post('/register', registerValidationRules(), validate, userRegisterFun);
 
 function userLoginFun(req, res, next) {
