@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const argon = require('argon2');
 const jwt = require('jsonwebtoken');
 const CustomError = require('../functions/errorHandler');
+const crypto = require('crypto');
 
 const { Schema } = mongoose;
 
@@ -68,7 +69,8 @@ const UserSchema = new Schema({
     ],
     role: {
         type: String,
-        required: true,
+        enum: ['user', 'admin', 'vendor'],
+        default: 'user'
     },
     statusCode: {
         type: Number,
@@ -76,6 +78,13 @@ const UserSchema = new Schema({
     isEmailVerfied: {
         type: Boolean,
         default: false
+    },
+    resetPasswordToken: {
+        type: String,
+    },
+
+    resetPasswordExpires: {
+        type: Date,
     }
 }, {
     toJSON: {
@@ -97,7 +106,8 @@ UserSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 //middleware to hash password before save function called
-UserSchema.pre('save', async function preSave(next) {
+UserSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
     this.password = await argon.hash(this.password);
     next();
 });
@@ -106,25 +116,33 @@ UserSchema.pre('findOneAndUpdate', async function preSave(next) {
     if (!this._update.password) {
         return;
     }
-    this._update.password = argon.hash(this._update.password);
+    this._update.password = await argon.hash(this._update.password);
     next();
 });
 //function to verfiy hashed password with entered return true if equals
 UserSchema.methods.validatePassword = async function (password) {
     return await argon.verify(this.password, password);
 };
-UserSchema.methods.createTokenAccess = async function () {
+//function to Create Access Token
+UserSchema.methods.generateTokenAccess = async function () {
     try {
-        return token = jwt.sign({
+        const token = jwt.sign({
             email: this.email,
             id: this.id
         },
             process.env.ACCESS_TOKEN_SECERT,
             { expiresIn: '1h' }
         );
+        return token;
     } catch (err) {
         new CustomError(err.toString(), 400);
     }
+};
+//function to Generate Passowrd Reset Token
+UserSchema.methods.generatePasswordReset = async function () {
+    this.resetPasswordToken = crypto.randomBytes(20).toString('hex');
+    this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+    this.save();
 };
 
 const users = mongoose.model('User', UserSchema);
