@@ -51,8 +51,9 @@ const ProductSchema = new Schema({
   unitsInOrder: {
     type: Number,
   },
-  versionKey: false,
-  collection: 'products',
+},{
+    versionKey: false,
+    collection: "products",
 });
 
 // Model creation
