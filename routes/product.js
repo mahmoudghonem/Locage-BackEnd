@@ -30,8 +30,8 @@ function retrieveProduct(req, res, next){
 
 // Add a new product
 function addProduct(req, res, next){
-    const { body, files } = req;
-    add(body, files).then(result => res.json({message: "Product has been added.", result: result}))
+    const { body, files, userId } = req;
+    add(body, files, userId).then(result => res.json({message: "Product has been added.", result: result}))
     .catch(error => next(error));
 }
 

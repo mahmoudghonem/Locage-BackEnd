@@ -34,14 +34,14 @@ async function getOne(req , res ){
 
 //Post one store
 async function create(req,res){
-    const { body, file ,user } = req;
+    const { body, file , userId } = req;
     let store ;
-    const getUser = User.findById(user.id);
+    const getUser = await User.findById(userId);
     if (!getUser)
-    return res.sendStatus(401).send("UN_AUTHENTICATED");
+        return res.sendStatus(401).send("UN_AUTHENTICATED");
 
-    if(getUser.Role != 'vender')
-    return res.sendStatus(401).send("UN_AUTHENTICATED");
+    if(getUser.role != 'vendor')
+        return res.sendStatus(401).send("UN_AUTHENTICATED");
     
     if (file) {
         const image = "/images/" + req.file.filename;

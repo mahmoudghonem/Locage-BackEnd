@@ -1,5 +1,6 @@
 const customError = require('../functions/errorHandler');
 const Product = require('../models/product');
+const User = require('../models/user');
 const { checkId, isEmpty } = require('../functions/checks');
 
 const getProducts = async (req) => {
@@ -21,10 +22,14 @@ const getProduct = async (id) => {
     return product;
 }
 
-const add = async (product, files) => {
+const add = async (product, files, userId) => {
     // check
     const existingProduct = await Product.findOne({ title: product.title })
     if(existingProduct) customError("TITLE_MUST_BE_UNIQUE", 400);
+
+    const loggedUser = await User.findById(userId);
+    if(!loggedUser) customError("UNAUTHORIZED", 401);
+    if(loggedUser.role != "vendor") customError("UNAUTHORIZED", 401); 
 
     const photos = [];
     isEmpty(product);
