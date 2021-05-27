@@ -35,7 +35,7 @@ async function getOne(req, res) {
 
 
 //Post one store
-async function create(req,res){
+async function create(req, res){
     const { body, file , userId } = req;
     let store ;
     const getUser = await User.findById(userId).exec();
