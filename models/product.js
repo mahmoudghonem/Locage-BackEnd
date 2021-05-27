@@ -46,6 +46,10 @@ const ProductSchema = new Schema({
     required: true,
     type: [String],
   },
+  photosPublicId: {
+    required: true,
+    type: [String],
+  },
   rating: {
     type: Number,
   },
@@ -54,7 +58,11 @@ const ProductSchema = new Schema({
   },
 },{
     toJSON: {
-      virtuals: true
+      virtuals: true,
+      transform: (doc, ret) => {
+        delete ret.photosPublicId;
+        return ret;
+    },
     },
     toObject: {
       virtuals: true
