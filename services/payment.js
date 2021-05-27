@@ -86,7 +86,7 @@ const addBankAccount = async (req, res) => {
 
 };
 
-const userBankAccount = async (req, res) => {
+const getBankAccount = async (req, res) => {
     const userId = req.userId;
     const { id } = req.params;
     if (userId != id)
@@ -124,13 +124,35 @@ const updateBankAccount = async (req, res) => {
     await findOneUserById(userId);
 
     const paymentMethod = await findOneUserPaymentMethodById(id);
-    const bankAccount = await BankAccount.findOne({ paymentId: paymentMethod.id });
+    const bankAccount = await BankAccount.findOne({ paymentId: paymentMethod.id }).exec();
 
     if (!bankAccount)
         new CustomError('NOT_FOUND', 404);
 
     await BankAccount.findOneAndUpdate({ _id: bankAccount._id }, body).then((result) => {
         return res.status(200).json({ message: "UPDATED_SUCCESSFULLY", result: result });
+    }).catch((err) => {
+        new CustomError(err.toString(), 400);
+    });
+};
+
+const deleteBankAccount = async (req, res) => {
+    const userId = req.userId;
+    const { id } = req.params;
+
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+
+    await findOneUserById(userId);
+
+    const paymentMethod = await findOneUserPaymentMethodById(id);
+    const bankAccount = await BankAccount.findOne({ paymentId: paymentMethod.id }).exec();
+
+    if (!bankAccount)
+        new CustomError('NOT_FOUND', 404);
+
+    await BankAccount.findOneAndRemove({ _id: bankAccount._id }).then((result) => {
+        return res.status(200).json({ message: "DELETED_SUCCESSFULLY", result: result });
     }).catch((err) => {
         new CustomError(err.toString(), 400);
     });
@@ -155,7 +177,7 @@ const addCreditCard = async (req, res) => {
 
 };
 
-const userCreditCard = async (req, res) => {
+const getCreditCard = async (req, res) => {
     const userId = req.userId;
     const { id } = req.params;
     if (userId != id)
@@ -193,7 +215,7 @@ const updateCreditCard = async (req, res) => {
     await findOneUserById(userId);
 
     const paymentMethod = await findOneUserPaymentMethodById(id);
-    const creditCard = await BankAccount.findOne({ _id: cardId, paymentId: paymentMethod.id }).exec();
+    const creditCard = await CreditCard.findOne({ _id: cardId, paymentId: paymentMethod.id }).exec();
     if (!creditCard)
         new CustomError('NOT_FOUND', 404);
 
@@ -204,13 +226,35 @@ const updateCreditCard = async (req, res) => {
     });
 };
 
+const deleteCreditCard = async (req, res) => {
+    const userId = req.userId;
+    const { id, cardId } = req.params;
+
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+    await findOneUserById(userId);
+
+    const paymentMethod = await findOneUserPaymentMethodById(id);
+    const creditCard = await CreditCard.findOne({ _id: cardId, paymentId: paymentMethod.id }).exec();
+    if (!creditCard)
+        new CustomError('NOT_FOUND', 404);
+
+    await CreditCard.findOneAndRemove({ _id: cardId }).then((result) => {
+        return res.status(200).json({ message: "DELETED_SUCCESSFULLY", result: result });
+    }).catch((err) => {
+        new CustomError(err.toString(), 400);
+    });
+};
+
 
 module.exports = {
     userPayments,
     addBankAccount,
-    addCreditCard,
-    userBankAccount,
-    userCreditCard,
+    getBankAccount,
     updateBankAccount,
-    updateCreditCard
+    deleteBankAccount,
+    addCreditCard,
+    getCreditCard,
+    updateCreditCard,
+    deleteCreditCard
 };
