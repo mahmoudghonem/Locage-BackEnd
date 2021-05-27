@@ -1,7 +1,7 @@
 {
   "name": "locage-backend",
   "version": "1.0.0",
-  "description": "Locage BackEnd Package For an ECommerece Project",
+  "description": "Locage BackEnd Package For an E-Commerce Project",
   "main": "app.js",
   "engines": {
     "node": ">=16.0.0",
@@ -21,7 +21,7 @@
     "MongoDB",
     "Angular"
   ],
-  "author": "Team3: MahmoudGhonem, MohamedSerag, SalmaRakha, AbraYehia, DinaWaheed, NadaTayel",
+  "author": "Team3: Mahmoud Ghonem, Mohamed Serag, Salma Rakha, Abra Yehia, Dina Waheed, Nada Tayel",
   "license": "ISC",
   "dependencies": {
     "argon2": "^0.27.2",
