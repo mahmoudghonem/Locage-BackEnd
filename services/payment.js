@@ -131,7 +131,7 @@ const addCreditCard = async (req, res) => {
     });
 
 };
-const userBankAccount = async (req, res) => {
+const userCreditCard = async (req, res) => {
     const userId = req.userId;
     const { id } = req.params;
     if (userId != id)
@@ -146,10 +146,10 @@ const userBankAccount = async (req, res) => {
         }
     }, {
         $lookup: {
-            from: 'bankaccounts',
+            from: 'creditcards',
             localField: '_id',
             foreignField: 'paymentId',
-            as: 'bankaccount'
+            as: 'creditcard'
         }
     }]).then((result) => {
         return res.status(200).json({ result: result });
@@ -161,5 +161,6 @@ module.exports = {
     userPayments,
     addBankAccount,
     addCreditCard,
-    userBankAccount
+    userBankAccount,
+    userCreditCard
 };
