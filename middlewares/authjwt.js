@@ -4,7 +4,7 @@ const CustomError = require('../functions/errorHandler');
 
 const auth = async (req, res, next) => {
     try {
-        const { authorization } = req.headers
+        const { authorization } = req.headers;
         if (!authorization)
             new CustomError('AUTHORIZATION_HEADER_REQUIRED', 401);
         try {
@@ -20,7 +20,7 @@ const auth = async (req, res, next) => {
             new CustomError('NOT_AUTHORIZED', 401);
         }
     } catch (e) {
-        next(e)
+        next(e);
     }
-}
+};
 module.exports = auth;

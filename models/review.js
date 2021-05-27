@@ -3,25 +3,33 @@ const { Schema } = mongoose;
 
 const ReviewSchema = new Schema({
     productId: {
-      type: Schema.Types.ObjectId,
-      ref: "products",
+        type: Schema.Types.ObjectId,
+        ref: "products",
     },
     userId: {
         type: Schema.Types.ObjectId,
-        ref:'users',
-        },
-    comment:[String],
+        ref: 'users',
+    },
+    comment: [String],
     rate: {
         type: Number,
-        min:1,
-        max:5
+        min: 1,
+        max: 5
     },
-},{
-        versionKey: false,
-        collection: "reviews",
-    }
+}, {
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    },
+    versionKey: false,
+    collection: "reviews",
+}
 );
-
-const review = mongoose.Model("Reveiw", ReviewSchema);
+ReviewSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+const review = mongoose.model("Reveiw", ReviewSchema);
 
 module.exports = review;

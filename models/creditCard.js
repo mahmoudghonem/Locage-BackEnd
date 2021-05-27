@@ -27,8 +27,17 @@ const CreditCardSchema = new Schema({
         ref: 'paymentmethods'
     },
 }, {
-    collection: 'creditcard'
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    },
+    versionKey: false,
+    collection: 'creditcards'
 });
-
+CreditCardSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
 const creditcard = mongoose.model('CreditCard', CreditCardSchema);
 module.exports = creditcard;

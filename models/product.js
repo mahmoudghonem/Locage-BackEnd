@@ -53,8 +53,18 @@ const ProductSchema = new Schema({
     type: Number,
   },
 },{
+    toJSON: {
+      virtuals: true
+    },
+    toObject: {
+      virtuals: true
+    },
     versionKey: false,
     collection: "products",
+});
+
+ProductSchema.virtual('id').get(function () {
+  return this._id.toHexString();
 });
 
 ProductSchema.plugin(mongoosePaginate);

@@ -50,13 +50,16 @@ const StoreSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "users",
     },
-  },{
-    toObject: {
-      virtuals: true
+  }, {
+  toObject: {
+    virtuals: true
   },
-    versionkey: false,
-    collection: "stores",
-  });
+  toJSON: {
+    virtuals: true
+  },
+  versionkey: false,
+  collection: "stores",
+});
 
 StoreSchema.virtual('id').get(function () {
   return this._id.toHexString();

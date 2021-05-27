@@ -7,8 +7,18 @@ const PaymentMethodsSchema = new Schema({
         ref: 'users'
     }
 }, {
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    },
+    versionKey: false,
     collection: 'paymentmethods'
 });
 
+PaymentMethodsSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
 const paymentmethods = mongoose.model('PaymentMethods', PaymentMethodsSchema);
 module.exports = paymentmethods;

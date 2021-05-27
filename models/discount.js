@@ -11,10 +11,18 @@ const DiscountSchema = new Schema({
     required: true,
   },
 }, {
-    versionKey: false,
-    collection: 'discounts'
+  toJSON: {
+    virtuals: true
+  },
+  toObject: {
+    virtuals: true
+  },
+  versionKey: false,
+  collection: 'discounts'
 });
-
-const discount = mongoose.Model('Discount', DiscountSchema);
+DiscountSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+const discount = mongoose.model('Discount', DiscountSchema);
 
 module.exports = discount;

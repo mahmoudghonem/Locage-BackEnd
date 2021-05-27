@@ -10,13 +10,21 @@ const CatogrySchema = new Schema({
     },
     description: {
         type: String,
-        maxlength:400,
+        maxlength: 400,
     }
 }, {
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    },
     versionKey: false,
     collection: "catogries",
 });
-
-const catogry = mongoose.Model("Catogry", CatogrySchema);
+CatogrySchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+const catogry = mongoose.model("Catogry", CatogrySchema);
 
 module.exports = catogry;

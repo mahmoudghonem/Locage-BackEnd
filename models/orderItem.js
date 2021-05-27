@@ -20,10 +20,18 @@ const OrderItemSchema = new Schema({
         ref: "orders",
     },
 }, {
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    },
     versionKey: false,
     collection: "orderItems",
 });
-
-const orderItem = mongoose.Model("OrderItem", OrderItemSchema);
+OrderItemSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+const orderItem = mongoose.model("OrderItem", OrderItemSchema);
 
 module.exports = orderItem;
