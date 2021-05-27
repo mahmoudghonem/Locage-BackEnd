@@ -1,12 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const authjwt = require('../middlewares/authjwt');
-const { userPayments, addBankAccount, addCreditCard } = require('../services/payment');
+const { userPayments, addBankAccount, getBankAccount, addCreditCard, getCreditCard, updateBankAccount, updateCreditCard, deleteBankAccount, deleteCreditCard } = require('../services/payment');
 
 router.get('/:id', authjwt, getUserPayments);
-router.post('/:id/bank-account', authjwt, setBankAccount);
-router.post('/:id/credit-card', authjwt, setCreditCard);
 
+router.route('/:id/bank-account')
+    .get(authjwt, returnBankAccount)
+    .post(authjwt, setBankAccount)
+    .patch(authjwt, editBankAccount)
+    .delete(authjwt, removeBankAccount);
+
+router.route('/:id/credit-card')
+    .get(authjwt, returnCreditCard)
+    .post(authjwt, setCreditCard);
+    
+router.route('/:id/credit-card/:cardId')
+    .patch(authjwt, editCreditCard)
+    .delete(authjwt, removeCreditCard);
 
 function getUserPayments(req, res, next) {
     userPayments(req, res, next).then((result) => {
@@ -23,6 +34,30 @@ function setBankAccount(req, res, next) {
         next(err);
     });
 }
+
+function returnBankAccount(req, res, next) {
+    getBankAccount(req, res, next).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+
+function editBankAccount(req, res, next) {
+    updateBankAccount(req, res, next).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+function removeBankAccount(req, res, next) {
+    deleteBankAccount(req, res, next).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+
 function setCreditCard(req, res, next) {
     addCreditCard(req, res, next).then((result) => {
         res.json(result);
@@ -30,4 +65,28 @@ function setCreditCard(req, res, next) {
         next(err);
     });
 }
+
+function returnCreditCard(req, res, next) {
+    getCreditCard(req, res, next).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+
+function editCreditCard(req, res, next) {
+    updateCreditCard(req, res, next).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+function removeCreditCard(req, res, next) {
+    deleteCreditCard(req, res, next).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+
 module.exports = router;
