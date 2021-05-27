@@ -9,6 +9,7 @@ const fs = require('fs');
 const morgan = require('morgan');
 const compression = require('compression');
 const cors = require('cors');
+const path = require("path");
 const helmet = require('helmet');
 const CustomError = require('./functions/errorHandler');
 // eslint-disable-next-line no-unused-vars
@@ -38,6 +39,8 @@ function shouldCompress(req, res) {
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+//static file "image"
+app.use("/images", express.static(("images")));
 //set init route link to /api/v1/---
 app.use('/api/v1', routes);
 
