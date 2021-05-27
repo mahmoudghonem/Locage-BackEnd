@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
 const Store = require("../models/store");
 const User = require("../models/user");
+const CustomError = require('../functions/errorHandler');
+const cloudinary = require("../functions/cloudinary");
 
 //Get all stores
 async function getAll(req, res) {
@@ -15,7 +18,7 @@ async function getAll(req, res) {
             return result;
         })
         .catch((err) => {
-            res.send(err);
+            new CustomError(err.toString());
         });
 }
 
@@ -25,7 +28,7 @@ async function getOne(req, res) {
     const { id } = req.params;
     const store = await Store.findById(id).exec();
     if (!store)
-        return res.sendStatus(404).send("NOT_FOUND");
+        new CustomError("NOT_FOUND", 404);
     else
         return store;
 }
@@ -37,24 +40,26 @@ async function create(req, res) {
     let store;
     const getUser = User.findById(user.id);
     if (!getUser)
-        return res.sendStatus(401).send("UN_AUTHENTICATED");
+        new CustomError("UN_AUTHENTICATED", 401);
 
-    if (getUser.Role != 'vender')
-        return res.sendStatus(401).send("UN_AUTHENTICATED");
+    if (getUser.role != 'vender')
+        new CustomError("UN_AUTHENTICATED", 401);
 
     if (file) {
-        const image = "/images/" + req.file.filename;
-        store = await Store.create({ ...body, photo: image }).then((result) => {
+        const result = await cloudinary.uploader.upload(req.file.path);
+        const image = result.secure_url;
+        body.photo = image;
+        await Store.create({ ...body }).then((result) => {
             return result;
         }).catch((err) => {
-            res.send(err);
+            new CustomError(err.toString());
         });
     } else {
-        store = await Store.create({ ...body })
+        await Store.create({ ...body })
             .then((result) => {
                 return result;
             }).catch((err) => {
-                res.send(err);
+                new CustomError(err.toString());
             });
     }
 
@@ -69,15 +74,16 @@ async function update(req, res) {
     const store = getOne(id);
 
     if (!store)
-        return res.sendStatus(404).send("NOT_FOUND");
+        new CustomError("NOT_FOUND", 404);
 
     const file = req.file | false;
     if (file) {
-        const image = "./images/" + req.file.filename;
+        const result = await cloudinary.uploader.upload(req.file.path);
+        const image = result.secure_url;
         body.photo = image;
-        return await Store.findByIdAndUpdate({ id }, { ...body }, { new: true });
+        return await Store.findByIdAndUpdate({ id }, { ...body }, { new: true }).exec();
     } else {
-        return await Store.findByIdAndUpdate(id, body, { new: true });
+        return await Store.findByIdAndUpdate(id, body, { new: true }).exec();
     }
 }
 
@@ -87,7 +93,7 @@ async function remove(req, res) {
     const { id } = req.params;
     const store = getOne(id);
     if (!store)
-        return res.sendStatus(404).send("NOT_FOUND");
+        new CustomError("NOT_FOUND", 404);
     else
         await Store.findByIdAndDelete(id).exec();
 }
