@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Product schema definition
 const ProductSchema = new Schema({
@@ -17,6 +18,7 @@ const ProductSchema = new Schema({
     minlength: 50,
   },
   price: {
+    required: true,
     type: Number,
   },
   subcategoryId: {
@@ -25,7 +27,7 @@ const ProductSchema = new Schema({
   },
   vendorId: {
     type: Schema.Types.ObjectId,
-    ref: "vendors",
+    ref: "stores",
   },
   sku: {
     type: String,
@@ -35,13 +37,16 @@ const ProductSchema = new Schema({
     type: Number,
   },
   size: {
-    required: true,
-    type: Number,
+    type: String,
   },
   Weight: {
     type: Number,
   },
   photos: {
+    required: true,
+    type: [String],
+  },
+  photosPublicId: {
     required: true,
     type: [String],
   },
@@ -51,19 +56,27 @@ const ProductSchema = new Schema({
   unitsInOrder: {
     type: Number,
   },
-  toJSON: {
-    virtuals: true
-  },
-  toObject: {
-    virtuals: true
-  },
-  versionKey: false,
-  collection: 'products',
+},{
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        delete ret.photosPublicId;
+        return ret;
+    },
+    },
+    toObject: {
+      virtuals: true
+    },
+    versionKey: false,
+    collection: "products",
 });
 
 ProductSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
+
+ProductSchema.plugin(mongoosePaginate);
+
 // Model creation
 const products = mongoose.model("Product", ProductSchema);
 

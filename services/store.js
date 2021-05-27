@@ -35,16 +35,16 @@ async function getOne(req, res) {
 
 
 //Post one store
-async function create(req, res) {
-    const { body, file, userId } = req;
-    let store;
-    const getUser = User.findById(userId).exec();
+async function create(req, res){
+    const { body, file , userId } = req;
+    let store ;
+    const getUser = await User.findById(userId).exec();
     if (!getUser)
         new CustomError("UN_AUTHENTICATED", 401);
 
-    if (getUser.role != 'vender')
+    if(getUser.role != 'vendor')
         new CustomError("UN_AUTHENTICATED", 401);
-
+    
     if (file) {
         const result = await cloudinary.uploader.upload(req.file.path);
         const image = result.secure_url;
@@ -56,11 +56,11 @@ async function create(req, res) {
         });
     } else {
         await Store.create({ ...body })
-            .then((result) => {
-                return result;
-            }).catch((err) => {
-                new CustomError(err.toString());
-            });
+        .then((result) => {
+            return result;
+        }).catch((err) => {
+            new CustomError(err.toString());
+        });
     }
 
     return store;
