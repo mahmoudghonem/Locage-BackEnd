@@ -36,9 +36,9 @@ async function getOne(req, res) {
 
 //Post one store
 async function create(req, res) {
-    const { body, file, user } = req;
+    const { body, file, userId } = req;
     let store;
-    const getUser = User.findById(user.id).exec();
+    const getUser = User.findById(userId).exec();
     if (!getUser)
         new CustomError("UN_AUTHENTICATED", 401);
 
