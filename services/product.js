@@ -12,9 +12,16 @@ const isEmpty = (obj) => {
     if(Object.keys(obj).length === 0 && obj.constructor === Object) customError("BAD_REQUEST", 400);
 }
 
-const getProducts = async () => {
+const getProducts = async (req) => {
     // pagination
-    return await Product.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const options = {
+        limit: limit,
+        page: page
+    }
+    return await Product.paginate({}, options);
 }
 
 const getProduct = async (id) => {
@@ -23,6 +30,10 @@ const getProduct = async (id) => {
 }
 
 const add = async (product, files) => {
+    // check
+    const existingProduct = await Product.findOne({ title: product.title })
+    if(existingProduct) customError("TITLE_MUST_BE_UNIQUE", 400);
+
     const photos = [];
     isEmpty(product);
     if(files.length !== 0)

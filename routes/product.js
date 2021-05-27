@@ -15,7 +15,7 @@ router.delete('/delete/:id', deleteProduct);
 /* Routes Handlers */
 // Retrieve all products
 function retrieveProducts(req, res, next){
-    getProducts().then(result => res.json(result))
+    getProducts(req, res).then(result => res.json(result))
     .catch(error => next(error))
 }
 
