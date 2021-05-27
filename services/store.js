@@ -38,7 +38,7 @@ async function getOne(req, res) {
 async function create(req, res) {
     const { body, file, user } = req;
     let store;
-    const getUser = User.findById(user.id);
+    const getUser = User.findById(user.id).exec();
     if (!getUser)
         new CustomError("UN_AUTHENTICATED", 401);
 
@@ -81,9 +81,9 @@ async function update(req, res) {
         const result = await cloudinary.uploader.upload(req.file.path);
         const image = result.secure_url;
         body.photo = image;
-        return await Store.findByIdAndUpdate({ id }, { ...body }, { new: true }).exec();
+        return await Store.findByIdAndUpdate({ id }, { ...body }, { new: true });
     } else {
-        return await Store.findByIdAndUpdate(id, body, { new: true }).exec();
+        return await Store.findByIdAndUpdate(id, body, { new: true });
     }
 }
 
@@ -95,7 +95,7 @@ async function remove(req, res) {
     if (!store)
         new CustomError("NOT_FOUND", 404);
     else
-        await Store.findByIdAndDelete(id).exec();
+        await Store.findByIdAndDelete(id);
 }
 
 

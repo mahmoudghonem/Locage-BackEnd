@@ -9,6 +9,7 @@ router.post('/reset-password', resetValidationRules(), validate, userResetFun);
 router.post('/recover/:token', recoverValidationRules(), validate, userRecoverFun);
 router.post('/register', registerValidationRules(), validate, userRegisterFun);
 router.post('/:id', authjwt, updateValidationRules(), validate, userUpdateFun);
+
 function userLoginFun(req, res, next) {
     login(req, res).then((result) => {
         res.json(result);

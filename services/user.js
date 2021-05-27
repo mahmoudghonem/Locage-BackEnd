@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 const User = require('../models/user');
+const PaymentMethod = require('../models/paymentMethods');
+const Cart = require('../models/cart');
 const CustomError = require('../functions/errorHandler');
 const nodemailer = require('nodemailer');
 
@@ -11,6 +13,12 @@ const findOneUserByEmail = async (email) => {
 //Function to query user by id from database
 const findOneUserById = async (id) => {
     return await User.findOne({ _id: id }).exec();
+};
+
+//Function to create user essential Data objects
+const createUserData = async (id) => {
+    await PaymentMethod.create({ userId: id });
+    await Cart.create({ userId: id });
 };
 
 //login user and return token
@@ -30,7 +38,7 @@ const login = async (req, res) => {
     await loadedUser.generateTokenAccess().then((result) => {
         return res.status(200).json({ token: result, userId: loadedUser.id });
     }).catch((error) => {
-        CustomError(error.toString(), 400);
+        new CustomError(error.toString(), 400);
     });
 };
 
@@ -65,7 +73,7 @@ const reset = async (req, res) => {
     await smtpTransport.sendMail(mailOptions).then(() => {
         return res.status(200).json({ message: 'RESET_EMAIL_SENT', email: loadedUser.email });
     }).catch((error) => {
-        CustomError(error.toString(), 400);
+        new CustomError(error.toString(), 400);
     });
 
 };
@@ -99,7 +107,7 @@ const recover = async (req, res) => {
     await smtpTransport.sendMail(mailOptions).then(() => {
         return res.status(200).json({ message: 'PASSWORD_CHANGED', email: loadedUser.email });
     }).catch((error) => {
-        CustomError(error.toString(), 400);
+        new CustomError(error.toString(), 400);
     });
 
 };
@@ -112,13 +120,18 @@ const register = async (req, res) => {
     if (loadedUser)
         new CustomError('EMAIL_ALREADY_REGISTER', 401);
 
+    //create user object
     const createdUser = new User(body);
+    //save user object in database and hash the password
     await createdUser.save();
+    //create user data requirments
+    await createUserData(createdUser._id);
+
     //return user data and token after create
     await createdUser.generateTokenAccess().then((result) => {
         return res.status(200).json({ message: "ACCOUNT_CREATED", user: createdUser.toJSON(), token: result, userId: createdUser.id });
     }).catch((error) => {
-        CustomError(error.toString(), 400);
+        new CustomError(error.toString(), 400);
     });
 };
 
@@ -127,7 +140,7 @@ const update = async (req, res) => {
     const { body } = req;
     const { id } = req.params;
     if (userId != id)
-        CustomError('BAD_REQUEST', 400);
+        new CustomError('BAD_REQUEST', 400);
 
     const loadedUser = await findOneUserById(userId);
 
