@@ -27,7 +27,7 @@ const ProductSchema = new Schema({
   },
   vendorId: {
     type: Schema.Types.ObjectId,
-    ref: "vendors",
+    ref: "stores",
   },
   sku: {
     type: String,
