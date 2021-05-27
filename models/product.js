@@ -18,6 +18,7 @@ const ProductSchema = new Schema({
     minlength: 50,
   },
   price: {
+    required: true,
     type: Number,
   },
   subcategoryId: {
@@ -36,7 +37,7 @@ const ProductSchema = new Schema({
     type: Number,
   },
   size: {
-    type: Number,
+    type: String,
   },
   Weight: {
     type: Number,

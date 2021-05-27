@@ -2,14 +2,16 @@ const express = require('express');
 const router = express.Router();
 const { add, getProducts, getProduct, edit, remove } = require('../services/product');
 const upload = require('../middlewares/multipleImageUpload');
+//const { validate, addValidationRules } = require('../middlewares/productValidator');
+const authjwt = require("../middlewares/authjwt");
 
 
 // Product Routes
 router.get('/', retrieveProducts);
 router.get('/:id', retrieveProduct);
-router.post('/add', upload, addProduct);
-router.patch('/edit/:id', editProduct);
-router.delete('/delete/:id', deleteProduct);
+router.post('/add', authjwt, /*addValidationRules(), validate,*/ upload, addProduct);
+router.patch('/edit/:id', authjwt, editProduct);
+router.delete('/delete/:id', authjwt, deleteProduct);
 
 
 /* Routes Handlers */
