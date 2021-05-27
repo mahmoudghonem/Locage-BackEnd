@@ -1,14 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const authjwt = require('../middlewares/authjwt');
-const { userPayments, addBankAccount, userBankAccount, addCreditCard, userCreditCard } = require('../services/payment');
+const { userPayments, addBankAccount, userBankAccount, addCreditCard, userCreditCard, updateBankAccount, updateCreditCard } = require('../services/payment');
 
 router.get('/:id', authjwt, getUserPayments);
-router.get('/:id/bank-account', authjwt, getBankAccount);
-router.post('/:id/bank-account', authjwt, setBankAccount);
-router.get('/:id/credit-card', authjwt, getCreditCard);
-router.post('/:id/credit-card', authjwt, setCreditCard);
 
+router.route('/:id/bank-account')
+    .get(authjwt, getBankAccount)
+    .post(authjwt, setBankAccount)
+    .patch(authjwt, editBankAccount);
+
+router.route('/:id/credit-card')
+    .get(authjwt, getCreditCard)
+    .post(authjwt, setCreditCard);
+router.patch('/:id/credit-card/:cardId', authjwt, editCreditCard);
 
 function getUserPayments(req, res, next) {
     userPayments(req, res, next).then((result) => {
@@ -33,6 +38,15 @@ function getBankAccount(req, res, next) {
         next(err);
     });
 }
+
+function editBankAccount(req, res, next) {
+    updateBankAccount(req, res, next).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+
 function setCreditCard(req, res, next) {
     addCreditCard(req, res, next).then((result) => {
         res.json(result);
@@ -40,6 +54,7 @@ function setCreditCard(req, res, next) {
         next(err);
     });
 }
+
 function getCreditCard(req, res, next) {
     userCreditCard(req, res, next).then((result) => {
         res.json(result);
@@ -47,4 +62,13 @@ function getCreditCard(req, res, next) {
         next(err);
     });
 }
+
+function editCreditCard(req, res, next) {
+    updateCreditCard(req, res, next).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+
 module.exports = router;

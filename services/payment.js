@@ -113,6 +113,29 @@ const userBankAccount = async (req, res) => {
     });
 };
 
+const updateBankAccount = async (req, res) => {
+    const userId = req.userId;
+    const { id } = req.params;
+    const { body } = req;
+
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+
+    await findOneUserById(userId);
+
+    const paymentMethod = await findOneUserPaymentMethodById(id);
+    const bankAccount = await BankAccount.findOne({ paymentId: paymentMethod.id });
+
+    if (!bankAccount)
+        new CustomError('NOT_FOUND', 404);
+
+    await BankAccount.findOneAndUpdate({ _id: bankAccount._id }, body).then((result) => {
+        return res.status(200).json({ message: "UPDATED_SUCCESSFULLY", result: result });
+    }).catch((err) => {
+        new CustomError(err.toString(), 400);
+    });
+};
+
 const addCreditCard = async (req, res) => {
     const userId = req.userId;
     const { id } = req.params;
@@ -131,11 +154,13 @@ const addCreditCard = async (req, res) => {
     });
 
 };
+
 const userCreditCard = async (req, res) => {
     const userId = req.userId;
     const { id } = req.params;
     if (userId != id)
         new CustomError('BAD_REQUEST', 400);
+
     await findOneUserById(userId);
 
     await PaymentMethod.aggregate([{
@@ -157,10 +182,35 @@ const userCreditCard = async (req, res) => {
         new CustomError(err.toString(), 400);
     });
 };
+
+const updateCreditCard = async (req, res) => {
+    const userId = req.userId;
+    const { id, cardId } = req.params;
+    const { body } = req;
+
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+    await findOneUserById(userId);
+
+    const paymentMethod = await findOneUserPaymentMethodById(id);
+    const creditCard = await BankAccount.findOne({ _id: cardId, paymentId: paymentMethod.id }).exec();
+    if (!creditCard)
+        new CustomError('NOT_FOUND', 404);
+
+    await CreditCard.findOneAndUpdate({ _id: cardId }, body).then((result) => {
+        return res.status(200).json({ message: "UPDATED_SUCCESSFULLY", result: result });
+    }).catch((err) => {
+        new CustomError(err.toString(), 400);
+    });
+};
+
+
 module.exports = {
     userPayments,
     addBankAccount,
     addCreditCard,
     userBankAccount,
-    userCreditCard
+    userCreditCard,
+    updateBankAccount,
+    updateCreditCard
 };
