@@ -17,6 +17,6 @@ const CatogrySchema = new Schema({
     collection: "catogries",
 });
 
-const catogry = mongoose.Model("Catogry", CatogrySchema);
+const catogry = mongoose.model("Catogry", CatogrySchema);
 
 module.exports = catogry;

@@ -19,7 +19,7 @@ const BankAccountSchema = new Schema({
         ref: 'paymentmethods'
     },
 }, {
-    collection: 'bankaccount'
+    collection: 'bankaccounts'
 });
 
 const bankaccount = mongoose.model('BankAccount', BankAccountSchema);

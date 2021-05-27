@@ -27,7 +27,7 @@ const CreditCardSchema = new Schema({
         ref: 'paymentmethods'
     },
 }, {
-    collection: 'creditcard'
+    collection: 'creditcards'
 });
 
 const creditcard = mongoose.model('CreditCard', CreditCardSchema);
