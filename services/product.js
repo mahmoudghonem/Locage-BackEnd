@@ -34,16 +34,18 @@ const add = async (product, files, userId) => {
     if(loggedUser.role != "vendor") customError("UNAUTHORIZED", 401); 
 
     const photos = [];
+    const photosPublicId = [];
     if(files.length !== 0){
         for(const file of files){
             const { path } = file;
             const result = await cloudinary.uploader.upload(path);
             photos.push(result.secure_url);
+            photosPublicId.push(result.public_id);
         }
     }
     
     isEmpty(product);
-    const newProduct = new Product({...product, photos: photos});
+    const newProduct = new Product({...product, photos: photos, photosPublicId: photosPublicId});
     return await newProduct.save();
 }
 
@@ -66,21 +68,34 @@ const edit = async (editedData, id, files, userId) => {
     isEmpty(editedData);
 
     const photos = productToEdit.photos;
+    const photosPublicId = productToEdit.photosPublicId;
     if(files.length !== 0){
         for(const file of files){
             const { path } = file;
             const result = await cloudinary.uploader.upload(path);
             photos.push(result.secure_url);
+            photosPublicId.push(result.public_id);
         }
     }
 
-    return await Product.findByIdAndUpdate(id, {...editedData, photos: photos}, {new: true});
+    return await Product.findByIdAndUpdate(id, {...editedData, photos: photos, photosPublicId: photosPublicId}, {new: true});
 }
 
-const remove = async (id) => {
+const remove = async (id, userId) => {
+    // check
     checkId(id);
+
+    const loggedUser = await User.findById(userId);
+    if(!loggedUser) customError("UNAUTHORIZED", 401);
+    if(loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
+
     const productToDelete = await Product.findById(id);
     if(!productToDelete) customError("PRODUCT_NOT_FOUND", 404);
+
+    const { photosPublicId } = productToDelete;
+
+    photosPublicId.forEach(async(id) => await cloudinary.uploader.destroy(id, function(result) { console.log(result) }));
+
     return await Product.findByIdAndDelete(id);
 }
 

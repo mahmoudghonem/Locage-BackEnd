@@ -46,8 +46,9 @@ function editProduct(req, res, next){
 
 // Remove a product 
 function deleteProduct(req, res, next){
+    const { userId } = req;
     const { id } = req.params;
-    remove(id).then(result => res.json({message: "Product has been deleted", result: result}))
+    remove(id, userId).then(result => res.json({message: "Product has been deleted", result: result}))
     .catch(error => next(error));
 }
 
