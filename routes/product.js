@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { add, getProducts, getProduct, edit, remove } = require('../services/product');
-const upload = require('../middlewares/multipleImageUpload');
+//const upload = require('../middlewares/multipleImageUpload');
+const upload = require("../middlewares/image");
 //const { validate, addValidationRules } = require('../middlewares/productValidator');
 const authjwt = require("../middlewares/authjwt");
 
@@ -9,8 +10,8 @@ const authjwt = require("../middlewares/authjwt");
 // Product Routes
 router.get('/', retrieveProducts);
 router.get('/:id', retrieveProduct);
-router.post('/add', authjwt, /*addValidationRules(), validate,*/ upload, addProduct);
-router.patch('/edit/:id', authjwt, editProduct);
+router.post('/add', authjwt, /*addValidationRules(), validate,*/ upload.array("photos", 10), addProduct);
+router.patch('/edit/:id', authjwt, upload.array("photos", 10), editProduct);
 router.delete('/delete/:id', authjwt, deleteProduct);
 
 
@@ -37,9 +38,9 @@ function addProduct(req, res, next){
 
 // Modify an existing product 
 function editProduct(req, res, next){
-    const { body } = req;
+    const { body, files, userId } = req;
     const { id } = req.params;
-    edit(body, id).then(result => res.json({message: "Product has been edited.", result: result}))
+    edit(body, id, files, userId).then(result => res.json({message: "Product has been edited.", result: result}))
     .catch(error => next(error));
 }
 
