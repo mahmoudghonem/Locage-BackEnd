@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { add, getProducts, getProduct, edit, remove } = require('../services/product');
-const upload = require('../functions/multipleImageUpload');
+const upload = require('../middlewares/multipleImageUpload');
 
 
 // Product Routes
