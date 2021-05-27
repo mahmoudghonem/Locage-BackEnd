@@ -12,10 +12,19 @@ const CartSchema = new Schema({
     ref: 'users',
   }
 }, {
+  toJSON: {
+    virtuals: true
+  },
+  toObject: {
+    virtuals: true
+  },
   versionKey: false,
   collection: 'carts',
 });
 
+CartSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
 const cart = mongoose.model('Cart', CartSchema);
 
 module.exports = cart;

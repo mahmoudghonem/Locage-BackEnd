@@ -13,6 +13,7 @@ const PaymentMethodsSchema = new Schema({
     toObject: {
         virtuals: true
     },
+    versionKey: false,
     collection: 'paymentmethods'
 });
 

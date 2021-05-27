@@ -19,10 +19,18 @@ const OrderSchema = new Schema({
         ref: 'users',
     }
 }, {
+    toJSON: {
+        virtuals: true
+    },
+    toObject: {
+        virtuals: true
+    },
     versionKey: false,
     collection: "orders",
 });
-
+OrderSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
 const order = mongoose.model("Order", OrderSchema);
 
 module.exports = order;

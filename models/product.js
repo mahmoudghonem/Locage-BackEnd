@@ -51,10 +51,19 @@ const ProductSchema = new Schema({
   unitsInOrder: {
     type: Number,
   },
+  toJSON: {
+    virtuals: true
+  },
+  toObject: {
+    virtuals: true
+  },
   versionKey: false,
   collection: 'products',
 });
 
+ProductSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
 // Model creation
 const products = mongoose.model("Product", ProductSchema);
 
