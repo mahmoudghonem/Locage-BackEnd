@@ -27,7 +27,7 @@ const login = async (req, res) => {
     const loadedUser = await findOneUserByEmail(email);
     //return error if email is not register
     if (!loadedUser)
-        new CustomError('USER_NOT_FOUND', 401);
+        new CustomError('USER_NOT_FOUND', 404);
 
     //return error if password didn't match the database
     const validPass = await loadedUser.validatePassword(password);
