@@ -1,7 +1,10 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+
 //read env variables
 require('dotenv').config();
+
+//required imports
 const express = require('express');
 const https = require('https');
 const http = require('http');
@@ -12,20 +15,50 @@ const cors = require('cors');
 const path = require("path");
 const helmet = require('helmet');
 const CustomError = require('./functions/errorHandler');
-// eslint-disable-next-line no-unused-vars
 const { mongoose } = require('./loaders/db');
-//get all routes from routes/index.js
+
+//Config all routes in routes/index.js
 const routes = require('./routes');
+
 //init express servers
 const app = express();
 
-//add apis logger for development environment
+//add api logger for development environment
 app.use(morgan('dev'));
-//add cors access
+
+//Whitelist routes to access backend 
+var whitelist = [];
+var corsOptions = {
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new CustomError('CORS_NOT_ALLOWED', 401));
+        }
+    }
+};
+
+/* set cors access to backend server 
+initialize after deploy of frontend server */
 app.use(cors());
-//add security reforce
+
+/*
+Adding security reinforce 
+setting contentSecurityPolicy
+setting dnsPrefetchControl
+setting expectCt
+setting frameguard
+setting hidePoweredBy
+setting hsts
+setting ieNoOpen
+setting noSniff
+setting permittedCrossDomainPolicies
+setting referrerPolicy
+setting xssFilter
+*/
 app.use(helmet());
-//use compression middelware to reduce data bandwidth
+
+//use compression middleware to reduce data bandwidth
 app.use(compression({ filter: shouldCompress }));
 function shouldCompress(req, res) {
     if (req.headers['x-no-compression']) {
@@ -35,46 +68,48 @@ function shouldCompress(req, res) {
     // fallback to standard filter function
     return compression.filter(req, res);
 }
+
 // parse requests of content-type - application/json
 app.use(express.json());
+
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-//static file "image"
-app.use("/images", express.static(("images")));
+
 //set init route link to /api/v1/---
 app.use('/api/v1', routes);
 
-//set error handler middleware
+//set error handler middleware to catch any Throw Custom Error
 app.use((error, req, res, next) => {
     console.log(error);
     const status = error.statusCode;
     const message = error.message;
     res.status(status).json({ message: message });
 });
-//reading ssl credentials to enable https servers
-// eslint-disable-next-line no-undef
+
+//reading ssl credentials to enable https servers by setting ssl credentials options
 var key = fs.readFileSync('./certs/selfsigned.key');
-// eslint-disable-next-line no-undef
 var cert = fs.readFileSync('./certs/selfsigned.crt');
+
 var credentials = {
     key: key,
     cert: cert
 };
+
 //create express server
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
 const HTTPPORT = process.env.NODE_ENV == 'development' ? 8080 : process.env.HTTPPORT;
-
 const HTTPSPORT = process.env.NODE_ENV == 'development' ? 8443 : process.env.HTTPSPORT;
 
 httpServer.listen(HTTPPORT, () => {
-    console.log(`Server Is Working On Http Port http://localhost:${HTTPPORT}`);
+    console.log(`Http Server Is Working On Port ${HTTPPORT}`);
 });
 
 httpsServer.listen(HTTPSPORT, () => {
-    console.log(`Server Is Working On Https Port https://localhost:${HTTPSPORT}`);
+    console.log(`Https Is Working On Port ${HTTPSPORT}`);
 });
+
 //Catch Any unhandled Rejection didn't catch an error
 process.on('unhandledRejection', (reason, promise) => {
     console.log('Unhandled Rejection at:', promise, 'reason:', reason);

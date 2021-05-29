@@ -7,13 +7,15 @@ const productRouter = require('./product');
 const paymentRouter = require('./payment');
 
 router.use('/users', userRouter);
+
 router.use('/stores', storeRouter);
+
 router.use('/products', productRouter);
+
 router.use('/payments', paymentRouter);
 
 //set not found router middleware
 router.use((req, res, next) => {
-    console.log('test');
     try {
         new CustomError('ROUTE_NOT_FOUND', 404);
     } catch (e) {

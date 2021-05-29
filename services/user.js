@@ -30,8 +30,8 @@ const login = async (req, res) => {
         new CustomError('USER_NOT_FOUND', 401);
 
     //return error if password didn't match the database
-    const vaildPass = await loadedUser.validatePassword(password);
-    if (!vaildPass)
+    const validPass = await loadedUser.validatePassword(password);
+    if (!validPass)
         new CustomError('WRONG_PASSWORD', 401);
 
     //create token and return it
@@ -82,7 +82,7 @@ const reset = async (req, res) => {
 const recover = async (req, res) => {
     const loadedUser = await User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).exec();
     if (!loadedUser)
-        new CustomError('PASSWORD_RESET_TOKEN_INVAILD_OR_EXPIRED', 401);
+        new CustomError('PASSWORD_RESET_TOKEN_INVALID_OR_EXPIRED', 401);
 
     loadedUser.password = req.body.password;
     loadedUser.resetPasswordToken = undefined;
@@ -129,7 +129,7 @@ const register = async (req, res) => {
 
     //return user data and token after create
     await createdUser.generateTokenAccess().then((result) => {
-        return res.status(200).json({ message: "ACCOUNT_CREATED", user: createdUser.toJSON(), token: result, userId: createdUser.id });
+        return res.status(200).json({ message: "ACCOUNT_CREATED", token: result, userId: createdUser.id });
     }).catch((error) => {
         new CustomError(error.toString(), 400);
     });
