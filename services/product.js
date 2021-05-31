@@ -26,9 +26,6 @@ const getProduct = async (id) => {
 
 const add = async (product, files, userId) => {
     // check
-    const existingProduct = await Product.findOne({ title: product.title })
-    if(existingProduct) customError("TITLE_MUST_BE_UNIQUE", 400);
-
     const loggedUser = await User.findById(userId);
     if(!loggedUser) customError("UNAUTHORIZED", 401);
     if(loggedUser.role != "vendor") customError("UNAUTHORIZED", 401); 
@@ -52,9 +49,6 @@ const add = async (product, files, userId) => {
 const edit = async (editedData, id, files, userId) => {
     // check 
     checkId(id);
-    
-    const existingProduct = await Product.findOne({ title: editedData.title })
-    if(existingProduct) customError("TITLE_MUST_BE_UNIQUE", 400);
 
     const loggedUser = await User.findById(userId);
     if(!loggedUser) customError("UNAUTHORIZED", 401);
@@ -93,7 +87,7 @@ const remove = async (id, userId) => {
     if(!productToDelete) customError("PRODUCT_NOT_FOUND", 404);
 
     const { photosPublicId } = productToDelete;
-
+    
     photosPublicId.forEach(async(id) => await cloudinary.uploader.destroy(id, function(result) { console.log(result) }));
 
     return await Product.findByIdAndDelete(id);
