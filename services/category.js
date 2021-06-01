@@ -1,6 +1,7 @@
 const Category = require('../models/catogry');
 const User = require('../models/user');
 const Subcategory = require('../models/subcategory');
+const Product = require('../models/product');
 const customError = require('../functions/errorHandler');
 
 
@@ -90,6 +91,18 @@ const editSubcategory = async (editedSubcategory, subcategoryId, categoryId, use
     }
 }
 
+const getProductsOfCategory = async (categoryId) => {
+    // check
+    await categoryExisitsCheck(categoryId);
+
+    try{
+        const subcategories = await Subcategory.find({ categoryId: categoryId });
+        return await Product.find({ subcategoryId: { $in: subcategories } });
+    } catch(error){
+        return customError(error);
+    }
+}
+
 
 
 module.exports = {
@@ -98,5 +111,6 @@ module.exports = {
     editCategory,
     retrieveSubcategoriesOfCategory,
     createSubcategory,
-    editSubcategory
+    editSubcategory,
+    getProductsOfCategory
 }

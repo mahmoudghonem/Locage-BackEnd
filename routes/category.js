@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { retrieveAllCategories, createCategory, retrieveSubcategoriesOfCategory, createSubcategory,
-        editCategory, editSubcategory } = require('../services/category');
+        editCategory, editSubcategory, getProductsOfCategory } = require('../services/category');
 const authjwt = require("../middlewares/authjwt");
 
 
@@ -10,6 +10,7 @@ router.route('/')
     .post(authjwt, createnewCategory);
 
 router.patch('/:id', authjwt, modifyCategory);
+router.get('/:id/products', retrieveProductsOfCategory);
 
 router.route('/:id/subcategory')
     .get(getSubcategories)
@@ -61,6 +62,12 @@ function modifySubcategory(req, res, next){
     editSubcategory(editedSubcategory, subcategoryId, categoryId, userId).then(result => {
         res.json({message: "Subcategory has been edited.", result: result});
     })
+    .catch(error => next(error));
+}
+
+function retrieveProductsOfCategory(req, res, next){
+    const { id: categoryId } = req.params;
+    getProductsOfCategory(categoryId).then(result => res.json({result: result}))
     .catch(error => next(error));
 }
 

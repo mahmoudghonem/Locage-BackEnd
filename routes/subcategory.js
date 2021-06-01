@@ -3,7 +3,7 @@ const router = express.Router();
 const { getProductsOfSubcategory } = require('../services/subcategory');
 
 
-router.get('/:id', retrieveProductsOfSubcategory);
+router.get('/:id/products', retrieveProductsOfSubcategory);
 
 
 function retrieveProductsOfSubcategory(req, res, next){
