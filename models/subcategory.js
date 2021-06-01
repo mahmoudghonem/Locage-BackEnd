@@ -10,7 +10,6 @@ const SubcategorySchema = new Schema({
   },
   description: {
     type: String,
-    required: true,
     maxlength: 50,
   },
   categoryId: {
