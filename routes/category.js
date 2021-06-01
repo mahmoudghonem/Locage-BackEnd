@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { retrieveAllCategories, createCategory, retrieveSubcategoriesOfCategory, createSubcategory} = require('../services/category');
+const { retrieveAllCategories, createCategory, retrieveSubcategoriesOfCategory, createSubcategory,
+        editCategory, editSubcategory } = require('../services/category');
 const authjwt = require("../middlewares/authjwt");
 
 
@@ -8,11 +9,13 @@ router.route('/')
     .get(getCategories)
     .post(authjwt, createnewCategory);
 
-router.patch('/:id', authjwt, )
+router.patch('/:id', authjwt, modifyCategory);
 
 router.route('/:id/subcategory')
     .get(getSubcategories)
     .post(authjwt, createNewSubcategory);
+
+router.patch('/:id/subcategory/subId', authjwt, modifySubcategory)
 
 
 function getCategories(req, res, next){
@@ -28,6 +31,15 @@ function createnewCategory (req, res, next){
     .catch(error => next(error));
 }
 
+function modifyCategory(req, res, next){
+    const { id: categoryId } = req.params;
+    const { body: editedCategory, userId } = req;
+    editCategory(editedCategory, categoryId, userId).then(result => {
+        res.json({message: "Category has been edited.", result: result});
+    })
+    .catch(error => next(error));
+}
+
 function getSubcategories(req, res, next){
     const { id: categoryId } = req.params;
     retrieveSubcategoriesOfCategory(categoryId).then(result => res.json({result: result}))
@@ -39,6 +51,15 @@ function createNewSubcategory(req, res, next){
     const { id: categoryId } = req.params;
     createSubcategory(subcategory, categoryId, userId).then(result => {
         res.status(201).json({message: "Subcategory has been added.", result: result});
+    })
+    .catch(error => next(error));
+}
+
+function modifySubcategory(req, res, next){
+    const { id: categoryId, subId: subcategoryId } = req.params;
+    const { body: editedSubcategory, userId } = req;
+    editSubcategory(editedSubcategory, subcategoryId, categoryId, userId).then(result => {
+        res.json({message: "Subcategory has been edited.", result: result});
     })
     .catch(error => next(error));
 }

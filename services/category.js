@@ -14,6 +14,12 @@ const categoryExisitsCheck = async (categoryId) => {
     if(!(await Category.findById(categoryId))) customError("CATEGORY_NOTFOUND", 404);
 }
 
+const subcategoryExisitsCheck = async (subcategoryId, categoryId) => {
+    const subcategory = await Subcategory.findById(subcategoryId);
+    if(!subcategory) customError("SUBCATEGORY_NOTFOUND", 404);
+    if(subcategory.categoryId !== categoryId) customError("SUBCATEGORY_NOTFOUND", 404);
+}
+
 const retrieveAllCategories = async () => {
     try{
         return await Category.find();
@@ -34,6 +40,18 @@ const createCategory = async (category, userId) => {
     }
 }
 
+const editCategory = async (editedCategory, categoryId, userId) => {
+    // checks
+    await loggedUserCheck (userId);
+    await categoryExisitsCheck(categoryId);
+
+    try{
+        return await Category.findByIdAndUpdate(categoryId, editedCategory);
+    } catch(error){
+        return customError(error.toString(), 500);
+    }
+}
+
 const retrieveSubcategoriesOfCategory = async (categoryId) => {
     await categoryExisitsCheck(categoryId);
 
@@ -45,9 +63,9 @@ const retrieveSubcategoriesOfCategory = async (categoryId) => {
 }
 
 const createSubcategory = async (subcategory, categoryId, userId) => {
+    // checks
     await loggedUserCheck (userId);
-
-    if(!(await Category.findById(categoryId))) customError("CATEGORY_NOTFOUND", 404);
+    await categoryExisitsCheck(categoryId);
 
     try{
         subcategory.categoryId = categoryId;
@@ -59,11 +77,26 @@ const createSubcategory = async (subcategory, categoryId, userId) => {
     }
 }
 
+const editSubcategory = async (editedSubcategory, subcategoryId, categoryId, userId) => {
+    // checks
+    await loggedUserCheck (userId);
+    await categoryExisitsCheck(categoryId);
+    await subcategoryExisitsCheck(subcategoryId, categoryId);
+
+    try{
+        return await Subcategory.findByIdAndUpdate(subcategoryId, editedSubcategory);
+    } catch(error){
+        return customError(error.toString(), 500);
+    }
+}
+
 
 
 module.exports = {
     retrieveAllCategories,
     createCategory,
+    editCategory,
     retrieveSubcategoriesOfCategory,
-    createSubcategory
+    createSubcategory,
+    editSubcategory
 }
