@@ -103,6 +103,25 @@ const getProductsOfCategory = async (categoryId) => {
     }
 }
 
+const deleteCategory = async (categoryId, userId) => {
+    // checks
+    await loggedUserCheck (userId);
+    await categoryExisitsCheck(categoryId);
+
+    try{
+        // delete related subcategories and products
+        const subcategories = await Subcategory.find({ categoryId: categoryId });
+
+        await Product.deleteMany({ subcategoryId: { $in: subcategories } });
+
+        await Subcategory.deleteMany({ categoryId: categoryId });
+
+        return await Category.findByIdAndDelete(categoryId);
+    } catch(error){
+        return customError(error.toString(), 500);
+    }
+}
+
 
 
 module.exports = {
@@ -112,5 +131,6 @@ module.exports = {
     retrieveSubcategoriesOfCategory,
     createSubcategory,
     editSubcategory,
-    getProductsOfCategory
+    getProductsOfCategory,
+    deleteCategory
 }

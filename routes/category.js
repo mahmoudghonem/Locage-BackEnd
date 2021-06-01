@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { retrieveAllCategories, createCategory, retrieveSubcategoriesOfCategory, createSubcategory,
-        editCategory, editSubcategory, getProductsOfCategory } = require('../services/category');
+        editCategory, editSubcategory, getProductsOfCategory, deleteCategory } = require('../services/category');
 const authjwt = require("../middlewares/authjwt");
 
 
@@ -9,14 +9,17 @@ router.route('/')
     .get(getCategories)
     .post(authjwt, createnewCategory);
 
-router.patch('/:id', authjwt, modifyCategory);
+router.route('/:id')
+    .patch(authjwt, modifyCategory)
+    .delete(authjwt, removeCategory);
+
 router.get('/:id/products', retrieveProductsOfCategory);
 
 router.route('/:id/subcategory')
     .get(getSubcategories)
     .post(authjwt, createNewSubcategory);
 
-router.patch('/:id/subcategory/subId', authjwt, modifySubcategory)
+router.patch('/:id/subcategory/subId', authjwt, modifySubcategory);
 
 
 function getCategories(req, res, next){
@@ -68,6 +71,15 @@ function modifySubcategory(req, res, next){
 function retrieveProductsOfCategory(req, res, next){
     const { id: categoryId } = req.params;
     getProductsOfCategory(categoryId).then(result => res.json({result: result}))
+    .catch(error => next(error));
+}
+
+function removeCategory(req, res, next){
+    const { id: categoryId } = req.params;
+    const { userId } = req;
+    deleteCategory(categoryId, userId).then(result => {
+        res.json({message: "Category has been deleted.", result: result});
+    })
     .catch(error => next(error));
 }
 
