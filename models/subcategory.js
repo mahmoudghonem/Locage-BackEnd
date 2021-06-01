@@ -14,7 +14,7 @@ const SubcategorySchema = new Schema({
   },
   categoryId: {
     type: Schema.Types.ObjectId,
-    ref: "categorys",
+    ref: "categories",
   },
 }, {
   toJSON: {
