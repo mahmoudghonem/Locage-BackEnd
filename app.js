@@ -78,10 +78,8 @@ app.use((error, req, res, next) => {
     res.status(status).json({ message: message });
 });
 
-const HTTPSPORT = process.env.NODE_ENV == 'development' ? 3000 : process.env.PORT;
-
-app.listen(HTTPSPORT, () => {
-    console.log(`Server Is Working On Port ${HTTPSPORT}`);
+app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server Is Working On Port ${this.address().port}`);
 });
 
 //Catch Any unhandled Rejection didn't catch an error
