@@ -10,7 +10,7 @@
   "scripts": {
     "heroku-postbuild": "npm install -g pm2",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "start": "pm2-runtime start ecosystem.config.js --watch --env production",
     "profile": "node --prof app.js",
     "dev": "nodemon app.js",
     "fulldebug": "nodemon --dump app.js"
