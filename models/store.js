@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const mongoose = require("mongoose");
 const mongoosePaginate = require('mongoose-paginate-v2');
 
@@ -29,7 +30,7 @@ const StoreSchema = new Schema(
       require: true,
       validate: {
         validator: function (v) {
-          return /\d{3}-\d{3}-\d{4}/.test(v);
+          return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(v);
         },
       },
       type: String,
@@ -57,7 +58,7 @@ const StoreSchema = new Schema(
   toJSON: {
     virtuals: true
   },
-  versionkey: false,
+  versionKey: false,
   collection: "stores",
 });
 
