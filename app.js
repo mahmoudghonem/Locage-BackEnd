@@ -21,19 +21,6 @@ const routes = require('./routes');
 //init express servers
 const app = express();
 
-//add api logger for development environment
-app.use(morgan('tiny'));
-
-//Whitelist routes to access backend 
-var corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200
-};
-
-/* set cors access to backend server 
-initialize after deploy of frontend server */
-app.use(cors(corsOptions));
-
 /*
 Adding security reinforce 
 setting contentSecurityPolicy
@@ -50,6 +37,25 @@ setting xssFilter
 */
 app.use(helmet());
 
+// parse requests of content-type - application/json
+app.use(express.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+//Whitelist routes to access backend 
+var corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200
+};
+
+/* set cors access to backend server 
+initialize after deploy of frontend server */
+app.use(cors(corsOptions));
+
+//add api logger for development environment
+app.use(morgan('dev'));
+
 //use compression middleware to reduce data bandwidth
 app.use(compression({ filter: shouldCompress }));
 function shouldCompress(req, res) {
@@ -60,12 +66,6 @@ function shouldCompress(req, res) {
     // fallback to standard filter function
     return compression.filter(req, res);
 }
-
-// parse requests of content-type - application/json
-app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
 
 //set init route link to /api/v1/---
 app.use('/api/v1', routes);
