@@ -87,24 +87,28 @@ app.use((error, req, res, next) => {
 });
 
 //reading ssl credentials to enable https servers by setting ssl credentials options
-var key = fs.readFileSync('./certs/selfsigned.key');
-var cert = fs.readFileSync('./certs/selfsigned.crt');
+// var key = fs.readFileSync('./certs/selfsigned.key');
+// var cert = fs.readFileSync('./certs/selfsigned.crt');
 
-var credentials = {
-    key: key,
-    cert: cert
-};
+// var credentials = {
+//     key: key,
+//     cert: cert
+// };
 
 //create express server
+if(process.env.NODE_ENV == 'development')
 var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
+
+var httpsServer = https.createServer(app);
 
 const HTTPPORT = process.env.NODE_ENV == 'development' ? 8080 : process.env.HTTPPORT;
 const HTTPSPORT = process.env.NODE_ENV == 'development' ? 8443 : process.env.HTTPSPORT;
 
+if(process.env.NODE_ENV == 'development'){
 httpServer.listen(HTTPPORT, () => {
     console.log(`Http Server Is Working On Port ${HTTPPORT}`);
 });
+}
 
 httpsServer.listen(HTTPSPORT, () => {
     console.log(`Https Is Working On Port ${HTTPSPORT}`);

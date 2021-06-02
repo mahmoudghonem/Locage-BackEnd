@@ -7,7 +7,7 @@ const { registerValidationRules, resetValidationRules, loginValidationRules, rec
 
 router.get('/login', loginValidationRules(), validate, userLoginFun);
 
-router.get('/isEmailRegister', resetValidationRules(), validate, checkEmailRegister)
+router.get('/isEmailRegister', resetValidationRules(), validate, checkEmailRegister);
 
 router.post('/reset-password', resetValidationRules(), validate, userResetFun);
 
