@@ -37,21 +37,22 @@ const getProduct = async (id) => {
 const add = async (product, files, userId) => {
     // check
     const loggedUser = await User.findById(userId);
-    if(!loggedUser) customError("UNAUTHORIZED", 401);
-    if(loggedUser.role != "vendor") customError("UNAUTHORIZED", 401); 
+    if (!loggedUser) customError("UNAUTHORIZED", 401);
+    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
 
     const photos = [];
     const photosPublicId = [];
-    if(files.length !== 0){
-        for(const file of files){
+    if (files.length !== 0) {
+        for (const file of files) {
             const { path } = file;
             const result = await cloudinary.uploader.upload(path);
             photos.push(result.secure_url);
             photosPublicId.push(result.public_id);
         }
     }
-    
+
     isEmpty(product);
+
     try{
         const newProduct = new Product({...product, photos: photos, photosPublicId: photosPublicId});
         return await newProduct.save();
@@ -60,20 +61,22 @@ const add = async (product, files, userId) => {
     }  
 }
 
+
 const edit = async (editedData, id, files, userId) => {
     // check 
     checkId(id);
 
     const loggedUser = await User.findById(userId);
-    if(!loggedUser) customError("UNAUTHORIZED", 401);
-    if(loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
-    
+    if (!loggedUser) customError("UNAUTHORIZED", 401);
+    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
+
     // check that product exists
     const productToEdit = await Product.findById(id);
-    if(!productToEdit) customError("PRODUCT_NOT_FOUND", 404);
+    if (!productToEdit) customError("PRODUCT_NOT_FOUND", 404);
 
     // check that editedData is not empty
     isEmpty(editedData);
+
     try{
         const photos = productToEdit.photos;
         const photosPublicId = productToEdit.photosPublicId;
@@ -96,11 +99,11 @@ const remove = async (id, userId) => {
     checkId(id);
 
     const loggedUser = await User.findById(userId);
-    if(!loggedUser) customError("UNAUTHORIZED", 401);
-    if(loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
+    if (!loggedUser) customError("UNAUTHORIZED", 401);
+    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
 
     const productToDelete = await Product.findById(id);
-    if(!productToDelete) customError("PRODUCT_NOT_FOUND", 404);
+    if (!productToDelete) customError("PRODUCT_NOT_FOUND", 404);
 
     const { photosPublicId } = productToDelete;
     
@@ -119,4 +122,4 @@ module.exports = {
     getProduct,
     edit,
     remove
-}
+};
