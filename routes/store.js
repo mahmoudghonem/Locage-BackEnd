@@ -41,7 +41,7 @@ function getOneStore(req, res, next) {
 function createStore(req, res, next) {
     create(req, res)
         .then((result) => {
-            res.json(result);
+            res.json({ message: "Store has been added.", result: result});
         })
         .catch((err) => {
             next(err);
@@ -54,7 +54,7 @@ function createStore(req, res, next) {
 function updateStore(req, res, next) {
     update(req, res)
         .then((result) => {
-            res.json(result);
+            res.json({ message: "Store has been updated.", result: result});
         })
         .catch((err) => {
             next(err);
@@ -66,7 +66,7 @@ function updateStore(req, res, next) {
 function deleteStore(req, res, next) {
     remove(req, res)
         .then((result) => {
-            res.json(result);
+            res.json({ message: "Store has been deleted.", result: result});
         })
         .catch((err) => {
             next(err);
