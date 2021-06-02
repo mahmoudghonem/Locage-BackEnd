@@ -6,8 +6,6 @@ require('dotenv').config();
 
 //required imports
 const express = require('express');
-const https = require('https');
-const http = require('http');
 const fs = require('fs');
 const morgan = require('morgan');
 const compression = require('compression');
@@ -27,20 +25,14 @@ const app = express();
 app.use(morgan('tiny'));
 
 //Whitelist routes to access backend 
-var whitelist = [];
 var corsOptions = {
-    origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
-        } else {
-            callback(new CustomError('CORS_NOT_ALLOWED', 401));
-        }
-    }
+    origin: '*',
+    optionsSuccessStatus: 200
 };
 
 /* set cors access to backend server 
 initialize after deploy of frontend server */
-app.use(cors());
+app.use(cors(corsOptions));
 
 /*
 Adding security reinforce 
@@ -86,29 +78,10 @@ app.use((error, req, res, next) => {
     res.status(status).json({ message: message });
 });
 
-//reading ssl credentials to enable https servers by setting ssl credentials options
-// var key = fs.readFileSync('./certs/selfsigned.key');
-// var cert = fs.readFileSync('./certs/selfsigned.crt');
+const HTTPSPORT = process.env.NODE_ENV == 'development' ? 3000 : process.env.PORT;
 
-// var credentials = {
-//     key: key,
-//     cert: cert
-// };
-
-//create express server
-var httpServer = http.createServer(app);
-var httpsServer = https.createServer(app);
-
-//const HTTPPORT = process.env.NODE_ENV == 'development' ? 8080 : process.env.PORT;
-const HTTPSPORT = process.env.NODE_ENV == 'development' ? 8443 : process.env.PORT;
-
-// httpServer.listen(HTTPPORT, () => {
-//     console.log(`Http Server Is Working On Port ${HTTPPORT}`);
-// });
-
-
-httpsServer.listen(HTTPSPORT, () => {
-    console.log(`Https Is Working On Port ${HTTPSPORT}`);
+app.listen(HTTPSPORT, () => {
+    console.log(`Server Is Working On Port ${HTTPSPORT}`);
 });
 
 //Catch Any unhandled Rejection didn't catch an error
