@@ -8,9 +8,8 @@
     "npm": "7.x"
   },
   "scripts": {
-    "preinstall": "npm install -g pm2",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "pm2 start app.js -i max --watch --ignore-watch='node_modules'",
+    "start": "node app.js",
     "profile": "node --prof app.js",
     "dev": "nodemon app.js",
     "fulldebug": "nodemon --dump app.js"
