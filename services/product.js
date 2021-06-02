@@ -1,6 +1,7 @@
 const customError = require('../functions/errorHandler');
 const Product = require('../models/product');
 const User = require('../models/user');
+const Store = require('../models/store');
 const { checkId, isEmpty } = require('../functions/checks');
 const cloudinary = require("../functions/cloudinary");
 
@@ -54,7 +55,9 @@ const add = async (product, files, userId) => {
     isEmpty(product);
 
     try{
-        const newProduct = new Product({...product, photos: photos, photosPublicId: photosPublicId});
+        const store = await Store.findOne({ userId: userId });
+        if(!store) customError("STORE_NOTFOUND", 404);
+        const newProduct = new Product({...product, photos: photos, photosPublicId: photosPublicId, vendorId: store._id});
         return await newProduct.save();
     } catch(error) {
         return customError(error.toString(), 500);
