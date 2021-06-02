@@ -49,13 +49,13 @@ async function create(req, res){
         const result = await cloudinary.uploader.upload(req.file.path);
         const image = result.secure_url;
         body.photo = image;
-        await Store.create({ ...body }).then((result) => {
+        await Store.create({ ...body, userId: userId }).then((result) => {
             return result;
         }).catch((err) => {
             new CustomError(err.toString());
         });
     } else {
-        await Store.create({ ...body })
+        await Store.create({ ...body, userId: userId })
         .then((result) => {
             return result;
         }).catch((err) => {
