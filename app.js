@@ -79,7 +79,7 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server Is Working On Port ${this.address().port}`);
+    console.log(`Server Is Up and Running`);
 });
 
 //Catch Any unhandled Rejection didn't catch an error
