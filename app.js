@@ -99,12 +99,12 @@ app.use((error, req, res, next) => {
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(app);
 
-const HTTPPORT = process.env.NODE_ENV == 'development' ? 8080 : process.env.PORT;
+//const HTTPPORT = process.env.NODE_ENV == 'development' ? 8080 : process.env.PORT;
 const HTTPSPORT = process.env.NODE_ENV == 'development' ? 8443 : process.env.PORT;
 
-httpServer.listen(HTTPPORT, () => {
-    console.log(`Http Server Is Working On Port ${HTTPPORT}`);
-});
+// httpServer.listen(HTTPPORT, () => {
+//     console.log(`Http Server Is Working On Port ${HTTPPORT}`);
+// });
 
 
 httpsServer.listen(HTTPSPORT, () => {
