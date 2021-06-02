@@ -7,7 +7,7 @@ const authjwt = require("../middlewares/authjwt");
 
 router.route('/')
     .get(getCategories)
-    .post(authjwt, createnewCategory);
+    .post(authjwt, createNewCategory);
 
 router.route('/:id')
     .patch(authjwt, modifyCategory)
@@ -19,7 +19,7 @@ router.route('/:id/subcategory')
     .get(getSubcategories)
     .post(authjwt, createNewSubcategory);
 
-router.patch('/:id/subcategory/subId', authjwt, modifySubcategory);
+router.patch('/:id/subcategory/:subId', authjwt, modifySubcategory);
 
 
 function getCategories(req, res, next){
@@ -27,7 +27,7 @@ function getCategories(req, res, next){
     .catch(error => next(error));
 }
 
-function createnewCategory (req, res, next){
+function createNewCategory (req, res, next){
     const { body: category, userId } = req;
     createCategory(category, userId).then(result => { 
         res.status(201).json({message: "Category has been added.", result: result});

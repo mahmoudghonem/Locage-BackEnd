@@ -159,10 +159,21 @@ const update = async (req, res) => {
 
 };
 
+const checkMail = async (req, res) => {
+    const body = req.body;
+    const loadedUser = await findOneUserByEmail(body.email);
+    //return error if email is already registered
+    if (loadedUser)
+        new CustomError('EMAIL_ALREADY_REGISTER', 401);
+
+    return res.status(200).json({ message: "EMAIL_NOT_REGISTER" });
+};
+
 module.exports = {
     login,
     register,
     reset,
     recover,
-    update
+    update,
+    checkMail
 };
