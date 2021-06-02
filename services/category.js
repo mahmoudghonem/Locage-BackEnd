@@ -91,13 +91,19 @@ const editSubcategory = async (editedSubcategory, subcategoryId, categoryId, use
     }
 }
 
-const getProductsOfCategory = async (categoryId) => {
+const getProductsOfCategory = async (categoryId, page, limit) => {
     // check
     await categoryExisitsCheck(categoryId);
 
+    const options = {
+        page: parseInt(page) || 1,
+        limit: parseInt(limit) || 10
+    }
     try{
         const subcategories = await Subcategory.find({ categoryId: categoryId });
-        return await Product.find({ subcategoryId: { $in: subcategories } });
+        const result = await Product.paginate({ subcategoryId: { $in: subcategories } }, options);
+        if(result.docs.length === 0) customError("NO_PRODUCTS_AVAILABLE", 404);
+        return result;
     } catch(error){
         return customError(error);
     }

@@ -70,7 +70,8 @@ function modifySubcategory(req, res, next){
 
 function retrieveProductsOfCategory(req, res, next){
     const { id: categoryId } = req.params;
-    getProductsOfCategory(categoryId).then(result => res.json({result: result}))
+    const { page, limit } = req.query;
+    getProductsOfCategory(categoryId, page, limit).then(result => res.json({result: result}))
     .catch(error => next(error));
 }
 
