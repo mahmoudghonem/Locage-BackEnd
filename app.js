@@ -24,6 +24,7 @@ const routes = require('./routes');
 const app = express();
 
 //add api logger for development environment
+if(process.env.NODE_ENV == 'development')
 app.use(morgan('dev'));
 
 //Whitelist routes to access backend 
