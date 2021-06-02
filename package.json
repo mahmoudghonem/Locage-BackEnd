@@ -1,11 +1,11 @@
 {
   "name": "locage-backend",
   "version": "1.0.0",
-  "description": "Locage BackEnd Package For an E-Commerce Project",
+  "description": "Locage BackEnd For an E-Commerce MEAN Stack Project",
   "main": "app.js",
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=7.0.0"
+    "node": "16.x",
+    "npm": "7.x"
   },
   "scripts": {
     "preinstall": "npm install -g pm2",
