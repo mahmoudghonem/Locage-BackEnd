@@ -66,13 +66,16 @@ function shouldCompress(req, res) {
     // fallback to standard filter function
     return compression.filter(req, res);
 }
+// set up a route to redirect http to https
+app.get('*', function (req, res) {
+    res.redirect('https://' + req.headers.host + req.url);
+});
 
 //set init route link to /api/v1/---
 app.use('/api/v1', routes);
 
 //set error handler middleware to catch any Throw Custom Error
 app.use((error, req, res, next) => {
-    console.log(error);
     const status = error.statusCode;
     const message = error.message;
     res.status(status).json({ message: message });
