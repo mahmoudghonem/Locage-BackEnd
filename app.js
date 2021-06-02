@@ -68,11 +68,12 @@ function shouldCompress(req, res) {
 }
 
 // set up a route to redirect http to https
-// app.get('*', function (req, res, next) {
-//     if (process.env.NODE_ENV == 'production')
-//         res.redirect('https://' + req.headers.host + req.url);
-//     next();
-// });
+app.use(function(request, response, next) {
+    if (process.env.NODE_ENV != 'development' && !request.secure) {
+       return response.redirect("https://" + request.headers.host + request.url);
+    }
+    next();
+});
 
 //set init route link to /api/v1/---
 app.use('/api/v1', routes);
