@@ -10,9 +10,9 @@ const authjwt = require("../middlewares/authjwt");
 // Product Routes
 router.get('/', retrieveProducts);
 router.get('/:id', retrieveProduct);
-router.post('/add', authjwt, /*addValidationRules(), validate,*/ upload.array("photos", 10), addProduct);
-router.patch('/edit/:id', authjwt, upload.array("photos", 10), editProduct);
-router.delete('/delete/:id', authjwt, deleteProduct);
+router.post('/', authjwt, /*addValidationRules(), validate,*/ upload.array("photos", 10), addProduct);
+router.patch('/:id', authjwt, upload.array("photos", 10), editProduct);
+router.delete('/:id', authjwt, deleteProduct);
 
 
 /* Routes Handlers */

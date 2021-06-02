@@ -9,7 +9,6 @@ const ProductSchema = new Schema({
     required: true,
     maxlength: 150,
     minlength: 3,
-    unique: true,
   },
   description: {
     type: String,
@@ -30,6 +29,12 @@ const ProductSchema = new Schema({
     ref: "stores",
   },
   sku: {
+    type: String,
+  },
+  color: {
+    type: [String],
+  },
+  brand: {
     type: String,
   },
   quantity: {

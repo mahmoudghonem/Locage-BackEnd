@@ -10,12 +10,11 @@ const SubcategorySchema = new Schema({
   },
   description: {
     type: String,
-    required: true,
     maxlength: 50,
   },
   categoryId: {
     type: Schema.Types.ObjectId,
-    ref: "categorys",
+    ref: "categories",
   },
 }, {
   toJSON: {

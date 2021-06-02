@@ -13,22 +13,29 @@ const getProducts = async (req) => {
     const options = {
         limit: limit,
         page: page
-    };
-    return await Product.paginate({}, options);
-};
+    }
+    try{
+        return await Product.paginate({}, options);
+    } catch(error) {
+        return customError(error.toString(), 500);
+    }
+}
 
 const getProduct = async (id) => {
     checkId(id);
-    const product = await Product.findById(id);
-    if (!product) customError("PRODUCT_NOT_FOUND", 404);
-    return product;
-};
+
+    try{
+        const product = await Product.findById(id);
+        if(!product) customError("PRODUCT_NOT_FOUND", 404);
+        return product;
+    } catch(error) {
+        return customError(error.toString(), 500);
+    }
+    
+}
 
 const add = async (product, files, userId) => {
     // check
-    const existingProduct = await Product.findOne({ title: product.title });
-    if (existingProduct) customError("TITLE_MUST_BE_UNIQUE", 400);
-
     const loggedUser = await User.findById(userId);
     if (!loggedUser) customError("UNAUTHORIZED", 401);
     if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
@@ -45,16 +52,19 @@ const add = async (product, files, userId) => {
     }
 
     isEmpty(product);
-    const newProduct = new Product({ ...product, photos: photos, photosPublicId: photosPublicId });
-    return await newProduct.save();
-};
+
+    try{
+        const newProduct = new Product({...product, photos: photos, photosPublicId: photosPublicId});
+        return await newProduct.save();
+    } catch(error) {
+        return customError(error.toString(), 500);
+    }  
+}
+
 
 const edit = async (editedData, id, files, userId) => {
     // check 
     checkId(id);
-
-    const existingProduct = await Product.findOne({ title: editedData.title });
-    if (existingProduct) customError("TITLE_MUST_BE_UNIQUE", 400);
 
     const loggedUser = await User.findById(userId);
     if (!loggedUser) customError("UNAUTHORIZED", 401);
@@ -67,19 +77,22 @@ const edit = async (editedData, id, files, userId) => {
     // check that editedData is not empty
     isEmpty(editedData);
 
-    const photos = productToEdit.photos;
-    const photosPublicId = productToEdit.photosPublicId;
-    if (files.length !== 0) {
-        for (const file of files) {
-            const { path } = file;
-            const result = await cloudinary.uploader.upload(path);
-            photos.push(result.secure_url);
-            photosPublicId.push(result.public_id);
+    try{
+        const photos = productToEdit.photos;
+        const photosPublicId = productToEdit.photosPublicId;
+        if(files.length !== 0){
+            for(const file of files){
+                const { path } = file;
+                const result = await cloudinary.uploader.upload(path);
+                photos.push(result.secure_url);
+                photosPublicId.push(result.public_id);
+            }
         }
-    }
-
-    return await Product.findByIdAndUpdate(id, { ...editedData, photos: photos, photosPublicId: photosPublicId }, { new: true });
-};
+        return await Product.findByIdAndUpdate(id, {...editedData, photos: photos, photosPublicId: photosPublicId}, {new: true});
+    } catch(error) {
+        return customError(error.toString(), 500);
+    } 
+}
 
 const remove = async (id, userId) => {
     // check
@@ -93,11 +106,15 @@ const remove = async (id, userId) => {
     if (!productToDelete) customError("PRODUCT_NOT_FOUND", 404);
 
     const { photosPublicId } = productToDelete;
+    
+    try{
+        photosPublicId.forEach(async(id) => await cloudinary.uploader.destroy(id, function(result) { console.log(result) }));
 
-    photosPublicId.forEach(async (id) => await cloudinary.uploader.destroy(id, function (result) { console.log(result) }));
-
-    return await Product.findByIdAndDelete(id);
-};
+        return await Product.findByIdAndDelete(id);
+    } catch(error) {
+        return customError(error.toString(), 500);
+    }  
+}
 
 module.exports = {
     add,
