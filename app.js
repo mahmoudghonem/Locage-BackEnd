@@ -24,7 +24,6 @@ const routes = require('./routes');
 const app = express();
 
 //add api logger for development environment
-if(process.env.NODE_ENV == 'development')
 app.use(morgan('dev'));
 
 //Whitelist routes to access backend 
@@ -97,19 +96,16 @@ app.use((error, req, res, next) => {
 // };
 
 //create express server
-if(process.env.NODE_ENV == 'development')
 var httpServer = http.createServer(app);
-
 var httpsServer = https.createServer(app);
 
 const HTTPPORT = process.env.NODE_ENV == 'development' ? 8080 : process.env.HTTPPORT;
 const HTTPSPORT = process.env.NODE_ENV == 'development' ? 8443 : process.env.HTTPSPORT;
 
-if(process.env.NODE_ENV == 'development'){
 httpServer.listen(HTTPPORT, () => {
     console.log(`Http Server Is Working On Port ${HTTPPORT}`);
 });
-}
+
 
 httpsServer.listen(HTTPSPORT, () => {
     console.log(`Https Is Working On Port ${HTTPSPORT}`);
