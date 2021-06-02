@@ -66,9 +66,12 @@ function shouldCompress(req, res) {
     // fallback to standard filter function
     return compression.filter(req, res);
 }
+
 // set up a route to redirect http to https
-app.get('*', function (req, res) {
-    res.redirect('https://' + req.headers.host + req.url);
+app.get('*', function (req, res, next) {
+    if (process.env.NODE_ENV == 'production')
+        res.redirect('https://' + req.headers.host + req.url);
+    next();
 });
 
 //set init route link to /api/v1/---
