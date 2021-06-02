@@ -150,7 +150,7 @@ const update = async (req, res) => {
     if (loadedUser.email !== body.email && await findOneUserByEmail(body.email))
         new CustomError('EMAIL_ALREADY_REGISTER', 401);
 
-    await User.findByIdAndUpdate({ _id: userId }, body).then((result) => {
+    await User.findOneAndUpdate({ _id: userId }, body).then((result) => {
         return res.status(200).json({ message: "ACCOUNT_UPDATED", result: result });
     }).catch((error) => {
         CustomError(error.toString(), 400);
