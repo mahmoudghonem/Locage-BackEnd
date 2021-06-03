@@ -88,6 +88,11 @@ const registerValidationRules = () => {
             .isLength({ min: 8 })
             .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
 
+        body('role')
+            .isEmpty()
+            .withMessage('CANNOT_SET_ROLE'),
+
+
     ];
 };
 
@@ -118,6 +123,9 @@ const updateValidationRules = () => {
             .isLength({ min: 8 })
             .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
 
+        body('role')
+            .isEmpty()
+            .withMessage('CANNOT_SET_ROLE'),
     ];
 };
 

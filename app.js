@@ -67,12 +67,19 @@ function shouldCompress(req, res) {
     return compression.filter(req, res);
 }
 
+// set up a route to redirect http to https
+// app.use(function(request, response, next) {
+//     if (process.env.NODE_ENV != 'development' && !request.secure) {
+//        return response.redirect("https://" + request.headers.host + request.url);
+//     }
+//     next();
+// });
+
 //set init route link to /api/v1/---
 app.use('/api/v1', routes);
 
 //set error handler middleware to catch any Throw Custom Error
 app.use((error, req, res, next) => {
-    console.log(error);
     const status = error.statusCode;
     const message = error.message;
     res.status(status).json({ message: message });
