@@ -15,6 +15,10 @@ function roleIsVendor (loggedUser){
     if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
 }
 
+// check the vendor's store Id is the same in product
+function storeIdMatch (store, product) {
+    if(store._id !== product.vendorId) customError("ACCESS_DENIED", 401);
+}
 
 const getProducts = async (req) => {
     // pagination
@@ -85,9 +89,11 @@ const edit = async (editedData, id, files, userId) => {
     userIsLoggedin (loggedUser);
     roleIsVendor(loggedUser);
 
-    // check that product exists
     const productToEdit = await Product.findById(id);
+    const store = await Store.findOne({ userId: userId });
+
     if (!productToEdit) customError("PRODUCT_NOT_FOUND", 404);
+    storeIdMatch(store, productToEdit);
 
     // check that editedData is not empty
     isEmpty(editedData);
