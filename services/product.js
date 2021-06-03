@@ -125,7 +125,10 @@ const remove = async (id, userId) => {
     roleIsVendor(loggedUser);
 
     const productToDelete = await Product.findById(id);
+    const store = await Store.findOne({ userId: userId });
+
     if (!productToDelete) customError("PRODUCT_NOT_FOUND", 404);
+    storeIdMatch(store, productToDelete);
 
     const { photosPublicId } = productToDelete;
     
