@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { add, getProducts, getProduct, edit, remove } = require('../services/product');
-//const upload = require('../middlewares/multipleImageUpload');
 const upload = require("../middlewares/image");
 //const { validate, addValidationRules } = require('../middlewares/productValidator');
 const authjwt = require("../middlewares/authjwt");
