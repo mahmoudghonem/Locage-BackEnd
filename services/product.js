@@ -5,6 +5,16 @@ const Store = require('../models/store');
 const { checkId, isEmpty } = require('../functions/checks');
 const cloudinary = require("../functions/cloudinary");
 
+// check that user is logged-in
+function userIsLoggedin (loggedUser) {
+    if (!loggedUser) customError("UNAUTHORIZED", 401);
+}
+
+// check the role of the user logged-in is "vendor"
+function roleIsVendor (loggedUser){
+    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
+}
+
 
 const getProducts = async (req) => {
     // pagination
@@ -38,8 +48,9 @@ const getProduct = async (id) => {
 const add = async (product, files, userId) => {
     // check
     const loggedUser = await User.findById(userId);
-    if (!loggedUser) customError("UNAUTHORIZED", 401);
-    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
+
+    userIsLoggedin(loggedUser);
+    roleIsVendor(loggedUser);
 
     const photos = [];
     const photosPublicId = [];
@@ -70,8 +81,9 @@ const edit = async (editedData, id, files, userId) => {
     checkId(id);
 
     const loggedUser = await User.findById(userId);
-    if (!loggedUser) customError("UNAUTHORIZED", 401);
-    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
+
+    userIsLoggedin (loggedUser);
+    roleIsVendor(loggedUser);
 
     // check that product exists
     const productToEdit = await Product.findById(id);
@@ -102,8 +114,9 @@ const remove = async (id, userId) => {
     checkId(id);
 
     const loggedUser = await User.findById(userId);
-    if (!loggedUser) customError("UNAUTHORIZED", 401);
-    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
+
+    userIsLoggedin (loggedUser);
+    roleIsVendor(loggedUser);
 
     const productToDelete = await Product.findById(id);
     if (!productToDelete) customError("PRODUCT_NOT_FOUND", 404);
