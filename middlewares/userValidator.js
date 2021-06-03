@@ -75,12 +75,7 @@ const registerValidationRules = () => {
             .withMessage("LASTNAME_REQUIRED")
             .isLength({ min: 3, max: 30 })
             .withMessage('LASTNAME_MUST_3_CHARACTERS_MIN_30_CHARACTERS_MAX'),
-        // role Validation
-        body('role')
-            .optional()
-            .notEmpty()
-            .withMessage("USER_ROLE_REQUIRED"),
-
+            
         // Password Validation must be at least 8 chars long
         body('password')
             .notEmpty()
