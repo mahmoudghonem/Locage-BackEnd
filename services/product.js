@@ -20,6 +20,11 @@ function storeIdMatch (store, product) {
     if(store._id !== product.vendorId) customError("ACCESS_DENIED", 401);
 }
 
+// product exists check
+function productExists (product){
+    if (!product) customError("PRODUCT_NOT_FOUND", 404);
+}
+
 const getProducts = async (req) => {
     // pagination
     const page = parseInt(req.query.page) || 1;
@@ -41,7 +46,7 @@ const getProduct = async (id) => {
 
     try{
         const product = await Product.findById(id);
-        if(!product) customError("PRODUCT_NOT_FOUND", 404);
+        productExists(product);
         return product;
     } catch(error) {
         return customError(error.toString(), 500);
@@ -85,14 +90,12 @@ const edit = async (editedData, id, files, userId) => {
     checkId(id);
 
     const loggedUser = await User.findById(userId);
-
-    userIsLoggedin (loggedUser);
-    roleIsVendor(loggedUser);
-
     const productToEdit = await Product.findById(id);
     const store = await Store.findOne({ userId: userId });
 
-    if (!productToEdit) customError("PRODUCT_NOT_FOUND", 404);
+    userIsLoggedin (loggedUser);
+    roleIsVendor(loggedUser);
+    productExists(productToEdit);
     storeIdMatch(store, productToEdit);
 
     // check that editedData is not empty
@@ -120,14 +123,12 @@ const remove = async (id, userId) => {
     checkId(id);
 
     const loggedUser = await User.findById(userId);
-
-    userIsLoggedin (loggedUser);
-    roleIsVendor(loggedUser);
-
     const productToDelete = await Product.findById(id);
     const store = await Store.findOne({ userId: userId });
 
-    if (!productToDelete) customError("PRODUCT_NOT_FOUND", 404);
+    userIsLoggedin (loggedUser);
+    roleIsVendor(loggedUser);
+    storeIdMatch(store, productToDelete);
     storeIdMatch(store, productToDelete);
 
     const { photosPublicId } = productToDelete;
