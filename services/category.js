@@ -7,18 +7,18 @@ const customError = require('../functions/errorHandler');
 
 const loggedUserCheck = async (userId) => {
     const loggedUser = await User.findById(userId);
-    if(!loggedUser) customError("UNAUTHORIZED_NOTLOGGEDIN", 401);
+    if(!loggedUser) customError("UNAUTHORIZED", 401);
     if(loggedUser.role !== "admin") customError("UNAUTHORIZED", 401);
 }
 
 const categoryExisitsCheck = async (categoryId) => {
-    if(!(await Category.findById(categoryId))) customError("CATEGORY_NOTFOUND", 404);
+    if(!(await Category.findById(categoryId))) customError("CATEGORY_NOT_FOUND", 404);
 }
 
 const subcategoryExisitsCheck = async (subcategoryId, categoryId) => {
     const subcategory = await Subcategory.findById(subcategoryId);
-    if(!subcategory) customError("SUBCATEGORY_NOTFOUND", 404);
-    if(subcategory.categoryId !== categoryId) customError("SUBCATEGORY_NOTFOUND", 404);
+    if(!subcategory) customError("SUBCATEGORY_NOT_FOUND", 404);
+    if(subcategory.categoryId !== categoryId) customError("SUBCATEGORY_NOT_FOUND", 404);
 }
 
 const retrieveAllCategories = async () => {
