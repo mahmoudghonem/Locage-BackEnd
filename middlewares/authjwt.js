@@ -9,15 +9,15 @@ const auth = async (req, res, next) => {
             new CustomError('AUTHORIZATION_HEADER_REQUIRED', 401);
         try {
             const token = authorization.split(" ")[1];
-            let decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECERT);
+            let decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
             if (!decodedToken)
-                new CustomError('NOT_AUTHORIZED', 401);
+                new CustomError('UNAUTHORIZED', 401);
 
             const { id } = decodedToken;
             req.userId = id;
             next();
         } catch (e) {
-            new CustomError('NOT_AUTHORIZED', 401);
+            new CustomError('UNAUTHORIZED', 401);
         }
     } catch (e) {
         next(e);

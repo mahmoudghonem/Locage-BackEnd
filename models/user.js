@@ -130,7 +130,7 @@ UserSchema.methods.generateTokenAccess = async function () {
             email: this.email,
             id: this.id
         },
-            process.env.ACCESS_TOKEN_SECERT,
+            process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '1h' }
         );
         return token;

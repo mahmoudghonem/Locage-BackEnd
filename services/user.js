@@ -145,7 +145,7 @@ const update = async (req, res) => {
     const loadedUser = await findOneUserById(userId);
 
     if (!loadedUser)
-        new CustomError('USER_NOT_FOUND', 404);
+        new CustomError('UNAUTHORIZED', 401);
 
     if (loadedUser.email !== body.email && await findOneUserByEmail(body.email))
         new CustomError('EMAIL_ALREADY_REGISTER', 401);
