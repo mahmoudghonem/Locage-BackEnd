@@ -25,6 +25,13 @@ const CartSchema = new Schema({
 CartSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
+
+//middleware to delete all user account information
+CartSchema.pre('remove', async function (next) {
+  // Remove all the cartItems docs that reference the removed person.
+  await this.model('CartItem').remove({ cartId: this._id }, next);
+});
+
 const cart = mongoose.model('Cart', CartSchema);
 
 module.exports = cart;

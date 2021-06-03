@@ -20,5 +20,12 @@ const WishListSchema = new Schema({
 WishListSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
-const wishlists = mongoose.model('WishLists', WishListSchema);
+
+//middleware to delete all user account information
+WishListSchema.pre('remove', async function (next) {
+    // Remove all the wishListItems docs that reference the removed person.
+    await this.model('WishListItem').remove({ wishListId: this._id }, next);
+});
+
+const wishlists = mongoose.model('WishList', WishListSchema);
 module.exports = wishlists;

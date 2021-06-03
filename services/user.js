@@ -164,6 +164,24 @@ const update = async (req, res) => {
 
 };
 
+const deleteAccount = async (req, res) => {
+    const userId = req.userId;
+    const { id } = req.params;
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+    const loadedUser = await findOneUserById(userId);
+    if (!loadedUser)
+        new CustomError('UNAUTHORIZED', 401);
+
+    await loadedUser.remove().then((result) => {
+        return res.status(200).json({ message: "ACCOUNT_DELETED", result: result });
+    }).catch((error) => {
+        CustomError(error.toString(), 400);
+
+    });
+
+};
+
 const checkMail = async (req, res) => {
     const body = req.body;
     const loadedUser = await findOneUserByEmail(body.email);
@@ -180,5 +198,6 @@ module.exports = {
     reset,
     recover,
     update,
+    deleteAccount,
     checkMail
 };
