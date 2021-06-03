@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const User = require('../models/user');
 const PaymentMethod = require('../models/paymentMethods');
+const WishList = require('../models/wishList');
 const Cart = require('../models/cart');
 const CustomError = require('../functions/errorHandler');
 const nodemailer = require('nodemailer');
@@ -19,6 +20,7 @@ const findOneUserById = async (id) => {
 const createUserData = async (id) => {
     await PaymentMethod.create({ userId: id });
     await Cart.create({ userId: id });
+    await WishList.create({ userId: id });
 };
 
 //login user and return token

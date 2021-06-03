@@ -61,12 +61,6 @@ const UserSchema = new Schema({
     nationality: {
         type: String
     },
-    wishList: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'products',
-        }
-    ],
     role: {
         type: String,
         enum: ['user', 'admin', 'stuff', 'vendor'],
@@ -75,7 +69,7 @@ const UserSchema = new Schema({
     statusCode: {
         type: Number,
     },
-    isEmailVerfied: {
+    isEmailVerified: {
         type: Boolean,
         default: false
     },
