@@ -5,13 +5,7 @@ const WishListSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'users'
-    },
-    list: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'products',
-        }
-    ],
+    }
 }, {
     toJSON: {
         virtuals: true
