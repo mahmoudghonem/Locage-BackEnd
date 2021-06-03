@@ -5,6 +5,25 @@ const Store = require('../models/store');
 const { checkId, isEmpty } = require('../functions/checks');
 const cloudinary = require("../functions/cloudinary");
 
+// check that user is logged-in
+function userIsLoggedin (loggedUser) {
+    if (!loggedUser) customError("UNAUTHORIZED", 401);
+}
+
+// check the role of the user logged-in is "vendor"
+function roleIsVendor (loggedUser){
+    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
+}
+
+// check the vendor's store Id is the same in product
+function storeIdMatch (store, product) {
+    if(store._id !== product.vendorId) customError("ACCESS_DENIED", 401);
+}
+
+// product exists check
+function productExists (product){
+    if (!product) customError("PRODUCT_NOT_FOUND", 404);
+}
 
 const getProducts = async (req) => {
     // pagination
@@ -27,7 +46,7 @@ const getProduct = async (id) => {
 
     try{
         const product = await Product.findById(id);
-        if(!product) customError("PRODUCT_NOT_FOUND", 404);
+        productExists(product);
         return product;
     } catch(error) {
         return customError(error.toString(), 500);
@@ -38,8 +57,9 @@ const getProduct = async (id) => {
 const add = async (product, files, userId) => {
     // check
     const loggedUser = await User.findById(userId);
-    if (!loggedUser) customError("UNAUTHORIZED", 401);
-    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
+
+    userIsLoggedin(loggedUser);
+    roleIsVendor(loggedUser);
 
     const photos = [];
     const photosPublicId = [];
@@ -70,12 +90,13 @@ const edit = async (editedData, id, files, userId) => {
     checkId(id);
 
     const loggedUser = await User.findById(userId);
-    if (!loggedUser) customError("UNAUTHORIZED", 401);
-    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
-
-    // check that product exists
     const productToEdit = await Product.findById(id);
-    if (!productToEdit) customError("PRODUCT_NOT_FOUND", 404);
+    const store = await Store.findOne({ userId: userId });
+
+    userIsLoggedin (loggedUser);
+    roleIsVendor(loggedUser);
+    productExists(productToEdit);
+    storeIdMatch(store, productToEdit);
 
     // check that editedData is not empty
     isEmpty(editedData);
@@ -102,11 +123,13 @@ const remove = async (id, userId) => {
     checkId(id);
 
     const loggedUser = await User.findById(userId);
-    if (!loggedUser) customError("UNAUTHORIZED", 401);
-    if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
-
     const productToDelete = await Product.findById(id);
-    if (!productToDelete) customError("PRODUCT_NOT_FOUND", 404);
+    const store = await Store.findOne({ userId: userId });
+
+    userIsLoggedin (loggedUser);
+    roleIsVendor(loggedUser);
+    storeIdMatch(store, productToDelete);
+    storeIdMatch(store, productToDelete);
 
     const { photosPublicId } = productToDelete;
     

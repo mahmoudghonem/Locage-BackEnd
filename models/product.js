@@ -14,7 +14,6 @@ const ProductSchema = new Schema({
     type: String,
     required: true,
     maxlength: 500,
-    minlength: 50,
   },
   price: {
     required: true,
@@ -61,6 +60,16 @@ const ProductSchema = new Schema({
   unitsInOrder: {
     type: Number,
   },
+  discount: {
+    type: Number
+  },
+  discountDate: {
+    type: String
+  },
+  productSpecifications: {
+    required: true,
+    type: String,
+  }
 },{
     toJSON: {
       virtuals: true,
