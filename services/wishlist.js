@@ -14,10 +14,7 @@ const findOneUserById = async (id) => {
 };
 
 const checkIfProductAlreadyIn = async (wishListId, productId) => {
-    const fondedItem = await WishListItem.findOne({ wishListId: wishListId, productId: productId }).exec();
-    if (fondedItem)
-        new CustomError('ALREADY_ADDED', 400);
-    return fondedItem;
+    return await WishListItem.findOne({ wishListId: wishListId, productId: productId }).exec();
 };
 
 
@@ -76,7 +73,9 @@ const addWishList = async (req, res) => {
         productId: product._id
     };
 
-    await checkIfProductAlreadyIn(wishList._id, product._id);
+    const fondedItem = await checkIfProductAlreadyIn(wishList._id, product._id);
+    if (fondedItem)
+        new CustomError('ALREADY_ADDED', 400);
 
     const wishListItem = new WishListItem(body);
     await wishListItem.save(wishListItem).then(() => {
@@ -95,6 +94,14 @@ const removeWishList = async (req, res) => {
 
     await findOneUserById(userId);
     const wishList = await WishList.findOne({ userId: userId }).exec();
+
+    const product = await Product.findById(productId).exec();
+    if (!product)
+        new CustomError('PRODUCT_NOT_FOUND', 404);
+
+    const fondedItem = await checkIfProductAlreadyIn(wishList._id, productId);
+    if (!fondedItem)
+        new CustomError('WISH_LIST_ITEM_NOT_FOUND', 400);
 
     await WishListItem.findOneAndRemove({ wishListId: wishList._id, productId: productId }).then((result) => {
         return res.status(200).json({ message: "REMOVED_SUCCESSFULLY", result: result });
