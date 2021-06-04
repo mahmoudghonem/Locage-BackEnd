@@ -8,7 +8,7 @@ const WishListItem = require('../models/wishListItem');
 const findOneUserById = async (id) => {
     const loadedUser = await User.findOne({ _id: id }).exec();
     if (!loadedUser)
-        new CustomError('USER_NOT_FOUND', 404);
+        new CustomError('UNAUTHORIZED', 401);
 
     return loadedUser;
 };
@@ -76,7 +76,7 @@ const addWishList = async (req, res) => {
         productId: product._id
     };
 
-    await checkIfProductAlreadyIn();
+    await checkIfProductAlreadyIn(wishList._id, product._id);
 
     const wishListItem = new WishListItem(body);
     await wishListItem.save(wishListItem).then(() => {
@@ -113,8 +113,8 @@ const emptyWishList = async (req, res) => {
     await findOneUserById(userId);
     const wishList = await WishList.findOne({ userId: userId }).exec();
 
-    await WishListItem.deleteMany({ wishListId: wishList._id }).then((result) => {
-        return res.status(200).json({ message: "REMOVED_ALL_SUCCESSFULLY", result: result });
+    await WishListItem.deleteMany({ wishListId: wishList._id }).then(() => {
+        return res.status(200).json({ message: "REMOVED_ALL_SUCCESSFULLY" });
     }).catch((err) => {
         new CustomError(err.toString());
     });
