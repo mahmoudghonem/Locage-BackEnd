@@ -14,12 +14,11 @@
 
 **Description ..... (Not Written Yet) ... :satisfied:**
 
-- Introduction
 
 
 
 
-Follow Our Team
+# Follow Our Spaghetti Team
 **Mahmoud Ghonem** | **Salma Rakha** | **Abrar Yehia** 
 ------------ | ------------ | ------------  
 ![GitHub followers](https://img.shields.io/github/followers/mahmoudghonem?style=social) | ![GitHub followers](https://img.shields.io/github/followers/salmarakha?style=social)  | ![GitHub followers](https://img.shields.io/github/followers/abraryahia?style=social) 
