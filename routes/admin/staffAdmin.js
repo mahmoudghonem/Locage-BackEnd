@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { stuffDetails, oneStuffDetails, adminDetails, oneAdminDetails, moderatorDetails, oneModeratorDetails } = require('../../services/admin/stuffAdmin');
+const { stuffDetails, oneStuffDetails, adminDetails, oneAdminDetails, moderatorDetails, oneModeratorDetails } = require('../../services/admin/staffAdmin');
 const authjwt = require('../../middlewares/authjwt');
 const { adminRole } = require('../../middlewares/roles');
 
@@ -9,11 +9,11 @@ const { adminRole } = require('../../middlewares/roles');
 router.get('/admins', authjwt, adminRole, getAllAdmins);
 router.get('/admins/:id', authjwt, adminRole, getOneAdmin);
 
-//Stuff only details (role access admin)
-router.get('/stuff', authjwt, adminRole, getAllStuff);
-router.get('/stuff/:id', authjwt, adminRole, getOneStuff);
+//Staff only details (role access admin)
+router.get('/staff', authjwt, adminRole, getAllStuff);
+router.get('/staff/:id', authjwt, adminRole, getOneStuff);
 
-//All Admins And Stuff only details (role access admin)
+//All Admins And Staff only details (role access admin)
 router.get('/moderators', authjwt, adminRole, getAllModerators);
 router.get('/moderators/:id', authjwt, adminRole, getOneModerator);
 

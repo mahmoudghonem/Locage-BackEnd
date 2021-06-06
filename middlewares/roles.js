@@ -28,12 +28,12 @@ const adminRole = async (req, res, next) => {
 };
 
 //check authorization level with auth user (stuff or admin access)
-const stuffRole = async (req, res, next) => {
+const staffRole = async (req, res, next) => {
     try {
         try {
             const id = req.userId;
             const stuffUser = await getUserById(id);
-            if (stuffUser.role != 'stuff' && stuffUser.role != 'admin')
+            if (stuffUser.role != 'staff' && stuffUser.role != 'admin')
                 new CustomError('UNAUTHORIZED', 401);
 
             req.user = stuffUser;
@@ -68,6 +68,6 @@ const vendorRole = async (req, res, next) => {
 
 module.exports = {
     adminRole,
-    stuffRole,
+    staffRole,
     vendorRole,
 };
