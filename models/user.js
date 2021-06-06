@@ -90,6 +90,10 @@ const UserSchema = new Schema({
         virtuals: true
     },
     toObject: {
+        transform: (doc, ret) => {
+            delete ret.password;
+            return ret;
+        },
         virtuals: true
     },
     versionKey: false,
