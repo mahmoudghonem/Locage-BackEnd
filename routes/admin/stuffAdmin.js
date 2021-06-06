@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { stuffDetails, oneStuffDetails, adminDetails, oneAdminDetails, moderatorDetails, oneModeratorDetails } = require('../../services/admin');
+const { stuffDetails, oneStuffDetails, adminDetails, oneAdminDetails, moderatorDetails, oneModeratorDetails } = require('../../services/admin/stuffAdmin');
 const authjwt = require('../../middlewares/authjwt');
 const { adminRole } = require('../../middlewares/roles');
 

@@ -1,24 +1,5 @@
-const User = require('../models/user');
-const CustomError = require('../functions/errorHandler');
-
-//get all users details from database to admin dashboard
-const usersDetails = async (req, res) => {
-    await User.find({ role: 'user' }).then(users => {
-        return res.status(200).json({ users: users });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
-};
-
-//get one user details from database to admin dashboard
-const oneUserDetails = async (req, res) => {
-    const { id } = req.params;
-    await User.findById({ $and: [{ _id: id }, { role: 'user' }] }).then(user => {
-        return res.status(200).json({ user: user });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
-};
+const User = require('../../models/user');
+const CustomError = require('../../functions/errorHandler');
 
 //get all admin details from database to admin dashboard
 const adminDetails = async (req, res) => {
@@ -74,32 +55,9 @@ const oneModeratorDetails = async (req, res) => {
     });
 };
 
-//get all vendor details from database to admin dashboard
-const vendorDetails = async (req, res) => {
-    await User.find({ role: 'vendor' }).then(vendors => {
-        return res.status(200).json({ vendors: vendors });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
-};
-//get one vendor details from database to admin dashboard
-const oneVendorDetails = async (req, res) => {
-    const { id } = req.params;
-    await User.findById({ $and: [{ _id: id }, { role: 'vendor' }] }).then(vendor => {
-        return res.status(200).json({ vendor: vendor });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
-};
-
-
 module.exports = {
-    usersDetails,
-    oneUserDetails,
     stuffDetails,
     oneStuffDetails,
-    vendorDetails,
-    oneVendorDetails,
     adminDetails,
     oneAdminDetails,
     moderatorDetails,

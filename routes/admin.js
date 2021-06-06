@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const adminUserRouter = require('./admin/users');
-const adminStuffRouter = require('./admin/stuff');
-const adminVendorRouter = require('./admin/vendor');
+const adminUserRouter = require('./admin/usersAdmin');
+const adminStuffRouter = require('./admin/stuffAdmin');
+const adminVendorRouter = require('./admin/vendorAdmin');
 
 // TODO: Track and Management OF all Orders (Single and Multi Select) and Get Summaries
 /*
