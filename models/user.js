@@ -34,6 +34,7 @@ const UserSchema = new Schema({
     phoneNumber: {
         type: String,
         unique: true,
+        sparse: true,
         validator: {
             validate: function (v) {
                 return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(v);
@@ -61,12 +62,6 @@ const UserSchema = new Schema({
     nationality: {
         type: String
     },
-    wishList: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'products',
-        }
-    ],
     role: {
         type: String,
         enum: ['user', 'admin', 'stuff', 'vendor'],
@@ -75,7 +70,7 @@ const UserSchema = new Schema({
     statusCode: {
         type: Number,
     },
-    isEmailVerfied: {
+    isEmailVerified: {
         type: Boolean,
         default: false
     },
@@ -95,6 +90,10 @@ const UserSchema = new Schema({
         virtuals: true
     },
     toObject: {
+        transform: (doc, ret) => {
+            delete ret.password;
+            return ret;
+        },
         virtuals: true
     },
     versionKey: false,
@@ -111,6 +110,7 @@ UserSchema.pre('save', async function (next) {
     this.password = await argon.hash(this.password);
     next();
 });
+
 //middleware to hash password before update function called if updated password
 UserSchema.pre('findOneAndUpdate', async function preSave(next) {
     if (!this._update.password) {
@@ -119,6 +119,17 @@ UserSchema.pre('findOneAndUpdate', async function preSave(next) {
     this._update.password = await argon.hash(this._update.password);
     next();
 });
+
+//middleware to delete all user account information
+UserSchema.pre('remove', async function (next) {
+    // Remove all the Payments docs that reference the removed person.
+    await this.model('PaymentMethod').remove({ userId: this._id }, next);
+    // Remove all the WishList docs that reference the removed person.
+    await this.model('WishList').remove({ userId: this._id }, next);
+    // Remove all the Cart docs that reference the removed person.
+    await this.model('Cart').remove({ userId: this._id }, next);
+});
+
 //function to verfiy hashed password with entered return true if equals
 UserSchema.methods.validatePassword = async function (password) {
     return await argon.verify(this.password, password);
@@ -130,7 +141,7 @@ UserSchema.methods.generateTokenAccess = async function () {
             email: this.email,
             id: this.id
         },
-            process.env.ACCESS_TOKEN_SECERT,
+            process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '1h' }
         );
         return token;

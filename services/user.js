@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const User = require('../models/user');
 const PaymentMethod = require('../models/paymentMethods');
+const WishList = require('../models/wishList');
 const Cart = require('../models/cart');
 const CustomError = require('../functions/errorHandler');
 const nodemailer = require('nodemailer');
@@ -19,6 +20,7 @@ const findOneUserById = async (id) => {
 const createUserData = async (id) => {
     await PaymentMethod.create({ userId: id });
     await Cart.create({ userId: id });
+    await WishList.create({ userId: id });
 };
 
 //login user and return token
@@ -145,7 +147,7 @@ const update = async (req, res) => {
     const loadedUser = await findOneUserById(userId);
 
     if (!loadedUser)
-        new CustomError('USER_NOT_FOUND', 404);
+        new CustomError('UNAUTHORIZED', 401);
 
     if (loadedUser.email !== body.email && await findOneUserByEmail(body.email))
         new CustomError('EMAIL_ALREADY_REGISTER', 401);
@@ -155,6 +157,24 @@ const update = async (req, res) => {
     }
     await User.findOneAndUpdate({ _id: userId }, body).then((result) => {
         return res.status(200).json({ message: "ACCOUNT_UPDATED", result: result });
+    }).catch((error) => {
+        CustomError(error.toString(), 400);
+
+    });
+
+};
+
+const deleteAccount = async (req, res) => {
+    const userId = req.userId;
+    const { id } = req.params;
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+    const loadedUser = await findOneUserById(userId);
+    if (!loadedUser)
+        new CustomError('UNAUTHORIZED', 401);
+
+    await loadedUser.remove().then((result) => {
+        return res.status(200).json({ message: "ACCOUNT_DELETED", result: result });
     }).catch((error) => {
         CustomError(error.toString(), 400);
 
@@ -178,5 +198,6 @@ module.exports = {
     reset,
     recover,
     update,
+    deleteAccount,
     checkMail
 };

@@ -2,6 +2,8 @@ const express = require('express');
 const CustomError = require('../functions/errorHandler');
 const router = express.Router();
 const userRouter = require('./user');
+const adminRouter = require('./admin');
+const wishlistRouter = require('./wishlist');
 const storeRouter = require('./store');
 const productRouter = require('./product');
 const paymentRouter = require('./payment');
@@ -10,12 +12,18 @@ const subcategoryRouter = require('./subcategory');
 
 router.use('/users', userRouter);
 
+router.use('/wishlist', wishlistRouter);
+
+router.use('/admin', adminRouter);
+
 router.use('/stores', storeRouter);
 
 router.use('/products', productRouter);
 
 router.use('/payments', paymentRouter);
+
 router.use('/category', categoryRouter);
+
 router.use('/subcategory', subcategoryRouter);
 
 

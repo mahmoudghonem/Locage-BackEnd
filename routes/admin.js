@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const authjwt = require('../middlewares/authjwt');
+const adminUserRouter = require('./admin/usersAdmin');
+const adminStuffRouter = require('./admin/stuffAdmin');
+const adminVendorRouter = require('./admin/vendorAdmin');
 
 // TODO: Track and Management OF all Orders (Single and Multi Select) and Get Summaries
 /*
@@ -27,6 +29,14 @@ you Can view the Customers Details to Reach them to complete their orders.
 // TODO: Track and Management of all Customers (Single and Multi Select) (Edit , Delete)
 // TODO: Track and Management of all Discount Codes
 // TODO: Analytics
+
+// MAIN REQUIREMENTS Manage Users
+router.use(adminUserRouter);
+
+router.use(adminStuffRouter);
+
+router.use(adminVendorRouter);
+
 
 
 module.exports = router;

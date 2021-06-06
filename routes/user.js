@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authjwt = require('../middlewares/authjwt');
-const { register, login, reset, recover, update, checkMail } = require('../services/user');
+const { register, login, reset, recover, update, deleteAccount, checkMail } = require('../services/user');
 const { registerValidationRules, resetValidationRules, loginValidationRules, recoverValidationRules, updateValidationRules, validate } = require('../middlewares/userValidator');
 
 
@@ -16,6 +16,8 @@ router.post('/recover/:token', recoverValidationRules(), validate, userRecoverFu
 router.post('/register', registerValidationRules(), validate, userRegisterFun);
 
 router.patch('/:id', authjwt, updateValidationRules(), validate, userUpdateFun);
+
+router.delete('/:id', authjwt, userDeleteFun);
 
 
 //login get request method
@@ -66,6 +68,15 @@ function userRegisterFun(req, res, next) {
 //user update request method
 function userUpdateFun(req, res, next) {
     update(req, res).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+
+//user delete request method
+function userDeleteFun(req, res, next) {
+    deleteAccount(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);

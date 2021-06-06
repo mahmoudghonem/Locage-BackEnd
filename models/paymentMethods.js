@@ -20,5 +20,14 @@ const PaymentMethodsSchema = new Schema({
 PaymentMethodsSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
-const paymentmethods = mongoose.model('PaymentMethods', PaymentMethodsSchema);
+
+//middleware to delete all user account information
+PaymentMethodsSchema.pre('remove', async function (next) {
+    // Remove all the paymentInformation docs that reference the removed person.
+    await this.model('BankAccount').remove({ paymentId: this._id }, next);
+    // Remove all the paymentInformation docs that reference the removed person.
+    await this.model('CreditCard').remove({ paymentId: this._id }, next);
+});
+
+const paymentmethods = mongoose.model('PaymentMethod', PaymentMethodsSchema);
 module.exports = paymentmethods;

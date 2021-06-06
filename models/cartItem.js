@@ -29,9 +29,11 @@ const CartItemSchema = new Schema({
   versionKey: false,
   collection: "cartItems",
 });
+
 CartItemSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
+
 const cartItem = mongoose.model("CartItem", CartItemSchema);
 
 module.exports = cartItem;
