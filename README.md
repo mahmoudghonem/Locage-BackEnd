@@ -14,12 +14,16 @@
 **You Can Access Front-End Repo From Here (...) [GitHub](http://)**
 
 **Description ..... (Not Written Yet) ... (Stay Alert) :satisfied:**
-# Introduction
+##### Table of Contents  
+* [Introduction](#introduction)
+* [Team](#team)  
+
+### Introduction
 
 
+### Team
 
 
-# Follow Our Spaghetti Team
 **Mahmoud Ghonem** | **Salma Rakha** | **Abrar Yehia** 
 ------------ | ------------ | ------------  
 ![GitHub followers](https://img.shields.io/github/followers/mahmoudghonem?style=social) | ![GitHub followers](https://img.shields.io/github/followers/salmarakha?style=social)  | ![GitHub followers](https://img.shields.io/github/followers/abraryahia?style=social) 
@@ -27,7 +31,8 @@
 
 **Mohamed Serag** | **Dina Wahied** | **Nada Tayel**
 ------------ | ------------ | ------------  
-
+![GitHub followers](https://img.shields.io/github/followers/mohamedosamaserag?style=social) |  | ![GitHub followers](https://img.shields.io/github/followers/nadatayel?style=social) 
+![Twitter Follow](https://img.shields.io/twitter/follow/dev_serag?style=social) |  | ![Twitter Follow](https://img.shields.io/twitter/follow/nada_tayel?style=social)
 
 
 

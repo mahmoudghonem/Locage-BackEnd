@@ -8,6 +8,7 @@ const getUserById = async (id) => {
     return user;
 };
 
+//check authorization level with auth user (admin access only)
 const adminRole = async (req, res, next) => {
     const id = req.userId;
     const adminUser = await getUserById(id);
@@ -18,6 +19,7 @@ const adminRole = async (req, res, next) => {
     next();
 };
 
+//check authorization level with auth user (stuff or admin access)
 const stuffRole = async (req, res, next) => {
     const id = req.userId;
     const stuffUser = await getUserById(id);
@@ -28,6 +30,7 @@ const stuffRole = async (req, res, next) => {
     next();
 };
 
+//check authorization level with auth user (vendor access only)
 const vendorRole = async (req, res, next) => {
     const id = req.userId;
     const vendorUser = await getUserById(id);
