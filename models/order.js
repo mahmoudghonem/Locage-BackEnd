@@ -7,16 +7,24 @@ const OrderSchema = new Schema({
         default: 0,
         required: true
     },
-    statusCode: {
-        type: Number,
+    status: {
+        type: String,
+        enum: ['processing', 'preparing', 'shipped', 'pickedup'],
         required: true
     },
     comment: {
         type: String
     },
+    totalProducts: {
+        type: Number
+    },
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'users',
+    },
+    createAt: {
+        type: Date,
+        default: Date.now
     }
 }, {
     toJSON: {
