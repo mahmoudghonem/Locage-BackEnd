@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminUserRouter = require('./admin/usersAdmin');
-const adminStuffRouter = require('./admin/staffAdmin');
+const adminStaffRouter = require('./admin/staffAdmin');
 const adminVendorRouter = require('./admin/vendorAdmin');
 
 // TODO: Track and Management OF all Orders (Single and Multi Select) and Get Summaries
@@ -26,14 +26,14 @@ As a Customers Creates and orders and leaves without Completing the order.
 you Can view the Customers Details to Reach them to complete their orders.
 */
 // TODO: Track and Management OF all Products (Single and Multi Select) (Delete) and Get Summaries  (Why Admin Edit Store Products)
-// TODO: Track and Management of all Customers (Single and Multi Select) (Edit , Delete)
 // TODO: Track and Management of all Discount Codes
+// TODO: Track and Management of all Compliments 
 // TODO: Analytics
 
 // MAIN REQUIREMENTS Manage Users
 router.use(adminUserRouter);
 
-router.use(adminStuffRouter);
+router.use(adminStaffRouter);
 
 router.use(adminVendorRouter);
 

@@ -5,7 +5,7 @@ const authjwt = require('../../middlewares/authjwt');
 const { staffRole } = require('../../middlewares/roles');
 
 // get details
-//customers only details (role access stuff and admin)
+//customers only details (role access staff and admin)
 router.get('/users', authjwt, staffRole, getAllUsers);
 router.get('/users/:id', authjwt, staffRole, getOneUser);
 router.delete('/users/:id', authjwt, staffRole, deleteOneUser);

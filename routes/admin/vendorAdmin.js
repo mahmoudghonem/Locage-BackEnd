@@ -5,7 +5,7 @@ const authjwt = require('../../middlewares/authjwt');
 const { staffRole } = require('../../middlewares/roles');
 
 
-//Vendors only details (role access stuff and admin)
+//Vendors only details (role access staff and admin)
 router.get('/vendors', authjwt, staffRole, getAllVendors);
 router.get('/vendors/:id', authjwt, staffRole, getOneVendor);
 
