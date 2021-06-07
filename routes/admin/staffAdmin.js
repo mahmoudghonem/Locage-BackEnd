@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { staffDetails, oneStaffDetails, makeAccountSubAdmin, adminDetails, oneAdminDetails, moderatorDetails, oneModeratorDetails } = require('../../services/admin/staffAdmin');
+const { staffDetails, oneStaffDetails, makeAccountSubAdmin,removeSubAdminRole, adminDetails, oneAdminDetails, moderatorDetails, oneModeratorDetails } = require('../../services/admin/staffAdmin');
 const authjwt = require('../../middlewares/authjwt');
 const { adminRole } = require('../../middlewares/roles');
 
@@ -13,7 +13,8 @@ router.get('/admins/:id', authjwt, adminRole, getOneAdmin);
 router.get('/staff', authjwt, adminRole, getAllStaff);
 router.route('/staff/:id')
     .get(authjwt, adminRole, getOneStaff)
-    .patch(authjwt, adminRole, makeSubAdmin);
+    .patch(authjwt, adminRole, makeSubAdmin)
+    .delete(authjwt, adminRole, removeSubAdmin);
 
 //All Admins And Staff only details (role access admin)
 router.get('/moderators', authjwt, adminRole, getAllModerators);
@@ -56,6 +57,14 @@ function getOneStaff(req, res, next) {
 //make account subAdmin request method
 function makeSubAdmin(req, res, next) {
     makeAccountSubAdmin(req, res).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+//remove subAdmin account to user request method
+function removeSubAdmin(req, res, next) {
+    removeSubAdminRole(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);

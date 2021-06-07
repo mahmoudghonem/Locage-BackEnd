@@ -45,6 +45,15 @@ const makeAccountSubAdmin = async (req, res) => {
         new CustomError(err.toString());
     });
 };
+//make one subAdmin account to user
+const removeSubAdminRole = async (req, res) => {
+    const { id } = req.params;
+    await User.findByIdAndUpdate({ _id: id }, { role: 'user' }).then(result => {
+        return res.status(200).json({ result: result });
+    }).catch(err => {
+        new CustomError(err.toString());
+    });
+};
 
 //get all staff and admins details from database to admin dashboard
 const moderatorDetails = async (req, res) => {
@@ -68,6 +77,7 @@ module.exports = {
     staffDetails,
     oneStaffDetails,
     makeAccountSubAdmin,
+    removeSubAdminRole,
     adminDetails,
     oneAdminDetails,
     moderatorDetails,
