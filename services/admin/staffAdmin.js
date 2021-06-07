@@ -12,52 +12,62 @@ const adminDetails = async (req, res) => {
 //get one admin details from database to admin dashboard
 const oneAdminDetails = async (req, res) => {
     const { id } = req.params;
-    await User.findById({ $and: [{ _id: id }, { role: 'admin' }] }).then(admin => {
+    await User.find({ $and: [{ _id: id }, { role: 'admin' }] }).then(admin => {
         return res.status(200).json({ admin: admin });
     }).catch(err => {
         new CustomError(err.toString());
     });
 };
 
-//get all stuff details from database to admin dashboard
-const stuffDetails = async (req, res) => {
-    await User.find({ role: 'stuff' }).then(stuff => {
-        return res.status(200).json({ stuff: stuff });
+//get all staff details from database to admin dashboard
+const staffDetails = async (req, res) => {
+    await User.find({ role: 'staff' }).then(staff => {
+        return res.status(200).json({ staff: staff });
     }).catch(err => {
         new CustomError(err.toString());
     });
 };
-//get one stuff details from database to admin dashboard
-const oneStuffDetails = async (req, res) => {
+//get one staff details from database to admin dashboard
+const oneStaffDetails = async (req, res) => {
     const { id } = req.params;
-    await User.findById({ $and: [{ _id: id }, { role: 'stuff' }] }).then(stuff => {
-        return res.status(200).json({ stuff: stuff });
+    await User.find({ $and: [{ _id: id }, { role: 'staff' }] }).then(staff => {
+        return res.status(200).json({ staff: staff });
+    }).catch(err => {
+        new CustomError(err.toString());
+    });
+};
+//make one user account to subAdmin
+const makeAccountSubAdmin = async (req, res) => {
+    const { id } = req.params;
+    await User.findByIdAndUpdate({ _id: id }, { role: 'staff' }).then(result => {
+        return res.status(200).json({ result: result });
     }).catch(err => {
         new CustomError(err.toString());
     });
 };
 
-//get all stuff and admins details from database to admin dashboard
+//get all staff and admins details from database to admin dashboard
 const moderatorDetails = async (req, res) => {
-    await User.find({ $or: [{ role: 'admin' }, { role: 'stuff' }] }).then(moderators => {
+    await User.find({ $or: [{ role: 'admin' }, { role: 'staff' }] }).then(moderators => {
         return res.status(200).json({ moderators: moderators });
     }).catch(err => {
         new CustomError(err.toString());
     });
 };
-//get one from stuff or admins details from database to admin dashboard
+//get one from staff or admins details from database to admin dashboard
 const oneModeratorDetails = async (req, res) => {
     const { id } = req.params;
-    await User.findById({ $and: [{ _id: id }, { $or: [{ role: 'admin' }, { role: 'stuff' }] }] }).then(stuff => {
-        return res.status(200).json({ stuff: stuff });
+    await User.find({ $and: [{ _id: id }, { $or: [{ role: 'admin' }, { role: 'staff' }] }] }).then(staff => {
+        return res.status(200).json({ staff: staff });
     }).catch(err => {
         new CustomError(err.toString());
     });
 };
 
 module.exports = {
-    stuffDetails,
-    oneStuffDetails,
+    staffDetails,
+    oneStaffDetails,
+    makeAccountSubAdmin,
     adminDetails,
     oneAdminDetails,
     moderatorDetails,
