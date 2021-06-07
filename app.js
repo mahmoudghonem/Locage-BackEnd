@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 //read env variables
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 //required imports
 const express = require('express');
