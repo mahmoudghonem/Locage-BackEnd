@@ -20,6 +20,11 @@ function storeIdMatch (store, product) {
     if(store._id !== product.vendorId) customError("ACCESS_DENIED", 401);
 }
 
+// check that vendor has created a store
+function vendorHasStore (store) {
+    if(!store) customError("STORE_NOTFOUND", 404);
+}
+
 // product exists check
 function productExists (product){
     if (!product) customError("PRODUCT_NOT_FOUND", 404);
@@ -38,6 +43,25 @@ const getProducts = async (req) => {
         return await Product.paginate({}, options);
     } catch(error) {
         return customError(error.toString(), 500);
+    }
+}
+
+const getVendorProducts = async (userId, page, limit) => {
+    const loggedUser = await User.findById(userId);
+    userIsLoggedin (loggedUser);
+    roleIsVendor(loggedUser);
+
+    const store = await Store.findOne({ userId: userId });
+    vendorHasStore(store);
+
+    try{
+        const options = {
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10
+        }
+        return await Product.paginate({ vendorId: store._id }, options);
+    } catch(error){
+        customError(error.toString(), 500);
     }
 }
 
@@ -76,7 +100,7 @@ const add = async (product, files, userId) => {
 
     try{
         const store = await Store.findOne({ userId: userId });
-        if(!store) customError("STORE_NOTFOUND", 404);
+        vendorHasStore (store);
         const newProduct = new Product({...product, photos: photos, photosPublicId: photosPublicId, vendorId: store._id});
         return await newProduct.save();
     } catch(error) {
@@ -145,6 +169,7 @@ const remove = async (id, userId) => {
 module.exports = {
     add,
     getProducts,
+    getVendorProducts,
     getProduct,
     edit,
     remove

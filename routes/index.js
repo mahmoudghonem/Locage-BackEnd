@@ -9,6 +9,7 @@ const productRouter = require('./product');
 const paymentRouter = require('./payment');
 const categoryRouter = require('./category');
 const subcategoryRouter = require('./subcategory');
+const orderRouter = require('./order');
 
 router.use('/users', userRouter);
 
@@ -25,6 +26,8 @@ router.use('/payments', paymentRouter);
 router.use('/category', categoryRouter);
 
 router.use('/subcategory', subcategoryRouter);
+
+router.use('/orders', orderRouter);
 
 
 //set not found router middleware

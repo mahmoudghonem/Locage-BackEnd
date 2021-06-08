@@ -64,7 +64,8 @@ const ProductSchema = new Schema({
     type: Number
   },
   discountDate: {
-    type: String
+    start: Date,
+    end: Date
   },
   productSpecifications: {
     required: true,
@@ -85,9 +86,9 @@ const ProductSchema = new Schema({
     collection: "products",
 });
 
-ProductSchema.virtual('id').get(function () {
-  return this._id.toHexString();
-});
+// ProductSchema.virtual('id').get(function () {
+//   return this._id.toHexString();
+// });
 
 ProductSchema.plugin(mongoosePaginate);
 
