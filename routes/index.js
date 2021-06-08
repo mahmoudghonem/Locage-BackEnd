@@ -4,6 +4,7 @@ const router = express.Router();
 const userRouter = require('./user');
 const adminRouter = require('./admin');
 const wishlistRouter = require('./wishlist');
+const shipmentRouter = require('./shipment');
 const storeRouter = require('./store');
 const productRouter = require('./product');
 const paymentRouter = require('./payment');
@@ -14,6 +15,8 @@ const orderRouter = require('./order');
 router.use('/users', userRouter);
 
 router.use('/wishlist', wishlistRouter);
+
+router.use('/shipment', shipmentRouter);
 
 router.use('/admin', adminRouter);
 
