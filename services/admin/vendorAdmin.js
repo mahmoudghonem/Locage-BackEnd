@@ -12,7 +12,7 @@ const vendorDetails = async (req, res) => {
 //get one vendor details from database to admin dashboard
 const oneVendorDetails = async (req, res) => {
     const { id } = req.params;
-    await User.findById({ $and: [{ _id: id }, { role: 'vendor' }] }).then(vendor => {
+    await User.find({ $and: [{ _id: id }, { role: 'vendor' }] }).then(vendor => {
         return res.status(200).json({ vendor: vendor });
     }).catch(err => {
         new CustomError(err.toString());

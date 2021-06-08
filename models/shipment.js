@@ -31,8 +31,8 @@ const ShipmentSchema = new Schema({
     collection: 'shipments'
 });
 
-ShipmentSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// ShipmentSchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 const shipment = mongoose.model('Shipment', ShipmentSchema);
 module.exports = shipment;

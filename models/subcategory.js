@@ -26,9 +26,9 @@ const SubcategorySchema = new Schema({
   versionKey: false,
   collection: "subcategories",
 });
-SubcategorySchema.virtual('id').get(function () {
-  return this._id.toHexString();
-});
+// SubcategorySchema.virtual('id').get(function () {
+//   return this._id.toHexString();
+// });
 const subcategory = mongoose.model("Subcategory", SubcategorySchema);
 
 module.exports = subcategory;

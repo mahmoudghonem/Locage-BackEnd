@@ -13,7 +13,7 @@ const usersDetails = async (req, res) => {
 //get one user details from database to admin dashboard
 const oneUserDetails = async (req, res) => {
     const { id } = req.params;
-    await User.findById({ $and: [{ _id: id }, { role: 'user' }] }).then(user => {
+    await User.find({ $and: [{ _id: id }, { role: 'user' }] }).then(user => {
         return res.status(200).json({ user: user });
     }).catch(err => {
         new CustomError(err.toString());

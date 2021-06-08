@@ -17,9 +17,9 @@ const PaymentMethodsSchema = new Schema({
     collection: 'paymentmethods'
 });
 
-PaymentMethodsSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// PaymentMethodsSchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 
 //middleware to delete all user account information
 PaymentMethodsSchema.pre('remove', async function (next) {

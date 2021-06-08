@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { stuffDetails, oneStuffDetails, adminDetails, oneAdminDetails, moderatorDetails, oneModeratorDetails } = require('../../services/admin/stuffAdmin');
+const { staffDetails, oneStaffDetails, makeAccountSubAdmin,removeSubAdminRole, adminDetails, oneAdminDetails, moderatorDetails, oneModeratorDetails } = require('../../services/admin/staffAdmin');
 const authjwt = require('../../middlewares/authjwt');
 const { adminRole } = require('../../middlewares/roles');
 
@@ -9,11 +9,14 @@ const { adminRole } = require('../../middlewares/roles');
 router.get('/admins', authjwt, adminRole, getAllAdmins);
 router.get('/admins/:id', authjwt, adminRole, getOneAdmin);
 
-//Stuff only details (role access admin)
-router.get('/stuff', authjwt, adminRole, getAllStuff);
-router.get('/stuff/:id', authjwt, adminRole, getOneStuff);
+//Staff only details (role access admin)
+router.get('/staff', authjwt, adminRole, getAllStaff);
+router.route('/staff/:id')
+    .get(authjwt, adminRole, getOneStaff)
+    .patch(authjwt, adminRole, makeSubAdmin)
+    .delete(authjwt, adminRole, removeSubAdmin);
 
-//All Admins And Stuff only details (role access admin)
+//All Admins And Staff only details (role access admin)
 router.get('/moderators', authjwt, adminRole, getAllModerators);
 router.get('/moderators/:id', authjwt, adminRole, getOneModerator);
 
@@ -35,17 +38,33 @@ function getOneAdmin(req, res, next) {
     });
 }
 
-//get all stuff request method
-function getAllStuff(req, res, next) {
-    stuffDetails(req, res).then((result) => {
+//get all staff request method
+function getAllStaff(req, res, next) {
+    staffDetails(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);
     });
 }
-//get one stuff request method
-function getOneStuff(req, res, next) {
-    oneStuffDetails(req, res).then((result) => {
+//get one staff request method
+function getOneStaff(req, res, next) {
+    oneStaffDetails(req, res).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+//make account subAdmin request method
+function makeSubAdmin(req, res, next) {
+    makeAccountSubAdmin(req, res).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+//remove subAdmin account to user request method
+function removeSubAdmin(req, res, next) {
+    removeSubAdminRole(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);
