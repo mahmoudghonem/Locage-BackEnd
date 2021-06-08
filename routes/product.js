@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { add, getProducts, getProduct, edit, remove } = require('../services/product');
+const { add, getProducts, getVendorProducts, getProduct, edit, remove } = require('../services/product');
 const upload = require("../middlewares/image");
 //const { validate, addValidationRules } = require('../middlewares/productValidator');
 const authjwt = require("../middlewares/authjwt");
@@ -8,6 +8,7 @@ const authjwt = require("../middlewares/authjwt");
 
 // Product Routes
 router.get('/', retrieveProducts);
+router.get('/vendor', authjwt, retrieveVendorProducts);
 router.get('/:id', retrieveProduct);
 router.post('/', authjwt, /*addValidationRules(), validate,*/ upload.array("photos", 10), addProduct);
 router.patch('/:id', authjwt, upload.array("photos", 10), editProduct);
@@ -19,6 +20,14 @@ router.delete('/:id', authjwt, deleteProduct);
 function retrieveProducts(req, res, next) {
     getProducts(req, res).then(result => res.json(result))
         .catch(error => next(error));
+}
+
+// Retrieve vendor's products
+function retrieveVendorProducts(req, res, next) {
+    const { userId } = req;
+    const { page, limit } = req.query;
+    getVendorProducts(userId, page, limit).then(result => res.json({result: result}))
+    .catch(error => next(error));
 }
 
 // Retrieve a product by id

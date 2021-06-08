@@ -21,7 +21,7 @@ function storeIdMatch (store, product) {
 }
 
 // check that vendor has created a store
-function vendoreHasStore (store) {
+function vendorHasStore (store) {
     if(!store) customError("STORE_NOTFOUND", 404);
 }
 
@@ -46,16 +46,20 @@ const getProducts = async (req) => {
     }
 }
 
-const getVendorProducts = async (userId) => {
+const getVendorProducts = async (userId, page, limit) => {
     const loggedUser = await User.findById(userId);
     userIsLoggedin (loggedUser);
     roleIsVendor(loggedUser);
 
-    const store = await Store.findOne({ userId: userId});
-    vendoreHasStore(store);
+    const store = await Store.findOne({ userId: userId });
+    vendorHasStore(store);
 
     try{
-
+        const options = {
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10
+        }
+        return await Product.paginate({ vendorId: store._id }, options);
     } catch(error){
         customError(error.toString(), 500);
     }
@@ -96,7 +100,7 @@ const add = async (product, files, userId) => {
 
     try{
         const store = await Store.findOne({ userId: userId });
-        vendoreHasStore (store);
+        vendorHasStore (store);
         const newProduct = new Product({...product, photos: photos, photosPublicId: photosPublicId, vendorId: store._id});
         return await newProduct.save();
     } catch(error) {
