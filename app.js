@@ -6,11 +6,9 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 //required imports
 const express = require('express');
-const fs = require('fs');
 const morgan = require('morgan');
 const compression = require('compression');
 const cors = require('cors');
-const path = require("path");
 const helmet = require('helmet');
 const CustomError = require('./functions/errorHandler');
 const { mongoose } = require('./loaders/db');

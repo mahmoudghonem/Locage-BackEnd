@@ -28,8 +28,8 @@ const BankAccountSchema = new Schema({
     versionKey: false,
     collection: 'bankaccounts'
 });
-BankAccountSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// BankAccountSchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 const bankaccount = mongoose.model('BankAccount', BankAccountSchema);
 module.exports = bankaccount;

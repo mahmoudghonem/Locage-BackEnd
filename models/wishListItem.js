@@ -20,8 +20,8 @@ const WishListItemSchema = new Schema({
     versionKey: false,
     collection: 'wishlistitems'
 });
-WishListItemSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// WishListItemSchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 const wishlistitems = mongoose.model('WishListItem', WishListItemSchema);
 module.exports = wishlistitems;

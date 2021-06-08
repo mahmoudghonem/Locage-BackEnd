@@ -22,9 +22,9 @@ const CatogrySchema = new Schema({
     versionKey: false,
     collection: "catogries",
 });
-CatogrySchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// CatogrySchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 const catogry = mongoose.model("Catogry", CatogrySchema);
 
 module.exports = catogry;
