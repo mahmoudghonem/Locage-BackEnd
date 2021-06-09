@@ -19,6 +19,16 @@ const routes = require('./routes');
 //init express servers
 const app = express();
 
+//Whitelist routes to access backend 
+var corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200
+};
+
+/* set cors access to backend server 
+initialize after deploy of frontend server */
+app.use(cors(corsOptions));
+
 /*
 Adding security reinforce 
 setting contentSecurityPolicy
@@ -40,16 +50,6 @@ app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-
-//Whitelist routes to access backend 
-var corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200
-};
-
-/* set cors access to backend server 
-initialize after deploy of frontend server */
-app.use(cors(corsOptions));
 
 //add api logger for development environment
 app.use(morgan('dev'));
