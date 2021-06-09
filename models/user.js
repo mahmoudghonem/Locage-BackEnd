@@ -142,7 +142,7 @@ UserSchema.methods.generateTokenAccess = async function () {
             id: this.id
         },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: process.env.ACCESS_TOKEN_EXPIRES }
+            { expiresIn: `${process.env.ACCESS_TOKEN_EXPIRES}` }
         );
         return token;
     } catch (err) {
