@@ -8,7 +8,7 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const compression = require('compression');
-const cors = require('cors');
+//const cors = require('cors');
 const helmet = require('helmet');
 const CustomError = require('./functions/errorHandler');
 const { mongoose } = require('./loaders/db');
@@ -19,15 +19,31 @@ const routes = require('./routes');
 //init express servers
 const app = express();
 
-//Whitelist routes to access backend 
-var corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200
-};
+// //Whitelist routes to access backend 
+// var corsOptions = {
+//     origin: '*',
+//     optionsSuccessStatus: 200
+// };
 
-/* set cors access to backend server 
-initialize after deploy of frontend server */
-app.use(cors(corsOptions));
+// /* set cors access to backend server 
+// initialize after deploy of frontend server */
+// app.use(cors(corsOptions));
+
+// Add cors headers middleware
+app.use(function (req, res, next) {
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    // Request headers you wish to allow
+    // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    // Pass to next layer of middleware
+    next();
+});
 
 /*
 Adding security reinforce 
