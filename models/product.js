@@ -64,8 +64,8 @@ const ProductSchema = new Schema({
     type: Number
   },
   discountDate: {
-    start: Date,
-    end: Date
+    start: String,
+    end: String
   },
   productSpecifications: {
     required: true,
@@ -73,14 +73,14 @@ const ProductSchema = new Schema({
   }
 },{
     toJSON: {
-      virtuals: true,
+      //virtuals: true,
       transform: (doc, ret) => {
         delete ret.photosPublicId;
         return ret;
     },
     },
     toObject: {
-      virtuals: true
+      //virtuals: true
     },
     versionKey: false,
     collection: "products",
