@@ -20,9 +20,9 @@ const DiscountSchema = new Schema({
   versionKey: false,
   collection: 'discounts'
 });
-DiscountSchema.virtual('id').get(function () {
-  return this._id.toHexString();
-});
+// DiscountSchema.virtual('id').get(function () {
+//   return this._id.toHexString();
+// });
 const discount = mongoose.model('Discount', DiscountSchema);
 
 module.exports = discount;

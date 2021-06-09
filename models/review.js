@@ -27,9 +27,9 @@ const ReviewSchema = new Schema({
     collection: "reviews",
 }
 );
-ReviewSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// ReviewSchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 const review = mongoose.model("Reveiw", ReviewSchema);
 
 module.exports = review;

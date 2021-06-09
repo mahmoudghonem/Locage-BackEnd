@@ -3,23 +3,19 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const ShipmentSchema = new Schema({
-    toAddress: {
+    fullName: {
         type: String
     },
-    fromAddress: {
+    address: {
         type: String
     },
-    trackNumber: {
+    phoneNumber: {
         type: String
     },
-    sentAt: {
-        type: Date,
-        default: Date.now
-    },
-    orderId: {
+    userId: {
         type: Schema.Types.ObjectId,
-        ref: 'orders'
-    },
+        ref: 'users'
+    }
 }, {
     toJSON: {
         virtuals: true
@@ -31,8 +27,8 @@ const ShipmentSchema = new Schema({
     collection: 'shipments'
 });
 
-ShipmentSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// ShipmentSchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 const shipment = mongoose.model('Shipment', ShipmentSchema);
 module.exports = shipment;

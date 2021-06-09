@@ -36,8 +36,8 @@ const CreditCardSchema = new Schema({
     versionKey: false,
     collection: 'creditcards'
 });
-CreditCardSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// CreditCardSchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 const creditcard = mongoose.model('CreditCard', CreditCardSchema);
 module.exports = creditcard;

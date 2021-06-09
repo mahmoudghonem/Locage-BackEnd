@@ -6,11 +6,9 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 //required imports
 const express = require('express');
-const fs = require('fs');
 const morgan = require('morgan');
 const compression = require('compression');
-const cors = require('cors');
-const path = require("path");
+//const cors = require('cors');
 const helmet = require('helmet');
 const CustomError = require('./functions/errorHandler');
 const { mongoose } = require('./loaders/db');
@@ -20,6 +18,32 @@ const routes = require('./routes');
 
 //init express servers
 const app = express();
+
+// //Whitelist routes to access backend 
+// var corsOptions = {
+//     origin: '*',
+//     optionsSuccessStatus: 200
+// };
+
+// /* set cors access to backend server 
+// initialize after deploy of frontend server */
+// app.use(cors(corsOptions));
+
+// Add cors headers middleware
+app.use(function (req, res, next) {
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    // Request headers you wish to allow
+    // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    // Pass to next layer of middleware
+    next();
+});
 
 /*
 Adding security reinforce 
@@ -38,20 +62,10 @@ setting xssFilter
 app.use(helmet());
 
 // parse requests of content-type - application/json
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
-
-//Whitelist routes to access backend 
-var corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200
-};
-
-/* set cors access to backend server 
-initialize after deploy of frontend server */
-app.use(cors(corsOptions));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 //add api logger for development environment
 app.use(morgan('dev'));

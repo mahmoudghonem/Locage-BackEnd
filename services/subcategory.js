@@ -6,7 +6,7 @@ const customError = require('../functions/errorHandler');
 
 const loggedUserCheck = async (userId) => {
     const loggedUser = await User.findById(userId);
-    if(!loggedUser) customError("UNAUTHORIZED_NOTLOGGEDIN", 401);
+    if(!loggedUser) customError("UNAUTHORIZED", 401);
     if(loggedUser.role !== "admin") customError("UNAUTHORIZED", 401);
 }
 
@@ -18,7 +18,7 @@ const getProductsOfSubcategory = async (subcategoryId, page, limit) => {
         limit: parseInt(limit) || 30
     }
 
-    if(!(await Subcategory.findById(subcategoryId))) customError("SUBCATEGORY_NOTFOUND", 404);
+    if(!(await Subcategory.findById(subcategoryId))) customError("SUBCATEGORY_NOT_FOUND", 404);
 
     try{
         const result = await Product.paginate({ subcategoryId: subcategoryId }, options)
@@ -32,7 +32,7 @@ const getProductsOfSubcategory = async (subcategoryId, page, limit) => {
 const editSubcategory = async (editedSubcategory, subcategoryId, userId) => {
     // checks
     await loggedUserCheck (userId);
-    if(!(await Subcategory.findById(subcategoryId))) customError("SUBCATEGORY_NOTFOUND", 404);
+    if(!(await Subcategory.findById(subcategoryId))) customError("SUBCATEGORY_NOT_FOUND", 404);
 
     try{
         return await Subcategory.findByIdAndUpdate(subcategoryId, editedSubcategory, { new: true });
