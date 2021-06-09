@@ -161,7 +161,7 @@ const pushPhotos = async (id, files, userId) => {
         if(files.length !== 0){
             if((files.length + productToEdit.photos.length) > 10) 
                 customError("MAX_10_PHOTOS_ALLOWED", 400);
-                
+
             for(const file of files){
                 const { path } = file;
                 const result = await cloudinary.uploader.upload(path);
@@ -170,6 +170,31 @@ const pushPhotos = async (id, files, userId) => {
             }
         }
         return await Product.findByIdAndUpdate(id, {...productToEdit, photos: photos, photosPublicId: photosPublicId}, {new: true});
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
+
+const deletePhoto = async (id, photoName, userId) => {
+    // check 
+    checkId(id);
+
+    const loggedUser = await User.findById(userId);
+    const productToEdit = await Product.findById(id);
+    const store = await Store.findOne({ userId: userId });
+
+    userIsLoggedin (loggedUser);
+    roleIsVendor(loggedUser);
+    productExists(productToEdit);
+    storeIdMatch(store, productToEdit);
+
+    try{
+        const indexOfPhoto = productToEdit.photos.findIndex(elem => elem == photoName);
+        if(indexOfPhoto === -1) customError("PHOTO_NOT_FOUND", 404);
+        await cloudinary.uploader.destroy(productToEdit.photosPublicId[indexOfPhoto]);
+        productToEdit.photos.splice(indexOfPhoto, 1);
+        productToEdit.photosPublicId.splice(indexOfPhoto, 1);
+        return await Product.findByIdAndUpdate(id, productToEdit, {new: true});
     } catch(error){
         customError(error.toString(), 500);
     }
@@ -205,5 +230,6 @@ module.exports = {
     getProduct,
     edit,
     pushPhotos,
+    deletePhoto,
     remove
 };
