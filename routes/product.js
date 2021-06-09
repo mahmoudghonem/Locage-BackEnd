@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { add, getProducts, getVendorProducts, getProduct, edit, remove } = require('../services/product');
+const { add, getProducts, getVendorProducts, getProduct, edit, pushPhotos, remove } = require('../services/product');
 const upload = require("../middlewares/image");
 //const { validate, addValidationRules } = require('../middlewares/productValidator');
 const authjwt = require("../middlewares/authjwt");
@@ -12,6 +12,7 @@ router.get('/vendor', authjwt, retrieveVendorProducts);
 router.get('/:id', retrieveProduct);
 router.post('/', authjwt, /*addValidationRules(), validate,*/ upload.array("photos", 10), addProduct);
 router.patch('/:id', authjwt, upload.array("photos", 10), editProduct);
+router.patch('/:id/manage-photos', authjwt, upload.array("photos", 10), addPhotos);
 router.delete('/:id', authjwt, deleteProduct);
 
 
@@ -50,6 +51,15 @@ function editProduct(req, res, next) {
     const { id } = req.params;
     edit(body, id, files, userId).then(result => res.json({ message: "Product has been edited.", result: result }))
         .catch(error => next(error));
+}
+
+// Add photos to a product
+function addPhotos(req, res, next) {
+    const { files, userId } = req;
+    const { id } = req.params;
+    pushPhotos(id, files, userId)
+    .then(result => res.json({ message: "Product's photos has been edited", result: result }))
+    .catch(error => next(error));
 }
 
 // Remove a product 

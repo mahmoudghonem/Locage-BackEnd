@@ -142,6 +142,39 @@ const edit = async (editedData, id, files, userId) => {
     } 
 }
 
+const pushPhotos = async (id, files, userId) => {
+    // check 
+    checkId(id);
+
+    const loggedUser = await User.findById(userId);
+    const productToEdit = await Product.findById(id);
+    const store = await Store.findOne({ userId: userId });
+
+    userIsLoggedin (loggedUser);
+    roleIsVendor(loggedUser);
+    productExists(productToEdit);
+    storeIdMatch(store, productToEdit);
+
+    try{
+        const photos = productToEdit.photos;
+        const photosPublicId = productToEdit.photosPublicId;
+        if(files.length !== 0){
+            if((files.length + productToEdit.photos.length) > 10) 
+                customError("MAX_10_PHOTOS_ALLOWED", 400);
+                
+            for(const file of files){
+                const { path } = file;
+                const result = await cloudinary.uploader.upload(path);
+                photos.push(result.secure_url);
+                photosPublicId.push(result.public_id);
+            }
+        }
+        return await Product.findByIdAndUpdate(id, {...productToEdit, photos: photos, photosPublicId: photosPublicId}, {new: true});
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
+
 const remove = async (id, userId) => {
     // check
     checkId(id);
@@ -157,7 +190,7 @@ const remove = async (id, userId) => {
     const { photosPublicId } = productToDelete;
     
     try{
-        photosPublicId.forEach(async(id) => await cloudinary.uploader.destroy(id, function(result) { console.log(result) }));
+        photosPublicId.forEach(async(id) => await cloudinary.uploader.destroy(id));
 
         return await Product.findByIdAndDelete(id);
     } catch(error) {
@@ -171,5 +204,6 @@ module.exports = {
     getVendorProducts,
     getProduct,
     edit,
+    pushPhotos,
     remove
 };
