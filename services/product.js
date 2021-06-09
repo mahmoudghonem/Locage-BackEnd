@@ -6,27 +6,27 @@ const { checkId, isEmpty } = require('../functions/checks');
 const cloudinary = require("../functions/cloudinary");
 
 // check that user is logged-in
-function userIsLoggedin (loggedUser) {
+function userIsLoggedin(loggedUser) {
     if (!loggedUser) customError("UNAUTHORIZED", 401);
 }
 
 // check the role of the user logged-in is "vendor"
-function roleIsVendor (loggedUser){
+function roleIsVendor(loggedUser) {
     if (loggedUser.role != "vendor") customError("UNAUTHORIZED", 401);
 }
 
 // check the vendor's store Id is the same in product
-function storeIdMatch (store, product) {
-    if(store._id !== product.vendorId) customError("ACCESS_DENIED", 401);
+function storeIdMatch(store, product) {
+    if (store._id !== product.vendorId) customError("ACCESS_DENIED", 401);
 }
 
 // check that vendor has created a store
-function vendorHasStore (store) {
-    if(!store) customError("STORE_NOTFOUND", 404);
+function vendorHasStore(store) {
+    if (!store) customError("STORE_NOTFOUND", 404);
 }
 
 // product exists check
-function productExists (product){
+function productExists(product) {
     if (!product) customError("PRODUCT_NOT_FOUND", 404);
 }
 
@@ -39,28 +39,28 @@ const getProducts = async (req) => {
         limit: limit,
         page: page
     }
-    try{
+    try {
         return await Product.paginate({}, options);
-    } catch(error) {
+    } catch (error) {
         return customError(error.toString(), 500);
     }
 }
 
 const getVendorProducts = async (userId, page, limit) => {
     const loggedUser = await User.findById(userId);
-    userIsLoggedin (loggedUser);
+    userIsLoggedin(loggedUser);
     roleIsVendor(loggedUser);
 
     const store = await Store.findOne({ userId: userId });
     vendorHasStore(store);
 
-    try{
+    try {
         const options = {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10
         }
         return await Product.paginate({ vendorId: store._id }, options);
-    } catch(error){
+    } catch (error) {
         customError(error.toString(), 500);
     }
 }
@@ -68,14 +68,14 @@ const getVendorProducts = async (userId, page, limit) => {
 const getProduct = async (id) => {
     checkId(id);
 
-    try{
+    try {
         const product = await Product.findById(id);
         productExists(product);
         return product;
-    } catch(error) {
+    } catch (error) {
         return customError(error.toString(), 500);
     }
-    
+
 }
 
 const add = async (product, files, userId) => {
@@ -98,14 +98,14 @@ const add = async (product, files, userId) => {
 
     isEmpty(product);
 
-    try{
+    try {
         const store = await Store.findOne({ userId: userId });
-        vendorHasStore (store);
-        const newProduct = new Product({...product, photos: photos, photosPublicId: photosPublicId, vendorId: store._id});
+        vendorHasStore(store);
+        const newProduct = new Product({ ...product, photos: photos, photosPublicId: photosPublicId, vendorId: store._id });
         return await newProduct.save();
-    } catch(error) {
+    } catch (error) {
         return customError(error.toString(), 500);
-    }  
+    }
 }
 
 
@@ -117,7 +117,7 @@ const edit = async (editedData, id, files, userId) => {
     const productToEdit = await Product.findById(id);
     const store = await Store.findOne({ userId: userId });
 
-    userIsLoggedin (loggedUser);
+    userIsLoggedin(loggedUser);
     roleIsVendor(loggedUser);
     productExists(productToEdit);
     storeIdMatch(store, productToEdit);
@@ -125,21 +125,21 @@ const edit = async (editedData, id, files, userId) => {
     // check that editedData is not empty
     isEmpty(editedData);
 
-    try{
+    try {
         const photos = productToEdit.photos;
         const photosPublicId = productToEdit.photosPublicId;
-        if(files.length !== 0){
-            for(const file of files){
+        if (files.length !== 0) {
+            for (const file of files) {
                 const { path } = file;
                 const result = await cloudinary.uploader.upload(path);
                 photos.push(result.secure_url);
                 photosPublicId.push(result.public_id);
             }
         }
-        return await Product.findByIdAndUpdate(id, {...editedData, photos: photos, photosPublicId: photosPublicId}, {new: true});
-    } catch(error) {
+        return await Product.findByIdAndUpdate(id, { ...editedData, photos: photos, photosPublicId: photosPublicId }, { new: true });
+    } catch (error) {
         return customError(error.toString(), 500);
-    } 
+    }
 }
 
 const remove = async (id, userId) => {
@@ -150,20 +150,20 @@ const remove = async (id, userId) => {
     const productToDelete = await Product.findById(id);
     const store = await Store.findOne({ userId: userId });
 
-    userIsLoggedin (loggedUser);
+    userIsLoggedin(loggedUser);
     roleIsVendor(loggedUser);
     storeIdMatch(store, productToDelete);
     storeIdMatch(store, productToDelete);
 
     const { photosPublicId } = productToDelete;
-    
-    try{
-        photosPublicId.forEach(async(id) => await cloudinary.uploader.destroy(id, function(result) { console.log(result) }));
+
+    try {
+        photosPublicId.forEach(async (id) => await cloudinary.uploader.destroy(id));
 
         return await Product.findByIdAndDelete(id);
-    } catch(error) {
+    } catch (error) {
         return customError(error.toString(), 500);
-    }  
+    }
 }
 
 module.exports = {

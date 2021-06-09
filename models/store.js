@@ -14,8 +14,8 @@ const StoreSchema = new Schema(
     },
     statusCode: {
       type: String,
-      enum: ['onhold', 'accepted'],
-      default: 'onhold'
+      enum: ['hold', 'accepted'],
+      default: 'hold'
   },
     address: {
       city: String,
@@ -23,8 +23,6 @@ const StoreSchema = new Schema(
       country: String,
       zipCode: {
         type: Number,
-        Min: 5,
-        Max: 5,
       }
     },
     phoneNumber: {
@@ -64,9 +62,9 @@ const StoreSchema = new Schema(
   collection: "stores",
 });
 
-StoreSchema.virtual('id').get(function () {
-  return this._id.toHexString();
-});
+// StoreSchema.virtual('id').get(function () {
+//   return this._id.toHexString();
+// });
 StoreSchema.plugin(mongoosePaginate);
 const stores = mongoose.model("Store", StoreSchema);
 

@@ -9,7 +9,7 @@ const { staffRole } = require('../../middlewares/roles');
 router.get('/users', authjwt, staffRole, getAllUsers);
 router.get('/users/:id', authjwt, staffRole, getOneUser);
 router.delete('/users/:id', authjwt, staffRole, deleteOneUser);
-router.delete('/users/', authjwt, staffRole, deleteManyUser);
+// router.delete('/users/', authjwt, staffRole, deleteManyUser);
 
 //get all users request method
 function getAllUsers(req, res, next) {
@@ -39,12 +39,12 @@ function deleteOneUser(req, res, next) {
 }
 
 //delete many user request method
-function deleteManyUser(req, res, next) {
-    manyUserRemove(req, res).then((result) => {
-        res.json(result);
-    }).catch((err) => {
-        next(err);
-    });
-}
+// function deleteManyUser(req, res, next) {
+//     manyUserRemove(req, res).then((result) => {
+//         res.json(result);
+//     }).catch((err) => {
+//         next(err);
+//     });
+// }
 
 module.exports = router;
