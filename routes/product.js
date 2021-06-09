@@ -11,7 +11,7 @@ router.get('/', retrieveProducts);
 router.get('/vendor', authjwt, retrieveVendorProducts);
 router.get('/:id', retrieveProduct);
 router.post('/', authjwt, /*addValidationRules(), validate,*/ upload.array("photos", 10), addProduct);
-router.patch('/:id', authjwt, upload.array("photos", 10), editProduct);
+router.patch('/:id', authjwt, editProduct);
 router.patch('/:id/manage-photos', authjwt, upload.array("photos", 10), addPhotos);
 router.patch('/:id/manage-photos/*', authjwt, removePhoto);
 router.delete('/:id', authjwt, deleteProduct);
@@ -52,9 +52,9 @@ function addProduct(req, res, next) {
 
 // Modify an existing product 
 function editProduct(req, res, next) {
-    const { body, files, userId } = req;
+    const { body, userId } = req;
     const { id } = req.params;
-    edit(body, id, files, userId)
+    edit(body, id, userId)
     .then(result => res.json({ message: "Product has been edited.", result: result }))
     .catch(error => next(error));
 }

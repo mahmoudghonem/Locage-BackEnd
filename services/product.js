@@ -109,7 +109,7 @@ const add = async (product, files, userId) => {
 }
 
 
-const edit = async (editedData, id, files, userId) => {
+const edit = async (editedData, id, userId) => {
     // check 
     checkId(id);
 
@@ -126,17 +126,7 @@ const edit = async (editedData, id, files, userId) => {
     isEmpty(editedData);
 
     try{
-        const photos = productToEdit.photos;
-        const photosPublicId = productToEdit.photosPublicId;
-        if(files.length !== 0){
-            for(const file of files){
-                const { path } = file;
-                const result = await cloudinary.uploader.upload(path);
-                photos.push(result.secure_url);
-                photosPublicId.push(result.public_id);
-            }
-        }
-        return await Product.findByIdAndUpdate(id, {...editedData, photos: photos, photosPublicId: photosPublicId}, {new: true});
+        return await Product.findByIdAndUpdate(id, editedData, {new: true});
     } catch(error) {
         return customError(error.toString(), 500);
     } 
