@@ -10,7 +10,7 @@ router.get('/', getAllStores);
 router.get('/:id', authjwt, getOneStore);
 router.post('/', authjwt, storeValidationRules(), validate, imageFile.single("photo"), createStore);
 router.patch('/:id', authjwt, imageFile.single("photo"), updateStore);
-router.delete('/:id', deleteStore);
+router.delete('/:id',authjwt, deleteStore);
 
 
 //Get all stores 

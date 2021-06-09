@@ -12,9 +12,11 @@ const StoreSchema = new Schema(
       unique: true,
       min: 2,
     },
-    alies: {
+    statusCode: {
       type: String,
-    },
+      enum: ['onhold', 'accepted'],
+      default: 'onhold'
+  },
     address: {
       city: String,
       state: String,

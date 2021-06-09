@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 const { Schema } = mongoose;
 
 const CartSchema = new Schema({
@@ -31,6 +33,7 @@ CartSchema.pre('remove', async function (next) {
   // Remove all the cartItems docs that reference the removed person.
   await this.model('CartItem').remove({ cartId: this._id }, next);
 });
+CartSchema.plugin(mongoosePaginate);
 
 const cart = mongoose.model('Cart', CartSchema);
 
