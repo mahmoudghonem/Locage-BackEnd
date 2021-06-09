@@ -21,14 +21,12 @@ const loginValidationRules = () => {
             .withMessage("EMAIL_REQUIRED")
             .isEmail()
             .withMessage("WRONG_EMAIL_FORMAT"),
-
         // Password Validation must be at least 8 chars long
         body('password')
             .notEmpty()
             .withMessage('PASSWORD_REQUIRED')
             .isLength({ min: 8 })
             .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
-
     ];
 };
 
