@@ -35,16 +35,20 @@ async function getOne(req, res) {
 
 
 //Post one store
-async function create(req, res){
-    const { body, file , userId } = req;
-    let store ;
+async function create(req, res) {
+    const { body, file, userId } = req;
+    let store;
     const getUser = await User.findById(userId).exec();
     if (!getUser)
-        new CustomError("UN_AUTHENTICATED", 401);
+        new CustomError("UNAUTHORIZED", 401);
+    const userState = await Store.findOne({ userId: userId }).exec();
+    if (userState) {
+        return CustomError("CANT_CREATE_NEW_STORE", 400);
+    }
 
-    if(getUser.role != 'vendor')
-        new CustomError("UN_AUTHENTICATED", 401);
-    
+    // if(getUser.role != 'vendor')
+    //     new CustomError("UNAUTHORIZED", 401);
+
     if (file) {
         const result = await cloudinary.uploader.upload(req.file.path);
         const image = result.secure_url;
@@ -56,11 +60,11 @@ async function create(req, res){
         });
     } else {
         await Store.create({ ...body, userId: userId })
-        .then((result) => {
-            return result;
-        }).catch((err) => {
-            new CustomError(err.toString());
-        });
+            .then((result) => {
+                return result;
+            }).catch((err) => {
+                new CustomError(err.toString());
+            });
     }
 
     return store;
@@ -69,13 +73,15 @@ async function create(req, res){
 
 //Update one store
 async function update(req, res) {
-    const { body } = req;
+    const { body, userId } = req;
     const { id } = req.params;
     const store = getOne(id);
+    const getUser = await User.findById(userId).exec();
 
     if (!store)
         new CustomError("NOT_FOUND", 404);
-
+    if (getUser.role != 'vendor')
+        new CustomError("UNAUTHORIZED", 401);
     const file = req.file | false;
     if (file) {
         const result = await cloudinary.uploader.upload(req.file.path);
@@ -90,12 +96,15 @@ async function update(req, res) {
 
 //Delete one store 
 async function remove(req, res) {
+    const { userId } = req;
     const { id } = req.params;
     const store = getOne(id);
+    const getUser = await User.findById(userId).exec();
     if (!store)
         new CustomError("NOT_FOUND", 404);
-    else
-        await Store.findByIdAndDelete(id);
+    if (getUser.role == 'user')
+        new CustomError("UNAUTHORIZED", 401);
+    await Store.findByIdAndDelete(id);
 }
 
 

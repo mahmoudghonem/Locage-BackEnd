@@ -4,16 +4,21 @@ const router = express.Router();
 const userRouter = require('./user');
 const adminRouter = require('./admin');
 const wishlistRouter = require('./wishlist');
+const shipmentRouter = require('./shipment');
 const storeRouter = require('./store');
 const productRouter = require('./product');
 const paymentRouter = require('./payment');
 const categoryRouter = require('./category');
 const subcategoryRouter = require('./subcategory');
 const orderRouter = require('./order');
+const cartRouter = require('./cart');
+
 
 router.use('/users', userRouter);
 
 router.use('/wishlist', wishlistRouter);
+
+router.use('/shipment', shipmentRouter);
 
 router.use('/admin', adminRouter);
 
@@ -28,6 +33,9 @@ router.use('/category', categoryRouter);
 router.use('/subcategory', subcategoryRouter);
 
 router.use('/orders', orderRouter);
+
+router.use('/carts', cartRouter);
+
 
 
 //set not found router middleware

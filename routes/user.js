@@ -5,9 +5,9 @@ const { register, login, reset, recover, update, deleteAccount, checkMail } = re
 const { registerValidationRules, resetValidationRules, loginValidationRules, recoverValidationRules, updateValidationRules, validate } = require('../middlewares/userValidator');
 
 
-router.get('/login', loginValidationRules(), validate, userLoginFun);
+router.post('/login', loginValidationRules(), validate, userLoginFun);
 
-router.get('/isEmailRegister', resetValidationRules(), validate, checkEmailRegister);
+router.post('/isEmailRegister', resetValidationRules(), validate, checkEmailRegister);
 
 router.post('/reset-password', resetValidationRules(), validate, userResetFun);
 
