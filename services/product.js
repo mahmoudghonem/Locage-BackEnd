@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Store = require('../models/store');
 const { checkId, isEmpty } = require('../functions/checks');
 const cloudinary = require("../functions/cloudinary");
+const mongoose = require('mongoose');
 
 // check that user is logged-in
 function userIsLoggedin (loggedUser) {
@@ -17,7 +18,8 @@ function roleIsVendor (loggedUser){
 
 // check the vendor's store Id is the same in product
 function storeIdMatch (store, product) {
-    if(store._id !== product.vendorId) customError("ACCESS_DENIED", 401);
+    if(mongoose.Schema.Types.ObjectId(store._id) != mongoose.Schema.Types.ObjectId(product.vendorId)) 
+        customError("ACCESS_DENIED", 401);
 }
 
 // check that vendor has created a store
@@ -152,7 +154,6 @@ const remove = async (id, userId) => {
 
     userIsLoggedin (loggedUser);
     roleIsVendor(loggedUser);
-    storeIdMatch(store, productToDelete);
     storeIdMatch(store, productToDelete);
 
     const { photosPublicId } = productToDelete;
