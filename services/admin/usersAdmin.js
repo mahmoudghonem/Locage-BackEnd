@@ -30,19 +30,19 @@ const oneUserRemove = async (req, res) => {
 };
 //delete many users from database to admin dashboard 
 // TODO: Not very efficient Implementation (Need to do with other way like aggregations)
-const manyUserRemove = async (req, res) => {
-    const userIds = req.body.ids;
+// const manyUserRemove = async (req, res) => {
+//     const userIds = req.body.ids;
 
-    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
-        new CustomError('EMPTY_BODY', 400);
-    }
-    var myQuery = { $and: [{ _id: { $in: userIds } }, { role: 'user' }] };
-    await User.deleteMany(myQuery).then(result => {
-        return res.status(200).json({ message: "DELETED_SUCCESSFULLY", result: result });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
-};
+//     if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+//         new CustomError('EMPTY_BODY', 400);
+//     }
+//     var myQuery = { $and: [{ _id: { $in: userIds } }, { role: 'user' }] };
+//     await User.deleteMany(myQuery).then(result => {
+//         return res.status(200).json({ message: "DELETED_SUCCESSFULLY", result: result });
+//     }).catch(err => {
+//         new CustomError(err.toString());
+//     });
+// };
 
 
 
@@ -51,5 +51,4 @@ module.exports = {
     usersDetails,
     oneUserDetails,
     oneUserRemove,
-    manyUserRemove
 };
