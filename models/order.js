@@ -9,7 +9,7 @@ const OrderSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['processing', 'preparing', 'shipped', 'pickedup'],
+        enum: ['processing', 'preparing', 'shipped', 'canceled', 'pickedup'],
         required: true
     },
     comment: {
@@ -22,7 +22,7 @@ const OrderSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'users',
     },
-    createAt: {
+    createdAt: {
         type: Date,
         default: Date.now
     }
