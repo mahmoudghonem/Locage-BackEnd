@@ -84,13 +84,16 @@ const addCart = async (req, res) => {
     if (fondedItem){
         return res.status(200).json({ message: "PRODUCT_ALREADY_ADDED" });
     }
-    if(Object.keys(req.body).length === 0){
-        return res.status(200).json({ message: "NOTHING_UPDATE" });
-    }
-
     var totalPrice = 0 ;
-    totalPrice = product.price * body.quantity;
 
+    if(Object.keys(req.body).length === 0){
+
+        totalPrice = product.price * product.quantity;
+    }
+    else{
+        totalPrice = product.price * body.quantity;
+    }
+  
     const cartItem = new CartItem({ ...body , price :totalPrice , cartId: cart._id,  productId: product._id});
     await Product.findByIdAndUpdate(product._id,{$inc: {quantity:-1 }});
 

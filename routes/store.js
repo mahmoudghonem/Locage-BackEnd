@@ -7,10 +7,10 @@ const authjwt = require("../middlewares/authjwt");
 
 //store router
 router.get('/', getAllStores);
-router.get('/:id', authjwt, getOneStore);
+router.get('/:_id', authjwt, getOneStore);
 router.post('/', authjwt, storeValidationRules(), validate, imageFile.single("photo"), createStore);
-router.patch('/:id', authjwt, imageFile.single("photo"), updateStore);
-router.delete('/:id',authjwt, deleteStore);
+router.patch('/:_id', authjwt, imageFile.single("photo"), updateStore);
+router.delete('/:_id',authjwt, deleteStore);
 
 
 //Get all stores 
