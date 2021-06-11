@@ -29,9 +29,9 @@ const OrderItemSchema = new Schema({
     versionKey: false,
     collection: "orderItems",
 });
-OrderItemSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// OrderItemSchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 const orderItem = mongoose.model("OrderItem", OrderItemSchema);
 
 module.exports = orderItem;
