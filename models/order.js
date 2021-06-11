@@ -12,6 +12,20 @@ const OrderSchema = new Schema({
         enum: ['processing', 'preparing', 'shipped', 'canceled', 'pickedup'],
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    phoneNumber: {
+        type: String
+    },
+    trackNumber:{
+        type: Number
+    },
     comment: {
         type: String
     },
@@ -21,6 +35,10 @@ const OrderSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'users',
+    },
+    discountCode: {
+        type: Schema.Types.ObjectId,
+        ref: 'discounts', 
     },
     createdAt: {
         type: Date,
