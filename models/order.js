@@ -10,6 +10,7 @@ const OrderSchema = new Schema({
     status: {
         type: String,
         enum: ['processing', 'preparing', 'shipped', 'canceled', 'pickedup'],
+        default: 'processing',
         required: true
     },
     name: {
@@ -54,9 +55,9 @@ const OrderSchema = new Schema({
     versionKey: false,
     collection: "orders",
 });
-OrderSchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+// OrderSchema.virtual('id').get(function () {
+//     return this._id.toHexString();
+// });
 const order = mongoose.model("Order", OrderSchema);
 
 module.exports = order;
