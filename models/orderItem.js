@@ -19,6 +19,10 @@ const OrderItemSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "orders",
     },
+    vendorId: {
+        type: Schema.Types.ObjectId,
+        ref: "stores",
+      }
 }, {
     toJSON: {
         virtuals: true
