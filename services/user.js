@@ -69,7 +69,7 @@ const reset = async (req, res) => {
         subject: 'Locage Password Reset',
         text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
             'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-            'http://' + req.headers.host + '/recover/' + loadedUser.resetPasswordToken + '\n\n' +
+              process.env.FRONT_URL+ '/recover/' + loadedUser.resetPasswordToken + '\n\n' +
             'If you did not request this, please ignore this email and your password will remain unchanged.\n'
     };
     await smtpTransport.sendMail(mailOptions).then(() => {
