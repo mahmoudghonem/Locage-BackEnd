@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getOrders } = require('../services/order');
+const { createOrder, getOrders, getVendorOrdersItems } = require('../services/order');
 const authjwt = require("../middlewares/authjwt");
-const { adminRole } = require("../middlewares/roles");
+const { adminRole, vendorRole } = require("../middlewares/roles");
 
 
 router.post('/', authjwt, placeOrder);
 router.get('/', authjwt, adminRole, retrieveAllOrders);
+router.get('/vendor', authjwt, vendorRole, retrieveVendorOrdersItems)
 
 /* Routes Handlers */
 function placeOrder(req, res, next) {
@@ -19,6 +20,14 @@ function placeOrder(req, res, next) {
 function retrieveAllOrders(req, res, next) {
     const { page, limit } = req.query;
     getOrders(page, limit)
+    .then(result => res.json({ result: result }))
+    .catch(error => next(error));
+}
+
+function retrieveVendorOrdersItems(req, res, next) {
+    const { page, limit } = req.query;
+    const { user: vendor } = req;
+    getVendorOrdersItems(vendor, page, limit)
     .then(result => res.json({ result: result }))
     .catch(error => next(error));
 }

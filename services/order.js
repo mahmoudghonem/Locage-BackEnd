@@ -5,6 +5,7 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 const User = require('../models/user');
 const Shipment = require('../models/shipment');
+const Store = require('../models/store');
 const customError = require('../functions/errorHandler');
 const { isEmpty } = require('../functions/checks');
 
@@ -100,7 +101,24 @@ const getOrders = async (page, limit) => {
     }
 }
 
+const getVendorOrdersItems = async (vendor, page, limit)  => {
+    const options = {
+        limit: parseInt(limit) || 10,
+        page: parseInt(page) || 1
+    }
+
+    const store = await Store.findOne({ userId: vendor._id });
+    if(!store) customError("STORE_NOT_FOUND", 404);
+
+    try{
+        return await OrderItem.paginate({ vendorId: store._id }, options);
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
+
 module.exports = {
     createOrder,
-    getOrders
+    getOrders,
+    getVendorOrdersItems
 }
