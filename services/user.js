@@ -155,8 +155,34 @@ const update = async (req, res) => {
     if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
         new CustomError('NOTHING_CHANGED', 400);
     }
+
     await User.findOneAndUpdate({ _id: userId }, body).then((result) => {
         return res.status(200).json({ message: "ACCOUNT_UPDATED", result: result });
+    }).catch((error) => {
+        CustomError(error.toString(), 400);
+
+    });
+
+};
+
+const updatePassword = async (req, res) => {
+    const userId = req.userId;
+    const { body } = req;
+    const { id } = req.params;
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+
+    const loadedUser = await findOneUserById(userId);
+
+    if (!loadedUser)
+        new CustomError('UNAUTHORIZED', 401);
+    //return error if password didn't match the database
+    const validPass = await loadedUser.validatePassword(body.currentPassword);
+    if (!validPass)
+        new CustomError('WRONG_PASSWORD', 401);
+
+    await User.findOneAndUpdate({ _id: userId }, { password: body.password }).then((result) => {
+        return res.status(200).json({ message: "PASSWORD_UPDATED", result: result });
     }).catch((error) => {
         CustomError(error.toString(), 400);
 
@@ -198,6 +224,7 @@ module.exports = {
     reset,
     recover,
     update,
+    updatePassword,
     deleteAccount,
     checkMail
 };

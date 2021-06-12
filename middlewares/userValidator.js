@@ -73,7 +73,7 @@ const registerValidationRules = () => {
             .withMessage("LASTNAME_REQUIRED")
             .isLength({ min: 3, max: 30 })
             .withMessage('LASTNAME_MUST_3_CHARACTERS_MIN_30_CHARACTERS_MAX'),
-            
+
         // Password Validation must be at least 8 chars long
         body('password')
             .notEmpty()
@@ -112,13 +112,29 @@ const updateValidationRules = () => {
             .withMessage('LASTNAME_MUST_3_CHARACTERS_MIN_30_CHARACTERS_MAX'),
         // Password Validation must be at least 8 chars long
         body('password')
-            .optional()
-            .isLength({ min: 8 })
-            .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
+            .isEmpty()
+            .withMessage('CANNOT_UPDATE_PASSWORD'),
 
         body('role')
             .isEmpty()
             .withMessage('CANNOT_SET_ROLE'),
+    ];
+};
+
+const updatePasswordValidationRules = () => {
+    return [
+        // Password Validation must be at least 8 chars long
+        body('password')
+            .notEmpty()
+            .withMessage('PASSWORD_REQUIRED')
+            .isLength({ min: 8 })
+            .withMessage('PASSWORD_MUST_8_CHARACTERS_LONG'),
+
+        // currentPassword Validation required
+        body('currentPassword')
+            .notEmpty()
+            .withMessage('PASSWORD_REQUIRED')
+
     ];
 };
 
@@ -130,5 +146,6 @@ module.exports = {
     resetValidationRules,
     recoverValidationRules,
     updateValidationRules,
+    updatePasswordValidationRules,
     validate,
 };

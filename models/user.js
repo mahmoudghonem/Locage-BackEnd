@@ -100,10 +100,11 @@ const UserSchema = new Schema({
     collection: 'users'
 });
 
-// //return virtual data of user called id equals _id not saved in mongo database
+//return virtual data of user called id equals _id not saved in mongo database
 // UserSchema.virtual('id').get(function () {
 //     return this._id.toHexString();
 // });
+
 //middleware to hash password before save function called
 UserSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authjwt = require('../middlewares/authjwt');
-const { register, login, reset, recover, update, deleteAccount, checkMail } = require('../services/user');
-const { registerValidationRules, resetValidationRules, loginValidationRules, recoverValidationRules, updateValidationRules, validate } = require('../middlewares/userValidator');
+const { register, login, reset, recover, update, deleteAccount, checkMail,updatePassword } = require('../services/user');
+const { updatePasswordValidationRules, registerValidationRules, resetValidationRules, loginValidationRules, recoverValidationRules, updateValidationRules, validate } = require('../middlewares/userValidator');
 
 
 router.post('/login', loginValidationRules(), validate, userLoginFun);
@@ -16,6 +16,7 @@ router.post('/recover/:token', recoverValidationRules(), validate, userRecoverFu
 router.post('/register', registerValidationRules(), validate, userRegisterFun);
 
 router.patch('/:id', authjwt, updateValidationRules(), validate, userUpdateFun);
+router.patch('/update-password/:id', authjwt, updatePasswordValidationRules(), validate, userPasswordUpdateFun);
 
 router.delete('/:id', authjwt, userDeleteFun);
 
@@ -68,6 +69,14 @@ function userRegisterFun(req, res, next) {
 //user update request method
 function userUpdateFun(req, res, next) {
     update(req, res).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+//user update password request method
+function userPasswordUpdateFun(req, res, next) {
+    updatePassword(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);
