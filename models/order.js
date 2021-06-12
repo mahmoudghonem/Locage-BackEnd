@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const OrderSchema = new Schema({
     totalprice: {
@@ -58,6 +59,9 @@ const OrderSchema = new Schema({
 // OrderSchema.virtual('id').get(function () {
 //     return this._id.toHexString();
 // });
+
+OrderSchema.plugin(mongoosePaginate);
+
 const order = mongoose.model("Order", OrderSchema);
 
 module.exports = order;
