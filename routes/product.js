@@ -13,7 +13,7 @@ router.get('/:id', retrieveProduct);
 router.post('/', authjwt, /*addValidationRules(), validate,*/ upload.array("photos", 10), addProduct);
 router.patch('/:id', authjwt, editProduct);
 router.patch('/:id/manage-photos', authjwt, upload.array("photos", 10), addPhotos);
-router.patch('/:id/manage-photos/*', authjwt, removePhoto);
+router.delete('/:id/manage-photos/*', authjwt, removePhoto);
 router.delete('/:id', authjwt, deleteProduct);
 
 
