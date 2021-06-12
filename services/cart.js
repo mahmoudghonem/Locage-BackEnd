@@ -77,8 +77,7 @@ const addCart = async (req, res) => {
     if (!product){
         new CustomError('PRODUCT_NOT_FOUND', 404);
     }
-
-
+    
     const fondedItem = await checkIfProductAlreadyIn(cart._id, product._id);
 
     if (fondedItem){
@@ -88,7 +87,7 @@ const addCart = async (req, res) => {
 
     if(Object.keys(req.body).length === 0){
 
-        totalPrice = product.price * product.quantity;
+        totalPrice = product.price * 1;
     }
     else{
         totalPrice = product.price * body.quantity;
