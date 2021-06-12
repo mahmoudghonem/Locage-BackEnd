@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const OrderItemSchema = new Schema({
     productId: {
@@ -36,6 +37,10 @@ const OrderItemSchema = new Schema({
 // OrderItemSchema.virtual('id').get(function () {
 //     return this._id.toHexString();
 // });
+
+OrderItemSchema.plugin(mongoosePaginate);
+
 const orderItem = mongoose.model("OrderItem", OrderItemSchema);
+
 
 module.exports = orderItem;
