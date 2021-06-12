@@ -2,14 +2,19 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const DiscountSchema = new Schema({
-  productId: {
-    type: Schema.Types.ObjectId,
-    ref: "products",
-  },
   discountPercent: {
     type: Number,
     required: true,
   },
+  code: {
+    type: String,
+    required: true
+  },
+  validity: {
+    type: String,
+    enum: ['valid', 'invalid'],
+    default: 'valid'
+  }
 }, {
   toJSON: {
     virtuals: true
