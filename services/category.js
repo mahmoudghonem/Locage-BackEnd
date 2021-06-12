@@ -57,7 +57,7 @@ const retrieveSubcategoriesOfCategory = async (categoryId) => {
     await categoryExisitsCheck(categoryId);
 
     try{
-        return await Subcategory.find({ categoryId: categoryId }).exec();
+        return await Subcategory.find({ categoryId: categoryId }).populate('categoryId').exec();
     } catch(error){
         return customError(error);
     }
