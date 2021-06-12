@@ -66,7 +66,7 @@ const reset = async (req, res) => {
     const mailOptions = {
         to: loadedUser.email,
         from: process.env.MAIL_FROM,
-        subject: 'Locage Password Reset',
+        subject: 'Locage Account Password Reset',
         text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
             'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
               process.env.FRONT_URL+ '/recover/' + loadedUser.resetPasswordToken + '\n\n' +

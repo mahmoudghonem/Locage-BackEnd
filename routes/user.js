@@ -11,7 +11,7 @@ router.post('/isEmailRegister', resetValidationRules(), validate, checkEmailRegi
 
 router.post('/reset-password', resetValidationRules(), validate, userResetFun);
 
-router.post('/recover/:token', recoverValidationRules(), validate, userRecoverFun);
+router.patch('/recover/:token', recoverValidationRules(), validate, userRecoverFun);
 
 router.post('/register', registerValidationRules(), validate, userRegisterFun);
 
