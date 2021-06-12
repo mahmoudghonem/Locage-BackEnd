@@ -42,7 +42,7 @@ const createOrder = async (userId, shipmentAndDiscount) => {
 
     if(!shipmentAndDiscount.shipmentId) customError("SHIPMENTID_NOT_PROVIDED", 400);
     const shipmentData = await Shipment.findById(shipmentAndDiscount.shipmentId);
-    
+
     // check that the discont code exists in database (pass for now)
 
     const userCart = await Cart.findOne({ userId: userId });
@@ -71,7 +71,8 @@ const createOrder = async (userId, shipmentAndDiscount) => {
                 productId: item.productId,
                 price: item.price,
                 quantity: item.quantity,
-                orderId: orderData._id
+                orderId: orderData._id,
+                vendorId: item.vendorId
             });
             await CartItem.findByIdAndDelete(item._id);
             await Product.findByIdAndUpdate(item.productId, { $inc: { quantity: -item.quantity } });
@@ -83,10 +84,23 @@ const createOrder = async (userId, shipmentAndDiscount) => {
         // if an error occures the created order should not be completed
         customError(error.toString(), 500);
     }
-    
+}
 
+const getOrders = async (page, limit) => {
+
+    const options = {
+        limit: parseInt(limit) || 10,
+        page: parseInt(page) || 1
+    }
+
+    try{
+        return await Order.paginate({}, options);
+    } catch(error) {
+        customError(error.toString(), 500);
+    }
 }
 
 module.exports = {
     createOrder,
+    getOrders
 }
