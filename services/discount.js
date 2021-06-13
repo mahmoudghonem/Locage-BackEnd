@@ -28,8 +28,20 @@ const createDiscount = async (discountData) => {
     }
 }
 
+const editDiscount = async (discountData, discountCodeId) => {
+    isEmpty(discountData);
+
+    try{
+        return await Discount.findByIdAndUpdate(discountCodeId, discountData, { new: true });
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
+
+
 
 module.exports = {
     getDiscountCodes,
     createDiscount,
+    editDiscount,
 }

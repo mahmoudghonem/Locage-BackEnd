@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const authjwt = require("../middlewares/authjwt");
 const { adminRole } = require("../middlewares/roles");
-const { getDiscountCodes, createDiscount, editDiscount } = require('../services/discount');
+const { getDiscountCodes, createDiscount, editDiscount, deleteDiscount} = require('../services/discount');
 
 router.get('/', authjwt, adminRole, retrieveDiscountCodes);
 router.post('/', authjwt, adminRole, addDiscountCodes);
-router.patch('/:id', authjwt, adminRole,editDiscountCodes);
+router.patch('/:id', authjwt, adminRole, editDiscountCodes);
+router.delete('/:id', authjwt, adminRole, deleteDiscountCodes);
 
 
 function retrieveDiscountCodes(req, res, next) {
@@ -23,7 +24,20 @@ function addDiscountCodes(req, res, next) {
     .catch(error => next(error));
 }
 
+function editDiscountCodes(req, res, next) {
+    const { id: discountCodeId } = req.params;
+    const { body: discountData } = req;
+    editDiscount(discountData, discountCodeId)
+    .then(result => res.status(201).json({ message: "Discount code edited successfully.", result: result }))
+    .catch(error => next(error));
+}
 
+function deleteDiscountCodes(req, res, next) {
+    const { id: discountCodeId } = req.params;
+    deleteDiscount(discountCodeId)
+    .then(result => res.status(201).json({ message: "Discount code has been deleted.", result: result }))
+    .catch(error => next(error));
+}
 
 
 module.exports = router;
