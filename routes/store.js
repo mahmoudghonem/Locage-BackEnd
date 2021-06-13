@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const imageFile = require("../middlewares/image");
-const { storeValidationRules, validate } = require('../middlewares/storeValidator');
+// const { storeValidationRules, validate } = require('../middlewares/storeValidator');
 const { getAll, getOne, create, update, remove } = require("../services/store");
 const authjwt = require("../middlewares/authjwt");
 
 //store router
 router.get('/', getAllStores);
 router.get('/:id', authjwt, getOneStore);
-router.post('/', authjwt, storeValidationRules(), validate, imageFile.single("photo"), createStore);
+router.post('/', authjwt, imageFile.single("photo"), createStore);
 router.patch('/:id', authjwt, imageFile.single("photo"), updateStore);
 router.delete('/:id',authjwt, deleteStore);
 
