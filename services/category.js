@@ -129,6 +129,8 @@ const deleteCategory = async (categoryId, userId) => {
 
         await Subcategory.deleteMany({ categoryId: categoryId });
 
+        const category = await Category.findById(categoryId);
+        await cloudinary.uploader.destroy(category.photoPublicId);
         return await Category.findByIdAndDelete(categoryId);
     } catch(error){
         return customError(error.toString(), 500);
