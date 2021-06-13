@@ -18,7 +18,7 @@ router.get('/:id/products', retrieveProductsOfCategory);
 
 router.route('/:id/subcategory')
     .get(getSubcategories)
-    .post(authjwt, createNewSubcategory);
+    .post(authjwt, imageFile.single("photo"), createNewSubcategory);
 
 router.patch('/:id/subcategory/:subId', authjwt, modifySubcategory);
 
@@ -52,9 +52,9 @@ function getSubcategories(req, res, next){
 }
 
 function createNewSubcategory(req, res, next){
-    const { body: subcategory, userId } = req;
+    const { body: subcategory, userId, file: photo } = req;
     const { id: categoryId } = req.params;
-    createSubcategory(subcategory, categoryId, userId).then(result => {
+    createSubcategory(subcategory, categoryId, userId, photo).then(result => {
         res.status(201).json({message: "Subcategory has been added.", result: result});
     })
     .catch(error => next(error));

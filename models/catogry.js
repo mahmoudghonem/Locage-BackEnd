@@ -18,7 +18,7 @@ const CatogrySchema = new Schema({
     toJSON: {
         //virtuals: true
         transform: (doc, ret) => {
-            delete ret.photosPublicId;
+            delete ret.photoPublicId;
             return ret;
         },
     },

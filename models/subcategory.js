@@ -8,9 +8,11 @@ const SubcategorySchema = new Schema({
     maxlength: 50,
     unique: true,
   },
-  description: {
+  photo: {
     type: String,
-    maxlength: 50,
+  },
+  photoPublicId: {
+      type: String,
   },
   categoryId: {
     type: Schema.Types.ObjectId,
@@ -18,14 +20,19 @@ const SubcategorySchema = new Schema({
   },
 }, {
   toJSON: {
-    virtuals: true
+   // virtuals: true
+   transform: (doc, ret) => {
+    delete ret.photoPublicId;
+    return ret;
+  },
   },
   toObject: {
-    virtuals: true
+    //virtuals: true
   },
   versionKey: false,
   collection: "subcategories",
 });
+
 // SubcategorySchema.virtual('id').get(function () {
 //   return this._id.toHexString();
 // });

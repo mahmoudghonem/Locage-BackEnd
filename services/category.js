@@ -36,7 +36,6 @@ const createCategory = async (category, userId, photo) => {
     try{
         const result = await cloudinary.uploader.upload(photo.path);
         const newCategory = new Category({ ...category, photo: result.secure_url, photoPublicId: result.public_id });
-        console.log(newCategory);
         return await Category.create(newCategory); 
     } catch(error){
         return customError(error.toString(), 500);
@@ -65,16 +64,16 @@ const retrieveSubcategoriesOfCategory = async (categoryId) => {
     }
 }
 
-const createSubcategory = async (subcategory, categoryId, userId) => {
+const createSubcategory = async (subcategory, categoryId, userId, photo) => {
     // checks
     await loggedUserCheck (userId);
     await categoryExisitsCheck(categoryId);
 
     try{
+        const result = await cloudinary.uploader.upload(photo.path);
         subcategory.categoryId = categoryId;
-        const newSubcategory = new Subcategory(subcategory);
-        await newSubcategory.save();
-        return newSubcategory; 
+        const newSubcategory = new Subcategory({ ...subcategory, photo: result.secure_url, photoPublicId: result.public_id });
+        return await Subcategory.create(newSubcategory);
     } catch(error){
         return customError(error.toString(), 500);
     }
