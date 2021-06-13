@@ -1,5 +1,6 @@
 const customError = require('../functions/errorHandler');
 const Discount = require('../models/discount');
+const { isEmpty } = require('../functions/checks');
 
 
 const getDiscountCodes = async (page, limit) => {
@@ -17,6 +18,18 @@ const getDiscountCodes = async (page, limit) => {
     }
 }
 
+const createDiscount = async (discountData) => {
+    isEmpty(discountData);
+
+    try{
+        return await Discount.create(discountData);
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
+
+
 module.exports = {
     getDiscountCodes,
+    createDiscount,
 }
