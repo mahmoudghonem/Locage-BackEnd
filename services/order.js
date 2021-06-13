@@ -117,8 +117,32 @@ const getVendorOrdersItems = async (vendor, page, limit)  => {
     }
 }
 
+// cancelling order if the status is 'processing' or 'processing' 
+const cancel = async (userId, orderId) => {
+    const order = await Order.findOne({ _id: orderId, userId: userId });
+
+    if(!order) customError("ORDER_NOT_FOUND", 404);
+    try{
+        if(order.status === 'processing' || order.status === 'preparing'){
+            // re-increase the products quantities
+            const orderItems = await OrderItem.find({ orderId: order._id });
+            for(const item of orderItems){
+                await Product.findByIdAndUpdate(item.productId, { $inc: { quantity: item.quantity } });
+            }
+            // change the status of the order to 'cancelled' 
+            return await Order.findByIdAndUpdate(order._id, { status: 'cancelled' }, { new: true });
+        } 
+        return order;
+    } catch(error) {
+        customError(error.toString(), 500);
+    }
+    
+
+}
+
 module.exports = {
     createOrder,
     getOrders,
-    getVendorOrdersItems
+    getVendorOrdersItems,
+    cancel
 }
