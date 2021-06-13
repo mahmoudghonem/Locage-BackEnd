@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const imageFile = require("../middlewares/image");
 const { retrieveAllCategories, createCategory, retrieveSubcategoriesOfCategory, createSubcategory,
         editCategory, editSubcategory, getProductsOfCategory, deleteCategory } = require('../services/category');
 const authjwt = require("../middlewares/authjwt");
@@ -7,7 +8,7 @@ const authjwt = require("../middlewares/authjwt");
 
 router.route('/')
     .get(getCategories)
-    .post(authjwt, createNewCategory);
+    .post(authjwt, imageFile.single("photo"), createNewCategory);
 
 router.route('/:id')
     .patch(authjwt, modifyCategory)
@@ -28,8 +29,8 @@ function getCategories(req, res, next){
 }
 
 function createNewCategory (req, res, next){
-    const { body: category, userId } = req;
-    createCategory(category, userId).then(result => { 
+    const { body: category, userId, file: photo } = req;
+    createCategory(category, userId, photo).then(result => { 
         res.status(201).json({message: "Category has been added.", result: result});
     })
     .catch(error => next(error));

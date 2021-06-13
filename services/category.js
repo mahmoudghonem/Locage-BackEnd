@@ -3,6 +3,7 @@ const User = require('../models/user');
 const Subcategory = require('../models/subcategory');
 const Product = require('../models/product');
 const customError = require('../functions/errorHandler');
+const cloudinary = require("../functions/cloudinary");
 
 
 const loggedUserCheck = async (userId) => {
@@ -29,13 +30,14 @@ const retrieveAllCategories = async () => {
     }
 }
 
-const createCategory = async (category, userId) => {
+const createCategory = async (category, userId, photo) => {
     await loggedUserCheck (userId);
 
     try{
-        const newCategory = new Category(category);
-        await newCategory.save();
-        return newCategory; 
+        const result = await cloudinary.uploader.upload(photo.path);
+        const newCategory = new Category({ ...category, photo: result.secure_url, photoPublicId: result.public_id });
+        console.log(newCategory);
+        return await Category.create(newCategory); 
     } catch(error){
         return customError(error.toString(), 500);
     }

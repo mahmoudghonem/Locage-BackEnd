@@ -8,16 +8,22 @@ const CatogrySchema = new Schema({
         maxlength: 50,
         required: true
     },
-    description: {
+    photo: {
         type: String,
-        maxlength: 400,
+    },
+    photoPublicId: {
+        type: String,
     }
 }, {
     toJSON: {
-        virtuals: true
+        //virtuals: true
+        transform: (doc, ret) => {
+            delete ret.photosPublicId;
+            return ret;
+        },
     },
     toObject: {
-        virtuals: true
+        //virtuals: true
     },
     versionKey: false,
     collection: "catogries",
