@@ -11,7 +11,7 @@ router.route('/')
     .post(authjwt, imageFile.single("photo"), createNewCategory);
 
 router.route('/:id')
-    .patch(authjwt, modifyCategory)
+    .patch(authjwt, imageFile.single("photo"), modifyCategory)
     .delete(authjwt, removeCategory);
 
 router.get('/:id/products', retrieveProductsOfCategory);
@@ -38,8 +38,8 @@ function createNewCategory (req, res, next){
 
 function modifyCategory(req, res, next){
     const { id: categoryId } = req.params;
-    const { body: editedCategory, userId } = req;
-    editCategory(editedCategory, categoryId, userId).then(result => {
+    const { body: editedCategory, userId, file: photo } = req;
+    editCategory(editedCategory, categoryId, userId, photo).then(result => {
         res.json({message: "Category has been edited.", result: result});
     })
     .catch(error => next(error));

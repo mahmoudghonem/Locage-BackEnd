@@ -42,13 +42,19 @@ const createCategory = async (category, userId, photo) => {
     }
 }
 
-const editCategory = async (editedCategory, categoryId, userId) => {
+const editCategory = async (editedCategory, categoryId, userId, photo) => {
     // checks
     await loggedUserCheck (userId);
     await categoryExisitsCheck(categoryId);
+    const category = await Category.findById(categoryId);
 
     try{
-        return await Category.findByIdAndUpdate(categoryId, editedCategory);
+        if(photo){
+            await cloudinary.uploader.destroy(category.photoPublicId);
+            const result = await cloudinary.uploader.upload(photo.path);
+            return await Category.findByIdAndUpdate(categoryId, { ...editedCategory, photo: result.secure_url, photoPublicId: result.public_id }, { new: true });
+        } 
+        return await Category.findByIdAndUpdate(categoryId, editedCategory, { new: true });
     } catch(error){
         return customError(error.toString(), 500);
     }
