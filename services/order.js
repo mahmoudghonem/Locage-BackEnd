@@ -80,12 +80,13 @@ const createOrder = async (userId, shipmentAndDiscount) => {
         let totalItems = 0;
         for (const item of cartItems){
             totalItems += item.quantity;
+            const product = await Product.findById(item.productId);
             await OrderItem.create({
                 productId: item.productId,
                 price: item.price,
                 quantity: item.quantity,
                 orderId: orderData._id,
-                vendorId: item.vendorId
+                vendorId: product.vendorId
             });
             await CartItem.findByIdAndDelete(item._id);
             await Product.findByIdAndUpdate(item.productId, { $inc: { quantity: -item.quantity } });

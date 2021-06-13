@@ -94,7 +94,7 @@ const addCart = async (req, res) => {
         totalPrice = product.price * body.quantity;
     }
   
-    const cartItem = new CartItem({ ...body , price :totalPrice , cartId: cart._id,  productId: product._id, vendorId: product.vendorId});
+    const cartItem = new CartItem({ ...body , price :totalPrice , cartId: cart._id,  productId: product._id });
     //await Product.findByIdAndUpdate(product._id,{$inc: {quantity:-1 }});
 
     await cartItem.save(cartItem).then(() => {
