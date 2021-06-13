@@ -4,6 +4,7 @@ const Subcategory = require('../models/subcategory');
 const Product = require('../models/product');
 const customError = require('../functions/errorHandler');
 const cloudinary = require("../functions/cloudinary");
+const mongoose = require('mongoose');
 
 
 const loggedUserCheck = async (userId) => {
@@ -137,7 +138,23 @@ const deleteCategory = async (categoryId, userId) => {
     }
 }
 
-
+const getCategoryWithSubcategories = async (categoryId) => {
+    try{
+        return await Category.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(categoryId) } },
+            {
+                $lookup: {
+                    from: "subcategories",
+                    localField: "_id",
+                    foreignField: "categoryId",
+                    as: "subcategories"
+                }
+            }
+        ]);
+    } catch(error){
+        return customError(error.toString(), 500);
+    }
+}
 
 module.exports = {
     retrieveAllCategories,
@@ -147,5 +164,6 @@ module.exports = {
     createSubcategory,
     editSubcategory,
     getProductsOfCategory,
-    deleteCategory
+    deleteCategory,
+    getCategoryWithSubcategories
 }

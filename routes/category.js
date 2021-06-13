@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const imageFile = require("../middlewares/image");
 const { retrieveAllCategories, createCategory, retrieveSubcategoriesOfCategory, createSubcategory,
-        editCategory, editSubcategory, getProductsOfCategory, deleteCategory } = require('../services/category');
+        editCategory, editSubcategory, getProductsOfCategory, deleteCategory, getCategoryWithSubcategories } = require('../services/category');
 const authjwt = require("../middlewares/authjwt");
 
 
@@ -11,6 +11,7 @@ router.route('/')
     .post(authjwt, imageFile.single("photo"), createNewCategory);
 
 router.route('/:id')
+    .get(getCategoryAndSubcategory)
     .patch(authjwt, imageFile.single("photo"), modifyCategory)
     .delete(authjwt, removeCategory);
 
@@ -83,6 +84,13 @@ function removeCategory(req, res, next){
         res.json({message: "Category has been deleted.", result: result});
     })
     .catch(error => next(error));
+}
+
+function getCategoryAndSubcategory(req, res, next) {
+    const { id: categoryId } = req.params;
+    getCategoryWithSubcategories(categoryId)
+    .then(result => res.json({ result: result }))
+    .catch(error => next(error))
 }
 
 
