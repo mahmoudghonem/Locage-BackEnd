@@ -11,17 +11,16 @@ const DiscountSchema = new Schema({
     type: String,
     required: true
   },
-  validity: {
-    type: String,
-    enum: ['valid', 'invalid'],
-    default: 'valid'
+  valid: {
+    type: Boolean,
+    default: true
   }
 }, {
   toJSON: {
-    virtuals: true
+   // virtuals: true
   },
   toObject: {
-    virtuals: true
+   // virtuals: true
   },
   versionKey: false,
   collection: 'discounts'
