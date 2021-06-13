@@ -6,6 +6,7 @@ const Cart = require('../models/cart');
 const User = require('../models/user');
 const Shipment = require('../models/shipment');
 const Store = require('../models/store');
+const Discount = require('../models/discount');
 const customError = require('../functions/errorHandler');
 const { isEmpty } = require('../functions/checks');
 
@@ -35,6 +36,7 @@ async function cartItemsAreValid(cartItems) {
     }
 */
 const createOrder = async (userId, shipmentAndDiscount) => {
+    let orderPrice = 0;
     const loggedUser = await User.findById(userId);
     
     // check
@@ -42,22 +44,32 @@ const createOrder = async (userId, shipmentAndDiscount) => {
     isEmpty(shipmentAndDiscount);
 
     if(!shipmentAndDiscount.shipmentId) customError("SHIPMENTID_NOT_PROVIDED", 400);
-    const shipmentData = await Shipment.findById(shipmentAndDiscount.shipmentId);
-
-    // check that the discont code exists in database (pass for now)
+    const shipmentData = await Shipment.findById(shipmentAndDiscount.shipmentId)
 
     const userCart = await Cart.findOne({ userId: userId });
     const cartItems = await CartItem.find({ cartId: userCart._id }); // array
 
     if (cartItems.length === 0) customError("CART_IS_EMPTY", 400);
 
+    orderPrice = userCart.totalprice;
+    
+    // check that the discont code (if provided) exists in database and valid
+    if(shipmentAndDiscount.discountCode) {
+        const discountCode = await Discount.findOne({ code: shipmentAndDiscount.discountCode });
+        if(!discountCode) customError("DISCOUNTCODE_NOT_FOUND", 404);
+
+        if(!discountCode.valid) customError("INVALID_DISCOUNT_CODE", 400);
+
+        orderPrice = userCart.totalprice * (1 - discountCode.discountPercent / 100);
+    }
+    
     // Create initial order data
     let orderData = new Order({
         name: shipmentData.fullName,
         address: shipmentData.address,
         phoneNumber: shipmentData.phoneNumber,
         userId: userId,
-        totalprice: userCart.totalprice
+        totalprice: orderPrice 
     });
 
     try{
