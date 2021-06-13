@@ -143,6 +143,10 @@ const cancel = async (userId, orderId) => {
 const changeStatus = async (orderId, orderStatus) => {
     const order = await Order.findById(orderId);
     isEmpty(orderStatus);
+    const status = ['processing', 'preparing', 'shipping', 'cancelled', 'pickedup'];
+
+    if((status.findIndex(item => item == orderStatus.status) === -1)) 
+        customError("UNPROCESSABLE_ENTITY", 422);
 
     if(!orderStatus.status) customError("STATUS_NOT_PROVIDED", 400);  
 
