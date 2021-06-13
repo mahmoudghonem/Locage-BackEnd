@@ -38,10 +38,24 @@ const editDiscount = async (discountData, discountCodeId) => {
     }
 }
 
+const deleteDiscount = async (discountCodeId) => {
+    const discountCode = await Discount.findById(discountCodeId);
+
+    if(!discountCode) customError("DISCOUNTCODE_NOT_FOUND", 404);
+
+    try{
+        return await Discount.findByIdAndDelete(discountCodeId);
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
+
+
 
 
 module.exports = {
     getDiscountCodes,
     createDiscount,
     editDiscount,
+    deleteDiscount
 }

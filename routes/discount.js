@@ -28,14 +28,14 @@ function editDiscountCodes(req, res, next) {
     const { id: discountCodeId } = req.params;
     const { body: discountData } = req;
     editDiscount(discountData, discountCodeId)
-    .then(result => res.status(201).json({ message: "Discount code edited successfully.", result: result }))
+    .then(result => res.json({ message: "Discount code edited successfully.", result: result }))
     .catch(error => next(error));
 }
 
 function deleteDiscountCodes(req, res, next) {
     const { id: discountCodeId } = req.params;
     deleteDiscount(discountCodeId)
-    .then(result => res.status(201).json({ message: "Discount code has been deleted.", result: result }))
+    .then(result => res.json({ message: "Discount code has been deleted.", result: result }))
     .catch(error => next(error));
 }
 
