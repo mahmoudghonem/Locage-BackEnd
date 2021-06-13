@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
 const { Schema } = mongoose;
 
 const ReviewSchema = new Schema({
@@ -34,6 +35,7 @@ const ReviewSchema = new Schema({
 // ReviewSchema.virtual('id').get(function () {
 //     return this._id.toHexString();
 // });
+ReviewSchema.plugin(mongoosePaginate);
 const review = mongoose.model("Reveiw", ReviewSchema);
 
 module.exports = review;

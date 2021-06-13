@@ -13,6 +13,9 @@ const subcategoryRouter = require('./subcategory');
 const orderRouter = require('./order');
 const cartRouter = require('./cart');
 const discountRouter = require('../routes/discount');
+const reviewRouter = require('./review');
+
+
 
 
 router.use('/users', userRouter);
@@ -38,6 +41,9 @@ router.use('/orders', orderRouter);
 router.use('/carts', cartRouter);
 
 router.use('/discounts', discountRouter);
+
+router.use('/reviews', reviewRouter);
+
 
 
 //set not found router middleware
