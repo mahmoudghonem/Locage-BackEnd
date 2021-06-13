@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const DiscountSchema = new Schema({
   discountPercent: {
@@ -28,6 +29,8 @@ const DiscountSchema = new Schema({
 // DiscountSchema.virtual('id').get(function () {
 //   return this._id.toHexString();
 // });
+DiscountSchema.plugin(mongoosePaginate);
+
 const discount = mongoose.model('Discount', DiscountSchema);
 
 module.exports = discount;
