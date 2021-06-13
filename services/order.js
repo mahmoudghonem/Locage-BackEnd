@@ -122,6 +122,7 @@ const cancel = async (userId, orderId) => {
     const order = await Order.findOne({ _id: orderId, userId: userId });
 
     if(!order) customError("ORDER_NOT_FOUND", 404);
+
     try{
         if(order.status === 'processing' || order.status === 'preparing'){
             // re-increase the products quantities
@@ -136,13 +137,29 @@ const cancel = async (userId, orderId) => {
     } catch(error) {
         customError(error.toString(), 500);
     }
-    
-
 }
+
+// admin can change the status of an order
+const changeStatus = async (orderId, orderStatus) => {
+    const order = await Order.findById(orderId);
+    isEmpty(orderStatus);
+
+    if(!orderStatus.status) customError("STATUS_NOT_PROVIDED", 400);  
+
+    if(!order) customError("ORDER_NOT_FOUND", 404);
+
+    try{
+        return await Order.findByIdAndUpdate(orderId, orderStatus, { new: true });
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
+
 
 module.exports = {
     createOrder,
     getOrders,
     getVendorOrdersItems,
-    cancel
+    cancel,
+    changeStatus
 }

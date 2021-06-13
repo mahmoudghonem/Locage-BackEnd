@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getOrders, getVendorOrdersItems, cancel } = require('../services/order');
+const { createOrder, getOrders, getVendorOrdersItems, cancel, changeStatus } = require('../services/order');
 const authjwt = require("../middlewares/authjwt");
 const { adminRole, vendorRole } = require("../middlewares/roles");
 
@@ -9,7 +9,7 @@ router.post('/', authjwt, placeOrder);
 router.get('/', authjwt, adminRole, retrieveAllOrders);
 router.get('/vendor', authjwt, vendorRole, retrieveVendorOrdersItems);
 router.patch('/:id/cancel', authjwt, cancelOrder);
-// vendor canchange the state of an order (patch)
+router.patch('/:id/status', authjwt, adminRole, changeOrderStatus);
 
 /* Routes Handlers */
 function placeOrder(req, res, next) {
@@ -46,6 +46,12 @@ function cancelOrder(req, res, next) {
     .catch(error => next(error));
 }
 
-
+function changeOrderStatus(req, res, next){
+    const { id: orderId } = req.params;
+    const { body: orderStatus } = req;
+    changeStatus(orderId, orderStatus)
+    .then(result => res.json({ message: "Order status has been changed successfully.", result: result }))
+    .catch(error => next(error));
+}
 
 module.exports = router;
