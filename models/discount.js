@@ -6,6 +6,8 @@ const DiscountSchema = new Schema({
   discountPercent: {
     type: Number,
     required: true,
+    min: 0,
+    max: 100
   },
   code: {
     type: String,
