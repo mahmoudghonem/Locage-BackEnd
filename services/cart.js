@@ -106,6 +106,50 @@ const addCart = async (req, res) => {
 
 };
 
+//add array of item to cart 
+const addItemsCart = async (req, res) => {
+    const arr  = req.body ;
+    const userId = req.userId;
+
+    await loggenedUser(userId);
+    const cart = await Cart.findOne({ userId: userId }).exec();
+    const items = [];
+    for (var key of arr) {
+        const product = await Product.findById(key.productId).exec();
+        if (!product){
+            res.status(404).json({ message: "PRODUCT_NOT_FOUND" });
+             continue;
+        }
+        const fondedItem = await checkIfProductAlreadyIn(cart._id, product._id);
+        var totalPrice = 0 ;
+        if(Object.keys(req.body).length === 0){
+            totalPrice = product.price * 1;
+        }
+        else{
+            totalPrice = product.price * key.quantity;
+        }
+
+        if (fondedItem){
+            if( fondedItem.quantity != key.quantity){
+                await CartItem.findByIdAndUpdate(fondedItem ,{$set:{price :totalPrice , quantity : key.quantity} })
+            }
+            else{
+                res.status(200).json({ message: "PRODUCT_ALREADY_ADDED" });
+            }
+             continue;
+        }
+        const cartItem = new CartItem({ ...key , price :totalPrice , cartId: cart._id});
+       items.push(cartItem);
+    }
+    await CartItem.insertMany(items).then(() => {
+        calPrice(cart._id);
+        return res.status(200).json({ message: "ADDED_SUCCESSFULLY" });
+    }).catch((err) => {
+        return res.Error(err.toString());
+   });
+
+};
+
 //update item in cart 
 const updateCart = async (req, res) => {
     const {body} = req ;
@@ -157,7 +201,7 @@ const removeCart = async (req, res) => {
 
     const fondedItem = await checkIfProductAlreadyIn(cart._id, productId);
     if (!fondedItem)
-        new CustomError('WISH_LIST_ITEM_NOT_FOUND', 400);
+        new CustomError('CART_ITEM_NOT_FOUND', 400);
     await CartItem.findOneAndRemove({ cartId: cart._id, productId: productId }).then((result) => {
         calPrice(cart._id);
         return res.status(200).json({ message: "REMOVED_SUCCESSFULLY", result: result });
@@ -188,6 +232,7 @@ module.exports = {
     getUserCart ,
     cartDetail ,
     addCart ,
+    addItemsCart,
     updateCart,
     removeCart ,
     emptyCart

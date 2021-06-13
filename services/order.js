@@ -93,6 +93,7 @@ const createOrder = async (userId, shipmentAndDiscount) => {
         }
 
         orderData.totalProducts = totalItems;
+        await Cart.findByIdAndUpdate(userCart._id , {$set:{price: 0}});
         return await Order.create(orderData);
     } catch(error){
         // if an error occures the created order should not be completed
