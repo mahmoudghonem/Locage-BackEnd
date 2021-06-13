@@ -50,7 +50,7 @@ const createShipment = async (req, res) => {
 
     body.userId = userId;
     const shipment = new Shipment(body);
-    await Shipment.save(shipment).then(() => {
+    await shipment.save().then(() => {
         return res.status(200).json({ message: "ADDED_SUCCESSFULLY" });
     }).catch((err) => {
         new CustomError(err.toString());

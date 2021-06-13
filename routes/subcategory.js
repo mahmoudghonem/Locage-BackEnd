@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { getProductsOfSubcategory, editSubcategory, deleteSubcategory } = require('../services/subcategory');
 const authjwt = require("../middlewares/authjwt");
+const imageFile = require("../middlewares/image");
 
 
 router.get('/:id/products', retrieveProductsOfSubcategory);
 
 router.route('/:id')
-    .patch(authjwt, modifySubcategory)
+    .patch(authjwt, imageFile.single("photo"), modifySubcategory)
     .delete(authjwt, removeSubcategory)
 
 
@@ -20,8 +21,8 @@ function retrieveProductsOfSubcategory(req, res, next){
 
 function modifySubcategory(req, res, next){
     const { id: subcategoryId } = req.params;
-    const { body: editedSubcategory, userId } = req;
-    editSubcategory(editedSubcategory, subcategoryId, userId).then(result => {
+    const { body: editedSubcategory, userId, file: photo } = req;
+    editSubcategory(editedSubcategory, subcategoryId, userId, photo).then(result => {
         res.json({message: "Subcategory has been edited.", result: result});
     })
     .catch(error => next(error));

@@ -85,6 +85,7 @@ const addCart = async (req, res) => {
     }
     var totalPrice = 0 ;
 
+
     if(Object.keys(req.body).length === 0){
 
         totalPrice = product.price * 1;
@@ -93,8 +94,8 @@ const addCart = async (req, res) => {
         totalPrice = product.price * body.quantity;
     }
   
-    const cartItem = new CartItem({ ...body , price :totalPrice , cartId: cart._id,  productId: product._id});
-    await Product.findByIdAndUpdate(product._id,{$inc: {quantity:-1 }});
+    const cartItem = new CartItem({ ...body , price :totalPrice , cartId: cart._id,  productId: product._id });
+    //await Product.findByIdAndUpdate(product._id,{$inc: {quantity:-1 }});
 
     await cartItem.save(cartItem).then(() => {
         calPrice(cart._id);

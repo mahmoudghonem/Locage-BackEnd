@@ -18,7 +18,7 @@ const CartItemSchema = new Schema({
   cartId: {
     type: Schema.Types.ObjectId,
     ref: "carts",
-  },
+  }
 }, {
   toJSON: {
     virtuals: true

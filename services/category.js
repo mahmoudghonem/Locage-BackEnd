@@ -3,6 +3,8 @@ const User = require('../models/user');
 const Subcategory = require('../models/subcategory');
 const Product = require('../models/product');
 const customError = require('../functions/errorHandler');
+const cloudinary = require("../functions/cloudinary");
+const mongoose = require('mongoose');
 
 
 const loggedUserCheck = async (userId) => {
@@ -29,25 +31,31 @@ const retrieveAllCategories = async () => {
     }
 }
 
-const createCategory = async (category, userId) => {
+const createCategory = async (category, userId, photo) => {
     await loggedUserCheck (userId);
 
     try{
-        const newCategory = new Category(category);
-        await newCategory.save();
-        return newCategory; 
+        const result = await cloudinary.uploader.upload(photo.path);
+        const newCategory = new Category({ ...category, photo: result.secure_url, photoPublicId: result.public_id });
+        return await Category.create(newCategory); 
     } catch(error){
         return customError(error.toString(), 500);
     }
 }
 
-const editCategory = async (editedCategory, categoryId, userId) => {
+const editCategory = async (editedCategory, categoryId, userId, photo) => {
     // checks
     await loggedUserCheck (userId);
     await categoryExisitsCheck(categoryId);
+    const category = await Category.findById(categoryId);
 
     try{
-        return await Category.findByIdAndUpdate(categoryId, editedCategory);
+        if(photo){
+            await cloudinary.uploader.destroy(category.photoPublicId);
+            const result = await cloudinary.uploader.upload(photo.path);
+            return await Category.findByIdAndUpdate(categoryId, { ...editedCategory, photo: result.secure_url, photoPublicId: result.public_id }, { new: true });
+        } 
+        return await Category.findByIdAndUpdate(categoryId, editedCategory, { new: true });
     } catch(error){
         return customError(error.toString(), 500);
     }
@@ -63,16 +71,16 @@ const retrieveSubcategoriesOfCategory = async (categoryId) => {
     }
 }
 
-const createSubcategory = async (subcategory, categoryId, userId) => {
+const createSubcategory = async (subcategory, categoryId, userId, photo) => {
     // checks
     await loggedUserCheck (userId);
     await categoryExisitsCheck(categoryId);
 
     try{
+        const result = await cloudinary.uploader.upload(photo.path);
         subcategory.categoryId = categoryId;
-        const newSubcategory = new Subcategory(subcategory);
-        await newSubcategory.save();
-        return newSubcategory; 
+        const newSubcategory = new Subcategory({ ...subcategory, photo: result.secure_url, photoPublicId: result.public_id });
+        return await Subcategory.create(newSubcategory);
     } catch(error){
         return customError(error.toString(), 500);
     }
@@ -122,13 +130,31 @@ const deleteCategory = async (categoryId, userId) => {
 
         await Subcategory.deleteMany({ categoryId: categoryId });
 
+        const category = await Category.findById(categoryId);
+        await cloudinary.uploader.destroy(category.photoPublicId);
         return await Category.findByIdAndDelete(categoryId);
     } catch(error){
         return customError(error.toString(), 500);
     }
 }
 
-
+const getCategoryWithSubcategories = async (categoryId) => {
+    try{
+        return await Category.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(categoryId) } },
+            {
+                $lookup: {
+                    from: "subcategories",
+                    localField: "_id",
+                    foreignField: "categoryId",
+                    as: "subcategories"
+                }
+            }
+        ]);
+    } catch(error){
+        return customError(error.toString(), 500);
+    }
+}
 
 module.exports = {
     retrieveAllCategories,
@@ -138,5 +164,6 @@ module.exports = {
     createSubcategory,
     editSubcategory,
     getProductsOfCategory,
-    deleteCategory
+    deleteCategory,
+    getCategoryWithSubcategories
 }
