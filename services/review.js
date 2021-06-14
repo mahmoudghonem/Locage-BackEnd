@@ -24,13 +24,13 @@ const getReviews = async (req, res) => {
     const { page } = req.query;
     //const { productId }= req.query;
 
-    const query ={};
-    //query.docs.productId = productId ;
+    // const query ={};
+    // //query.docs.productId = productId ;
 
-    const options = {
-        limit: limit || 10,
-        page: page || 1, 
-    };
+    // const options = {
+    //     limit: limit || 10,
+    //     page: page || 1, 
+    // };
   //  await Review.paginate(query,options).then((result)=>{
     await Review.find(productId).limit(10).then((result)=>{
         return res.status(200).json({result:result});

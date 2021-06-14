@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const authjwt = require('../middlewares/authjwt');
-const { register, login, reset, recover, update, deleteAccount, checkMail,updatePassword } = require('../services/user');
+const { register, login, reset, recover, update, deleteAccount, checkMail, updatePassword,getUser } = require('../services/user');
 const { updatePasswordValidationRules, registerValidationRules, resetValidationRules, loginValidationRules, recoverValidationRules, updateValidationRules, validate } = require('../middlewares/userValidator');
 
+
+router.get('/:id', authjwt, getUserDetails);
 
 router.post('/login', loginValidationRules(), validate, userLoginFun);
 
@@ -16,10 +18,20 @@ router.patch('/recover/:token', recoverValidationRules(), validate, userRecoverF
 router.post('/register', registerValidationRules(), validate, userRegisterFun);
 
 router.patch('/:id', authjwt, updateValidationRules(), validate, userUpdateFun);
+
 router.patch('/update-password/:id', authjwt, updatePasswordValidationRules(), validate, userPasswordUpdateFun);
 
 router.delete('/:id', authjwt, userDeleteFun);
 
+
+//login get request method
+function getUserDetails(req, res, next) {
+    getUser(req, res).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
 
 //login get request method
 function userLoginFun(req, res, next) {

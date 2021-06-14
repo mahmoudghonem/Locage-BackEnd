@@ -23,6 +23,26 @@ const createUserData = async (id) => {
     await WishList.create({ userId: id });
 };
 
+//get user data
+const getUser = async (req, res) => {
+    const userId = req.userId;
+    const { id } = req.params;
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+
+    const loadedUser = await findOneUserById(userId);
+
+    if (!loadedUser)
+        new CustomError('UNAUTHORIZED', 401);
+
+    try {
+        return res.status(200).json({ user: loadedUser });
+    } catch (error) {
+        new CustomError(error.toString(), 400);
+    }
+
+};
+
 //login user and return token
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -69,7 +89,7 @@ const reset = async (req, res) => {
         subject: 'Locage Account Password Reset',
         text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
             'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-              process.env.FRONT_URL+ '/recover/' + loadedUser.resetPasswordToken + '\n\n' +
+            process.env.FRONT_URL + '/recover/' + loadedUser.resetPasswordToken + '\n\n' +
             'If you did not request this, please ignore this email and your password will remain unchanged.\n'
     };
     await smtpTransport.sendMail(mailOptions).then(() => {
@@ -220,6 +240,7 @@ const checkMail = async (req, res) => {
 
 module.exports = {
     login,
+    getUser,
     register,
     reset,
     recover,
