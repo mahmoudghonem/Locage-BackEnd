@@ -33,6 +33,16 @@ async function getOne(req, res) {
         return store;
 }
 
+//Getone store
+async function check(req, res) {
+    const { userId } = req.params;
+    const store = await Store.findOne({userId:userId}).exec();
+    if (!store)
+        new CustomError("NOT_FOUND", 404);
+    else
+        return store;
+}
+
 
 //Post one store
 async function create(req, res) {
@@ -112,6 +122,7 @@ async function remove(req, res) {
 module.exports = {
     getAll,
     getOne,
+    check,
     create,
     update,
     remove

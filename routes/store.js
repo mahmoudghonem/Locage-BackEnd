@@ -2,12 +2,13 @@ const express = require("express");
 const router = express.Router();
 const imageFile = require("../middlewares/image");
 // const { storeValidationRules, validate } = require('../middlewares/storeValidator');
-const { getAll, getOne, create, update, remove } = require("../services/store");
+const { getAll, getOne, create, update, remove , check } = require("../services/store");
 const authjwt = require("../middlewares/authjwt");
 
 //store router
 router.get('/', getAllStores);
 router.get('/:id', authjwt, getOneStore);
+router.get('/check/:userId', authjwt, checkStore);
 router.post('/', authjwt, imageFile.single("photo"), createStore);
 router.patch('/:id', authjwt, imageFile.single("photo"), updateStore);
 router.delete('/:id',authjwt, deleteStore);
@@ -28,6 +29,17 @@ function getAllStores(req, res, next) {
 //Get one store 
 function getOneStore(req, res, next) {
     getOne(req, res)
+        .then((result) => {
+            res.json(result);
+        })
+        .catch((err) => {
+            next(err);
+        });
+
+}
+//Check user is  have store 
+function checkStore(req, res, next) {
+    check(req, res)
         .then((result) => {
             res.json(result);
         })
