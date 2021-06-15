@@ -84,7 +84,7 @@ const getTopDeals = async (page, limit) => {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10
         }
-        return await Product.paginate({ $or: [{ discount: { $gt: 20 } }, { quantity: { $lt: 10 }}] }, options);
+        return await Product.paginate({ $or: [{ discount: { $gt: 10 } }, { quantity: { $lt: 10 }}] }, options);
     } catch (error) {
         customError(error.toString(), 500);
     }
