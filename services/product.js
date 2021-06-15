@@ -75,7 +75,18 @@ const getProduct = async (id) => {
     } catch (error) {
         return customError(error.toString(), 500);
     }
+}
 
+const getTopDeals = async (page, limit) => {
+    try {
+        const options = {
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10
+        }
+        return await Product.paginate({ $or: [{ discount: { $gt: 20 } }, { quantity: { $lt: 10 }}] }, options);
+    } catch (error) {
+        customError(error.toString(), 500);
+    }
 }
 
 const add = async (product, files, userId) => {
@@ -221,5 +232,6 @@ module.exports = {
     edit,
     pushPhotos,
     deletePhoto,
-    remove
+    remove,
+    getTopDeals
 };

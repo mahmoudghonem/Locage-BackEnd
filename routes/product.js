@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { add, getProducts, getVendorProducts, getProduct, edit, pushPhotos, deletePhoto, remove } = require('../services/product');
+const { add, getProducts, getVendorProducts, getProduct, getTopDeals, edit, pushPhotos, deletePhoto, remove } = require('../services/product');
 const upload = require("../middlewares/image");
 //const { validate, addValidationRules } = require('../middlewares/productValidator');
 const authjwt = require("../middlewares/authjwt");
@@ -10,6 +10,8 @@ const authjwt = require("../middlewares/authjwt");
 router.get('/', retrieveProducts);
 router.get('/vendor', authjwt, retrieveVendorProducts);
 router.get('/:id', retrieveProduct);
+router.get('/top-deals', retrieveTopDeals);
+//router.get('/daily-deals', retrieveDailyDeals);
 router.post('/', authjwt, /*addValidationRules(), validate,*/ upload.array("photos", 10), addProduct);
 router.patch('/:id', authjwt, editProduct);
 router.patch('/:id/manage-photos', authjwt, upload.array("photos", 10), addPhotos);
@@ -49,6 +51,16 @@ function addProduct(req, res, next) {
     .then(result => res.json({ message: "Product has been added.", result: result }))
     .catch(error => next(error));
 }
+
+// Retrieve Top Deals products
+function retrieveTopDeals(req, res, next){
+    const { page, limit } = req.query;
+    getTopDeals(page, limit)
+    .then(result => res.json({ result: result }))
+    .catch(error => next(error));
+}
+
+
 
 // Modify an existing product 
 function editProduct(req, res, next) {
