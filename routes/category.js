@@ -10,7 +10,7 @@ router.route('/')
     .get(getCategories)
     .post(authjwt, imageFile.single("photo"), createNewCategory);
 
-router.get('/all',getAll)    
+router.get('/all', getAll);
 
 router.route('/:id')
     .get(getCategoryAndSubcategory)
