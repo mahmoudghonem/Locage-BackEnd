@@ -27,11 +27,12 @@ const userWishList = async (req, res) => {
     await findOneUserById(userId);
     const wishList = await WishList.findOne({ userId: userId }).exec();
 
-    await WishListItem.find({ wishListId: wishList._id }).then((result) => {
+    try {
+        const result = await WishListItem.find({ wishListId: wishList._id });
         return res.status(200).json({ result: result });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 
 };
 
@@ -46,11 +47,12 @@ const userWishListDetails = async (req, res) => {
 
     const wishListItems = await WishListItem.find({ wishListId: wishList._id }).distinct('productId').exec();
 
-    await Product.find({ _id: { $in: wishListItems } }).then((result) => {
+    try {
+        const result = await Product.find({ _id: { $in: wishListItems } });
         return res.status(200).json({ result: result });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 
 };
 
@@ -78,11 +80,12 @@ const addWishList = async (req, res) => {
         new CustomError('ALREADY_ADDED', 400);
 
     const wishListItem = new WishListItem(body);
-    await wishListItem.save(wishListItem).then(() => {
+    try {
+        await wishListItem.save();
         return res.status(200).json({ message: "ADDED_SUCCESSFULLY" });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 
 };
 
@@ -103,12 +106,12 @@ const removeWishList = async (req, res) => {
     if (!fondedItem)
         new CustomError('WISH_LIST_ITEM_NOT_FOUND', 400);
 
-    await WishListItem.findOneAndRemove({ wishListId: wishList._id, productId: productId }).then((result) => {
+    try {
+        const result = await WishListItem.findOneAndRemove({ wishListId: wishList._id, productId: productId });
         return res.status(200).json({ message: "REMOVED_SUCCESSFULLY", result: result });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
-
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 const emptyWishList = async (req, res) => {
@@ -120,11 +123,12 @@ const emptyWishList = async (req, res) => {
     await findOneUserById(userId);
     const wishList = await WishList.findOne({ userId: userId }).exec();
 
-    await WishListItem.deleteMany({ wishListId: wishList._id }).then(() => {
+    try {
+        await WishListItem.deleteMany({ wishListId: wishList._id });
         return res.status(200).json({ message: "REMOVED_ALL_SUCCESSFULLY" });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 
 };
 

@@ -18,9 +18,13 @@ const findOneUserById = async (id) => {
 
 //Function to create user essential Data objects
 const createUserData = async (id) => {
-    await PaymentMethod.create({ userId: id });
-    await Cart.create({ userId: id });
-    await WishList.create({ userId: id });
+    try {
+        await PaymentMethod.create({ userId: id });
+        await Cart.create({ userId: id });
+        await WishList.create({ userId: id });
+    } catch (error) {
+        new CustomError(error.toString(), 400);
+    }
 };
 
 //get user data
@@ -56,12 +60,14 @@ const login = async (req, res) => {
     if (!validPass)
         new CustomError('WRONG_PASSWORD', 401);
 
-    //create token and return it
-    await loadedUser.generateTokenAccess().then((result) => {
-        return res.status(200).json({ token: result, userId: loadedUser.id });
-    }).catch((error) => {
+    try {
+        //create token and return it
+        const token = await loadedUser.generateTokenAccess();
+        return res.status(200).json({ token: token, userId: loadedUser.id });
+    } catch (error) {
         new CustomError(error.toString(), 400);
-    });
+    }
+
 };
 
 //send reset password token to mail
@@ -92,15 +98,15 @@ const reset = async (req, res) => {
             process.env.FRONT_URL + '/recover/' + loadedUser.resetPasswordToken + '\n\n' +
             'If you did not request this, please ignore this email and your password will remain unchanged.\n'
     };
-    await smtpTransport.sendMail(mailOptions).then(() => {
+    try {
+        await smtpTransport.sendMail(mailOptions);
         return res.status(200).json({ message: 'RESET_EMAIL_SENT', email: loadedUser.email });
-    }).catch((error) => {
+    } catch (error) {
         new CustomError(error.toString(), 400);
-    });
-
+    }
 };
 
-//update password if reset token is vaild or not expired
+//update password if reset token is valid or not expired
 const recover = async (req, res) => {
     const loadedUser = await User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).exec();
     if (!loadedUser)
@@ -126,12 +132,13 @@ const recover = async (req, res) => {
         text: 'Hello,\n\n' +
             'This is a confirmation that the password for your account ' + loadedUser.email + ' has just been changed.\n'
     };
-    await smtpTransport.sendMail(mailOptions).then(() => {
-        return res.status(200).json({ message: 'PASSWORD_CHANGED', email: loadedUser.email });
-    }).catch((error) => {
-        new CustomError(error.toString(), 400);
-    });
 
+    try {
+        await smtpTransport.sendMail(mailOptions);
+        return res.status(200).json({ message: 'PASSWORD_CHANGED', email: loadedUser.email });
+    } catch (error) {
+        new CustomError(error.toString(), 400);
+    }
 };
 
 //register user and return user data and token
@@ -150,11 +157,12 @@ const register = async (req, res) => {
     await createUserData(createdUser._id);
 
     //return user data and token after create
-    await createdUser.generateTokenAccess().then((result) => {
-        return res.status(200).json({ message: "ACCOUNT_CREATED", token: result, userId: createdUser.id });
-    }).catch((error) => {
+    try {
+        const token = await createdUser.generateTokenAccess();
+        return res.status(200).json({ message: "ACCOUNT_CREATED", token: token, userId: createdUser.id });
+    } catch (error) {
         new CustomError(error.toString(), 400);
-    });
+    }
 };
 
 const update = async (req, res) => {
@@ -176,12 +184,12 @@ const update = async (req, res) => {
         new CustomError('NOTHING_CHANGED', 400);
     }
 
-    await User.findOneAndUpdate({ _id: userId }, body).then((result) => {
+    try {
+        const result = await User.findOneAndUpdate({ _id: userId }, body);
         return res.status(200).json({ message: "ACCOUNT_UPDATED", result: result });
-    }).catch((error) => {
-        CustomError(error.toString(), 400);
-
-    });
+    } catch (error) {
+        new CustomError(error.toString(), 400);
+    }
 
 };
 
@@ -201,12 +209,12 @@ const updatePassword = async (req, res) => {
     if (!validPass)
         new CustomError('WRONG_PASSWORD', 401);
 
-    await User.findOneAndUpdate({ _id: userId }, { password: body.password }).then((result) => {
+    try {
+        const result = await User.findOneAndUpdate({ _id: userId }, { password: body.password });
         return res.status(200).json({ message: "PASSWORD_UPDATED", result: result });
-    }).catch((error) => {
-        CustomError(error.toString(), 400);
-
-    });
+    } catch (error) {
+        new CustomError(error.toString(), 400);
+    }
 
 };
 
@@ -219,12 +227,12 @@ const deleteAccount = async (req, res) => {
     if (!loadedUser)
         new CustomError('UNAUTHORIZED', 401);
 
-    await loadedUser.remove().then((result) => {
+    try {
+        const result = await loadedUser.remove();
         return res.status(200).json({ message: "ACCOUNT_DELETED", result: result });
-    }).catch((error) => {
-        CustomError(error.toString(), 400);
-
-    });
+    } catch (error) {
+        new CustomError(error.toString(), 400);
+    }
 
 };
 

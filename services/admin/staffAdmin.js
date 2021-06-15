@@ -3,74 +3,93 @@ const CustomError = require('../../functions/errorHandler');
 
 //get all admin details from database to admin dashboard
 const adminDetails = async (req, res) => {
-    await User.find({ role: 'admin' }).then(admins => {
+    try {
+        const admins = await User.find({ role: 'admin' });
         return res.status(200).json({ admins: admins });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
+
 //get one admin details from database to admin dashboard
 const oneAdminDetails = async (req, res) => {
     const { id } = req.params;
-    await User.find({ $and: [{ _id: id }, { role: 'admin' }] }).then(admin => {
+
+    try {
+        const admin = await User.find({ $and: [{ _id: id }, { role: 'admin' }] });
         return res.status(200).json({ admin: admin });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 //get all staff details from database to admin dashboard
 const staffDetails = async (req, res) => {
-    await User.find({ role: 'staff' }).then(staff => {
+    try {
+        const staff = await User.find({ role: 'staff' });
         return res.status(200).json({ staff: staff });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
+
 //get one staff details from database to admin dashboard
 const oneStaffDetails = async (req, res) => {
     const { id } = req.params;
-    await User.find({ $and: [{ _id: id }, { role: 'staff' }] }).then(staff => {
+
+    try {
+        const staff = await User.find({ $and: [{ _id: id }, { role: 'staff' }] });
         return res.status(200).json({ staff: staff });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
+
 //make one user account to subAdmin
 const makeAccountSubAdmin = async (req, res) => {
     const { id } = req.params;
-    await User.findByIdAndUpdate({ _id: id }, { role: 'staff' }).then(result => {
+
+    try {
+        const result = await User.findByIdAndUpdate({ _id: id }, { role: 'staff' });
         return res.status(200).json({ result: result });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
+
 //make one subAdmin account to user
 const removeSubAdminRole = async (req, res) => {
     const { id } = req.params;
-    await User.findByIdAndUpdate({ _id: id }, { role: 'user' }).then(result => {
+
+    try {
+        const result = await User.findByIdAndUpdate({ _id: id }, { role: 'user' });
         return res.status(200).json({ result: result });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 //get all staff and admins details from database to admin dashboard
 const moderatorDetails = async (req, res) => {
-    await User.find({ $or: [{ role: 'admin' }, { role: 'staff' }] }).then(moderators => {
+
+    try {
+        const moderators = await User.find({ $or: [{ role: 'admin' }, { role: 'staff' }] });
         return res.status(200).json({ moderators: moderators });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
+
 //get one from staff or admins details from database to admin dashboard
 const oneModeratorDetails = async (req, res) => {
     const { id } = req.params;
-    await User.find({ $and: [{ _id: id }, { $or: [{ role: 'admin' }, { role: 'staff' }] }] }).then(staff => {
+
+    try {
+        const staff = await User.find({ $and: [{ _id: id }, { $or: [{ role: 'admin' }, { role: 'staff' }] }] });
         return res.status(200).json({ staff: staff });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 module.exports = {
