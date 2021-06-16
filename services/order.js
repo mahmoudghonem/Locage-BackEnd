@@ -11,6 +11,7 @@ const Store = require('../models/store');
 const Discount = require('../models/discount');
 const customError = require('../functions/errorHandler');
 const { isEmpty } = require('../functions/checks');
+const mongoose = require('mongoose');
 
 
 const gateway = new braintree.BraintreeGateway({
@@ -144,6 +145,26 @@ const getOrders = async (page, limit) => {
     }
 }
 
+const getOrder = async (orderId, userId) => {
+    try{
+        const order =  await Order.aggregate([
+            { $match: { $and: [ { _id: mongoose.Types.ObjectId(orderId) }, { userId: mongoose.Types.ObjectId(userId) } ]} },
+            {
+                $lookup: {
+                    from: "orderItems",
+                    localField: "_id",
+                    foreignField: "orderId",
+                    as: "orderItems"
+                }
+            }
+        ]);
+        if(order.length === 0) customError("ORDER_NOT_FOUND", 404);
+        return order;
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
+
 const getVendorOrdersItems = async (vendor, page, limit) => {
     const options = {
         limit: parseInt(limit) || 10,
@@ -207,6 +228,7 @@ module.exports = {
     getPaymentToken,
     createOrder,
     getOrders,
+    getOrder,
     getVendorOrdersItems,
     cancel,
     changeStatus
