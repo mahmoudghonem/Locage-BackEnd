@@ -185,8 +185,8 @@ const update = async (req, res) => {
     }
 
     try {
-        const result = await User.findOneAndUpdate({ _id: userId }, body);
-        return res.status(200).json({ message: "ACCOUNT_UPDATED", result: result });
+        await User.findOneAndUpdate({ _id: userId }, body);
+        return res.status(200).json({ message: "ACCOUNT_UPDATED" });
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
@@ -210,8 +210,8 @@ const updatePassword = async (req, res) => {
         new CustomError('WRONG_PASSWORD', 401);
 
     try {
-        const result = await User.findOneAndUpdate({ _id: userId }, { password: body.password });
-        return res.status(200).json({ message: "PASSWORD_UPDATED", result: result });
+        await User.findOneAndUpdate({ _id: userId }, { password: body.password });
+        return res.status(200).json({ message: "PASSWORD_UPDATED" });
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
