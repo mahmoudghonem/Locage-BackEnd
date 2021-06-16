@@ -1,18 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const authjwt = require("../middlewares/authjwt");
-const { adminRole } = require("../middlewares/roles");
-const { getDiscountCodes, createDiscount, editDiscount, deleteDiscount} = require('../services/discount');
+const authjwt = require("../../middlewares/authjwt");
+const { adminRole } = require("../../middlewares/roles");
+const { getDiscountCodes, createDiscount, editDiscount, deleteDiscount, getDiscountCode } = require('../../services/discount');
 
-router.get('/', authjwt, adminRole, retrieveDiscountCodes);
-router.post('/', authjwt, adminRole, addDiscountCodes);
-router.patch('/:id', authjwt, adminRole, editDiscountCodes);
-router.delete('/:id', authjwt, adminRole, deleteDiscountCodes);
+router.get('/discounts', authjwt, adminRole, retrieveDiscountCodes);
+router.get('/discounts/:id', authjwt, adminRole, retrieveDiscountCode);
+router.post('/discounts', authjwt, adminRole, addDiscountCodes);
+router.patch('/discounts/:id', authjwt, adminRole, editDiscountCodes);
+router.delete('/discounts/:id', authjwt, adminRole, deleteDiscountCodes);
 
 
 function retrieveDiscountCodes(req, res, next) {
     const { page, limit } = req.query;
     getDiscountCodes(page, limit)
+    .then(result => res.json({ result: result }))
+    .catch(error => next(error));
+}
+
+function retrieveDiscountCode(req, res, next) {
+    const { page, limit } = req.query;
+    getDiscountCode(page, limit)
     .then(result => res.json({ result: result }))
     .catch(error => next(error));
 }
