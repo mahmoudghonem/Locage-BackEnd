@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authjwt = require("../../middlewares/authjwt");
 const { adminRole } = require("../../middlewares/roles");
-const { getDiscountCodes, createDiscount, editDiscount, deleteDiscount, getDiscountCode } = require('../../services/discount');
+const { getDiscountCodes, createDiscount, editDiscount, deleteDiscount, getDiscountCode } = require('../../services/admin/discount');
 
 router.get('/discounts', authjwt, adminRole, retrieveDiscountCodes);
 router.get('/discounts/:id', authjwt, adminRole, retrieveDiscountCode);
@@ -19,8 +19,8 @@ function retrieveDiscountCodes(req, res, next) {
 }
 
 function retrieveDiscountCode(req, res, next) {
-    const { page, limit } = req.query;
-    getDiscountCode(page, limit)
+    const { id: discountId } = req.params;
+    getDiscountCode(discountId)
     .then(result => res.json({ result: result }))
     .catch(error => next(error));
 }
