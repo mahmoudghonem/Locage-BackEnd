@@ -52,6 +52,8 @@ const createShipment = async (req, res) => {
 
     await findOneUserById(userId);
 
+    const shipments = await Shipment.find({ userId: userId }).exec();
+    if (!shipments) body.primary = true;
     body.userId = userId;
     const shipment = new Shipment(body);
 
