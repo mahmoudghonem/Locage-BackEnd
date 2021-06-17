@@ -6,38 +6,48 @@ const CustomError = require('../../functions/errorHandler');
 
 //get all vendor details from database to admin dashboard
 const vendorDetails = async (req, res) => {
-    await User.find({ role: 'vendor' }).then(vendors => {
+
+    try {
+        const vendors = await User.find({ role: 'vendor' });
         return res.status(200).json({ vendors: vendors });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
+
 //get one vendor details from database to admin dashboard
 const oneVendorDetails = async (req, res) => {
     const { id } = req.params;
-    await User.find({ $and: [{ _id: id }, { role: 'vendor' }] }).then(vendor => {
+
+    try {
+        const vendor = await User.find({ $and: [{ _id: id }, { role: 'vendor' }] });
         return res.status(200).json({ vendor: vendor });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 //get all Stores details from database to admin dashboard
 const storeDetails = async (req, res) => {
-    await Store.find().then(stores => {
+
+    try {
+        const stores = await Store.find();
         return res.status(200).json({ stores: stores });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
+
 //get one Store details from database to admin dashboard
 const oneStoreDetails = async (req, res) => {
     const { id } = req.params;
-    await Store.find({ _id: id }).then(store => {
+
+    try {
+        const store = await Store.find({ _id: id });
         return res.status(200).json({ store: store });
-    }).catch(err => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 //Approve one Store 
@@ -69,11 +79,13 @@ const approveStore = async (req, res) => {
         subject: 'Locage Store',
         text: 'You are receiving this because your store creation was Approved.\n\n'
     };
-    await smtpTransport.sendMail(mailOptions).then(() => {
+
+    try {
+        await smtpTransport.sendMail(mailOptions);
         return res.status(200).json({ message: "APPROVED" });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 //Disapprove one Store
 const disapproveStore = async (req, res) => {
@@ -101,11 +113,12 @@ const disapproveStore = async (req, res) => {
         text: 'You are receiving this because your store creation was declined.\n\n' +
             'Please Check the Requirements again\n\n'
     };
-    await smtpTransport.sendMail(mailOptions).then(() => {
+    try {
+        await smtpTransport.sendMail(mailOptions);
         return res.status(200).json({ message: "DISAPPROVED" });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 module.exports = {

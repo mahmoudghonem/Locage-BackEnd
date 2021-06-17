@@ -8,7 +8,6 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const compression = require('compression');
-//const cors = require('cors');
 const helmet = require('helmet');
 const CustomError = require('./functions/errorHandler');
 const { mongoose } = require('./loaders/db');
@@ -18,16 +17,6 @@ const routes = require('./routes');
 
 //init express servers
 const app = express();
-
-// //Whitelist routes to access backend 
-// var corsOptions = {
-//     origin: '*',
-//     optionsSuccessStatus: 200
-// };
-
-// /* set cors access to backend server 
-// initialize after deploy of frontend server */
-// app.use(cors(corsOptions));
 
 // Add cors headers middleware
 app.use(function (req, res, next) {

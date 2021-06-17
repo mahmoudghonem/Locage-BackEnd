@@ -34,32 +34,34 @@ const userPayments = async (req, res) => {
         new CustomError('BAD_REQUEST', 400);
     await findOneUserById(userId);
 
-    await PaymentMethod.aggregate([{
-        $match: { userId: ObjectId(userId) }
-    }, {
-        $group: {
-            _id: '$_id',
+    try {
+        const result = await PaymentMethod.aggregate([{
+            $match: { userId: ObjectId(userId) }
+        }, {
+            $group: {
+                _id: '$_id',
+            }
+        }, {
+            $lookup: {
+                from: 'bankaccounts',
+                localField: '_id',
+                foreignField: 'paymentId',
+                as: 'bankaccount'
+            }
+        }, {
+            $lookup: {
+                from: 'creditcards',
+                localField: '_id',
+                foreignField: 'paymentId',
+                as: 'creditcard'
+            }
         }
-    }, {
-        $lookup: {
-            from: 'bankaccounts',
-            localField: '_id',
-            foreignField: 'paymentId',
-            as: 'bankaccount'
-        }
-    }, {
-        $lookup: {
-            from: 'creditcards',
-            localField: '_id',
-            foreignField: 'paymentId',
-            as: 'creditcard'
-        }
-    }
-    ]).then((result) => {
+        ]);
         return res.status(200).json({ result: result });
-    }).catch((err) => {
-        new CustomError(err.toString(), 400);
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
+
 };
 
 const addBankAccount = async (req, res) => {
@@ -78,11 +80,13 @@ const addBankAccount = async (req, res) => {
 
     body.paymentId = paymentMethod.id;
     const bankAccount = new BankAccount(body);
-    await bankAccount.save().then((result) => {
+
+    try {
+        const result = await bankAccount.save();
         return res.status(200).json({ message: "ADDED_SUCCESSFULLY", result: result });
-    }).catch(err => {
-        new CustomError(err.toString(), 400);
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 
 };
 
@@ -93,24 +97,26 @@ const getBankAccount = async (req, res) => {
         new CustomError('BAD_REQUEST', 400);
     await findOneUserById(userId);
 
-    await PaymentMethod.aggregate([{
-        $match: { userId: ObjectId(userId) }
-    }, {
-        $group: {
-            _id: '$_id',
-        }
-    }, {
-        $lookup: {
-            from: 'bankaccounts',
-            localField: '_id',
-            foreignField: 'paymentId',
-            as: 'bankaccount'
-        }
-    }]).then((result) => {
+    try {
+        const result = await PaymentMethod.aggregate([{
+            $match: { userId: ObjectId(userId) }
+        }, {
+            $group: {
+                _id: '$_id',
+            }
+        }, {
+            $lookup: {
+                from: 'bankaccounts',
+                localField: '_id',
+                foreignField: 'paymentId',
+                as: 'bankaccount'
+            }
+        }]);
+
         return res.status(200).json({ result: result });
-    }).catch((err) => {
-        new CustomError(err.toString(), 400);
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 const updateBankAccount = async (req, res) => {
@@ -129,11 +135,14 @@ const updateBankAccount = async (req, res) => {
     if (!bankAccount)
         new CustomError('NOT_FOUND', 404);
 
-    await BankAccount.findOneAndUpdate({ _id: bankAccount._id }, body).then((result) => {
+
+    try {
+        const result = await BankAccount.findOneAndUpdate({ _id: bankAccount._id }, body);
         return res.status(200).json({ message: "UPDATED_SUCCESSFULLY", result: result });
-    }).catch((err) => {
-        new CustomError(err.toString(), 400);
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
+
 };
 
 const deleteBankAccount = async (req, res) => {
@@ -151,11 +160,12 @@ const deleteBankAccount = async (req, res) => {
     if (!bankAccount)
         new CustomError('NOT_FOUND', 404);
 
-    await BankAccount.findOneAndRemove({ _id: bankAccount._id }).then((result) => {
+    try {
+        const result = await BankAccount.findOneAndRemove({ _id: bankAccount._id });
         return res.status(200).json({ message: "DELETED_SUCCESSFULLY", result: result });
-    }).catch((err) => {
-        new CustomError(err.toString(), 400);
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 const addCreditCard = async (req, res) => {
@@ -169,11 +179,13 @@ const addCreditCard = async (req, res) => {
     const paymentMethod = await findOneUserPaymentMethodById(id);
     body.paymentId = paymentMethod.id;
     const creditCard = new CreditCard(body);
-    await creditCard.save().then((result) => {
+
+    try {
+        const result = await creditCard.save();
         return res.status(200).json({ message: "ADDED_SUCCESSFULLY", result: result });
-    }).catch(err => {
-        new CustomError(err.toString(), 400);
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 
 };
 
@@ -185,24 +197,27 @@ const getCreditCard = async (req, res) => {
 
     await findOneUserById(userId);
 
-    await PaymentMethod.aggregate([{
-        $match: { userId: ObjectId(userId) }
-    }, {
-        $group: {
-            _id: '$_id',
-        }
-    }, {
-        $lookup: {
-            from: 'creditcards',
-            localField: '_id',
-            foreignField: 'paymentId',
-            as: 'creditcard'
-        }
-    }]).then((result) => {
+    try {
+        const result = await PaymentMethod.aggregate([{
+            $match: { userId: ObjectId(userId) }
+        }, {
+            $group: {
+                _id: '$_id',
+            }
+        }, {
+            $lookup: {
+                from: 'creditcards',
+                localField: '_id',
+                foreignField: 'paymentId',
+                as: 'creditcard'
+            }
+        }]);
         return res.status(200).json({ result: result });
-    }).catch((err) => {
-        new CustomError(err.toString(), 400);
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
+
+
 };
 
 const updateCreditCard = async (req, res) => {
@@ -219,11 +234,13 @@ const updateCreditCard = async (req, res) => {
     if (!creditCard)
         new CustomError('NOT_FOUND', 404);
 
-    await CreditCard.findOneAndUpdate({ _id: cardId }, body).then((result) => {
+
+    try {
+        const result = await CreditCard.findOneAndUpdate({ _id: cardId }, body);
         return res.status(200).json({ message: "UPDATED_SUCCESSFULLY", result: result });
-    }).catch((err) => {
-        new CustomError(err.toString(), 400);
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 const deleteCreditCard = async (req, res) => {
@@ -239,11 +256,12 @@ const deleteCreditCard = async (req, res) => {
     if (!creditCard)
         new CustomError('NOT_FOUND', 404);
 
-    await CreditCard.findOneAndRemove({ _id: cardId }).then((result) => {
+    try {
+        const result = await CreditCard.findOneAndRemove({ _id: cardId });
         return res.status(200).json({ message: "DELETED_SUCCESSFULLY", result: result });
-    }).catch((err) => {
-        new CustomError(err.toString(), 400);
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 

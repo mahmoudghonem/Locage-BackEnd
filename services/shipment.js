@@ -18,11 +18,29 @@ const getOneUserShipment = async (req, res) => {
         new CustomError('BAD_REQUEST', 400);
 
     await findOneUserById(userId);
-    await Shipment.findOne({ _id: shipmentId }).then((result) => {
+
+    try {
+        const result = await Shipment.findOne({ _id: shipmentId }).exec();
         return res.status(200).json({ result: result });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
+};
+
+const getPrimary = async (req, res) => {
+    const { id } = req.params;
+    const userId = req.userId;
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+
+    await findOneUserById(userId);
+
+    try {
+        const result = await Shipment.findOne({ userId: userId, primary: true }).exec();
+        return res.status(200).json({ result: result });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 const userShipments = async (req, res) => {
@@ -32,11 +50,13 @@ const userShipments = async (req, res) => {
         new CustomError('BAD_REQUEST', 400);
 
     await findOneUserById(userId);
-    await Shipment.find({ userId: userId }).then((result) => {
+
+    try {
+        const result = await Shipment.find({ userId: userId }).exec();
         return res.status(200).json({ result: result });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 const createShipment = async (req, res) => {
@@ -48,13 +68,17 @@ const createShipment = async (req, res) => {
 
     await findOneUserById(userId);
 
+    const shipments = await Shipment.find({ userId: userId }).exec();
+    if (!shipments) body.primary = true;
     body.userId = userId;
     const shipment = new Shipment(body);
-    await shipment.save().then(() => {
+
+    try {
+        await shipment.save();
         return res.status(200).json({ message: "ADDED_SUCCESSFULLY" });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 const updateShipment = async (req, res) => {
@@ -65,12 +89,12 @@ const updateShipment = async (req, res) => {
         new CustomError('BAD_REQUEST', 400);
 
     await findOneUserById(userId);
-
-    await Shipment.findByIdAndUpdate(shipmentId, { ...body }).then(() => {
+    try {
+        await Shipment.findByIdAndUpdate(shipmentId, { ...body }).exec();
         return res.status(200).json({ message: "UPDATED_SUCCESSFULLY" });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 const removeShipment = async (req, res) => {
@@ -80,12 +104,12 @@ const removeShipment = async (req, res) => {
         new CustomError('BAD_REQUEST', 400);
 
     await findOneUserById(userId);
-
-    await Shipment.findByIdAndRemove(shipmentId).then(() => {
+    try {
+        await Shipment.findByIdAndRemove(shipmentId);
         return res.status(200).json({ message: "REMOVED_SUCCESSFULLY" });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
 };
 
 
@@ -95,4 +119,5 @@ module.exports = {
     removeShipment,
     userShipments,
     getOneUserShipment,
+    getPrimary
 };

@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const authjwt = require("../middlewares/authjwt");
-const { createShipment, updateShipment, removeShipment, userShipments, getOneUserShipment } = require("../services/shipment");
+const { createShipment, updateShipment, removeShipment, userShipments, getOneUserShipment,getPrimary } = require("../services/shipment");
 
 router.route('/:id')
     .get(authjwt, getUserShipments)
     .post(authjwt, addUserShipment);
+
+router.get('/:id/primary',authjwt, getUserPrimary)           ; 
 
 router.route('/:id/:shipmentId')
     .get(authjwt, getOneShipment)
@@ -22,6 +24,13 @@ function getUserShipments(req, res, next) {
 
 function getOneShipment(req, res, next) {
     getOneUserShipment(req, res, next).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+function getUserPrimary(req, res, next) {
+    getPrimary(req, res, next).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);

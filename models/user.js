@@ -108,7 +108,11 @@ const UserSchema = new Schema({
 //middleware to hash password before save function called
 UserSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
-    this.password = await argon.hash(this.password);
+    try {
+        this.password = await argon.hash(this.password);
+    } catch (error) {
+        new CustomError(error.toString(), 400);
+    }
     next();
 });
 
@@ -117,18 +121,26 @@ UserSchema.pre('findOneAndUpdate', async function preSave(next) {
     if (!this._update.password) {
         return;
     }
-    this._update.password = await argon.hash(this._update.password);
+    try {
+        this._update.password = await argon.hash(this._update.password);
+    } catch (error) {
+        new CustomError(error.toString(), 400);
+    }
     next();
 });
 
 //middleware to delete all user account information
 UserSchema.pre('remove', async function (next) {
-    // Remove all the Payments docs that reference the removed person.
-    await this.model('PaymentMethod').remove({ userId: this._id }, next);
-    // Remove all the WishList docs that reference the removed person.
-    await this.model('WishList').remove({ userId: this._id }, next);
-    // Remove all the Cart docs that reference the removed person.
-    await this.model('Cart').remove({ userId: this._id }, next);
+    try {
+        // Remove all the Payments docs that reference the removed person.
+        await this.model('PaymentMethod').remove({ userId: this._id }, next);
+        // Remove all the WishList docs that reference the removed person.
+        await this.model('WishList').remove({ userId: this._id }, next);
+        // Remove all the Cart docs that reference the removed person.
+        await this.model('Cart').remove({ userId: this._id }, next);
+    } catch (error) {
+        new CustomError(error.toString(), 400);
+    }
 });
 
 //function to verfiy hashed password with entered return true if equals
