@@ -108,6 +108,17 @@ const getTodayDeals = async (page, limit) => {
     }
 }
 
+const searchProducts = async (key) => {
+    try{
+        const options = {
+            page: 1,
+            limit: 10
+        }
+        return Product.paginate({ $or: [{ brand: new RegExp(key, 'i') }, { title: new RegExp(key, 'i') }] }, options);
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
 const add = async (product, files, userId) => {
     // check
     const loggedUser = await User.findById(userId);
@@ -253,5 +264,6 @@ module.exports = {
     deletePhoto,
     remove,
     getTopDeals,
-    getTodayDeals
+    getTodayDeals,
+    searchProducts
 };
