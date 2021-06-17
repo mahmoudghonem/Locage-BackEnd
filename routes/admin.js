@@ -3,6 +3,7 @@ const router = express.Router();
 const adminUserRouter = require('./admin/usersAdmin');
 const adminStaffRouter = require('./admin/staffAdmin');
 const adminVendorRouter = require('./admin/vendorAdmin');
+const adminDiscountRouter = require('./admin/discount');
 
 // TODO: Track and Management OF all Orders (Single and Multi Select) and Get Summaries
 /*
@@ -36,6 +37,9 @@ router.use(adminUserRouter);
 router.use(adminStaffRouter);
 
 router.use(adminVendorRouter);
+
+router.use(adminDiscountRouter);
+
 
 
 
