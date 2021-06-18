@@ -6,13 +6,13 @@ const { adminRole , vendorRole} = require('../../middlewares/roles');
 
 
 //TODO: Move To Admin Section
-router.get('/', authjwt, adminRole, retrieveAllOrders);
+router.get('/orders/', authjwt, adminRole, retrieveAllOrders);
 
-router.get('/vendor', authjwt, vendorRole, retrieveVendorOrdersItems);
+router.get('/orders/vendor', authjwt, vendorRole, retrieveVendorOrdersItems);
 
-router.patch('/:id/cancel', authjwt, cancelOrder);
+router.patch('/orders/:id/cancel', authjwt, cancelOrder);
 
-router.patch('/:id/status', authjwt, adminRole, changeOrderStatus);
+router.patch('/orders/:id/status', authjwt, adminRole, changeOrderStatus);
 
 
 

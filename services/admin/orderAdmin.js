@@ -39,7 +39,7 @@ const getVendorOrdersItems = async (vendor, page, limit) => {
 
 // cancelling order if the status is 'processing' or 'processing' 
 const cancel = async (userId, orderId) => {
-    const order = await Order.findOne({ _id: orderId, userId: userId });
+    const order = await Order.findOne({ _id: orderId });
 
     if (!order) customError("ORDER_NOT_FOUND", 404);
 
