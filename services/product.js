@@ -94,8 +94,6 @@ const getTodayDeals = async (page, limit) => {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    console.log(today.toISOString());
-    console.log(tomorrow.toISOString());
     try {
         const options = {
             page: parseInt(page) || 1,
@@ -114,7 +112,8 @@ const searchProducts = async (key) => {
             page: 1,
             limit: 10
         }
-        return Product.paginate({ $or: [{ brand: new RegExp(key, 'i') }, { title: new RegExp(key, 'i') }] }, options);
+        return Product.paginate({ $or: [{ brand: new RegExp(key, 'i') }, { title: new RegExp(key, 'i') },
+            { description: new RegExp(key, 'i') }] }, options);
     } catch(error){
         customError(error.toString(), 500);
     }
