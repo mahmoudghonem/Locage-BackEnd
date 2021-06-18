@@ -6,6 +6,10 @@ const adminVendorRouter = require('./admin/vendorAdmin');
 const adminReviewRouter = require('./admin/reviewAdmin');
 const adminOrderRouter = require('./admin/orderAdmin');
 const adminProductRouter = require('./admin/productAdmin');
+const adminCatogryRouter = require('./admin/catogryAdmin');
+const adminsubcatogryRouter = require('./admin/subcatogryAdmin');
+
+
 
 
 const adminDiscountRouter = require('./admin/discount');
@@ -48,6 +52,10 @@ router.use(adminReviewRouter);
 router.use(adminOrderRouter);
 
 router.use(adminProductRouter);
+
+router.use(adminCatogryRouter);
+
+router.use(adminsubcatogryRouter);
 
 router.use(adminDiscountRouter);
 
