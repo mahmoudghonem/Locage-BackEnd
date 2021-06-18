@@ -106,11 +106,17 @@ const getTodayDeals = async (page, limit) => {
     }
 }
 
-const searchProducts = async (key) => {
+const searchProducts = async (key, page, limit) => {
     try{
         const options = {
-            page: 1,
-            limit: 10
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10,
+            populate: {
+                path: "subcategoryId",
+                populate: {
+                    path: "categoryId"
+                }
+            }
         }
         return Product.paginate({ $or: [{ brand: new RegExp(key, 'i') }, { title: new RegExp(key, 'i') },
             { description: new RegExp(key, 'i') }] }, options);
