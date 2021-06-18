@@ -64,8 +64,8 @@ function retrieveTopDeals(req, res, next){
 
 // Search a product
 function getMatchedProducts(req, res, next){
-    const { key } = req.query;
-    searchProducts(key)
+    const { key, page, limit } = req.query;
+    searchProducts(key, page, limit)
     .then(result => res.json({ result: result }))
     .catch(error => next(error));
 }

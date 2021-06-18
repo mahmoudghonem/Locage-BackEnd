@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const mongoosePaginate = require('mongoose-paginate-v2');
+const Subcategory = require('./subcategory')
 
 // Product schema definition
 const ProductSchema = new Schema({
@@ -21,7 +22,7 @@ const ProductSchema = new Schema({
   },
   subcategoryId: {
     type: Schema.Types.ObjectId,
-    ref: "subcategories",
+    ref: Subcategory,
   },
   vendorId: {
     type: Schema.Types.ObjectId,
