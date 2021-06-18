@@ -1,6 +1,6 @@
-const customError = require('../functions/errorHandler');
-const Discount = require('../models/discount');
-const { isEmpty } = require('../functions/checks');
+const customError = require('../../functions/errorHandler');
+const Discount = require('../../models/discount');
+const { isEmpty } = require('../../functions/checks');
 
 
 const getDiscountCodes = async (page, limit) => {
@@ -13,6 +13,16 @@ const getDiscountCodes = async (page, limit) => {
         const discounts = await Discount.paginate({}, options);
         if(!discounts) customError("DISCOUNTS_NOT_FOUND", 404);
         return discounts;
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+}
+
+const getDiscountCode = async (discountId) => {
+    try{
+        const discount = await Discount.findById(discountId);
+        if(!discount) customError("DISCOUNT_NOT_FOUND", 404);
+        return discount;
     } catch(error){
         customError(error.toString(), 500);
     }
@@ -55,6 +65,7 @@ const deleteDiscount = async (discountCodeId) => {
 
 module.exports = {
     getDiscountCodes,
+    getDiscountCode,
     createDiscount,
     editDiscount,
     deleteDiscount

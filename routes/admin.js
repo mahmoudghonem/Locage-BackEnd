@@ -5,8 +5,10 @@ const adminStaffRouter = require('./admin/staffAdmin');
 const adminVendorRouter = require('./admin/vendorAdmin');
 const adminReviewRouter = require('./admin/reviewAdmin');
 const adminOrderRouter = require('./admin/orderAdmin');
+const adminProductRouter = require('./admin/productAdmin');
 
 
+const adminDiscountRouter = require('./admin/discount');
 
 // TODO: Track and Management OF all Orders (Single and Multi Select) and Get Summaries
 /*
@@ -44,6 +46,11 @@ router.use(adminVendorRouter);
 router.use(adminReviewRouter);
 
 router.use(adminOrderRouter);
+
+router.use(adminProductRouter);
+
+router.use(adminDiscountRouter);
+
 
 
 

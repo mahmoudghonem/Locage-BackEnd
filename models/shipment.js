@@ -12,6 +12,10 @@ const ShipmentSchema = new Schema({
     phoneNumber: {
         type: String
     },
+    primary: {
+        type: Boolean,
+        default: false
+    },
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'users'

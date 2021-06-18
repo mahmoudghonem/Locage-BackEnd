@@ -20,7 +20,23 @@ const getOneUserShipment = async (req, res) => {
     await findOneUserById(userId);
 
     try {
-        const result = await Shipment.findOne({ _id: shipmentId });
+        const result = await Shipment.findOne({ _id: shipmentId }).exec();
+        return res.status(200).json({ result: result });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
+};
+
+const getPrimary = async (req, res) => {
+    const { id } = req.params;
+    const userId = req.userId;
+    if (userId != id)
+        new CustomError('BAD_REQUEST', 400);
+
+    await findOneUserById(userId);
+
+    try {
+        const result = await Shipment.findOne({ userId: userId, primary: true }).exec();
         return res.status(200).json({ result: result });
     } catch (error) {
         new CustomError(error.toString());
@@ -36,7 +52,7 @@ const userShipments = async (req, res) => {
     await findOneUserById(userId);
 
     try {
-        const result = await Shipment.find({ userId: userId });
+        const result = await Shipment.find({ userId: userId }).exec();
         return res.status(200).json({ result: result });
     } catch (error) {
         new CustomError(error.toString());
@@ -52,6 +68,8 @@ const createShipment = async (req, res) => {
 
     await findOneUserById(userId);
 
+    const shipments = await Shipment.find({ userId: userId }).exec();
+    if (!shipments) body.primary = true;
     body.userId = userId;
     const shipment = new Shipment(body);
 
@@ -72,7 +90,7 @@ const updateShipment = async (req, res) => {
 
     await findOneUserById(userId);
     try {
-        await Shipment.findByIdAndUpdate(shipmentId, { ...body });
+        await Shipment.findByIdAndUpdate(shipmentId, { ...body }).exec();
         return res.status(200).json({ message: "UPDATED_SUCCESSFULLY" });
     } catch (error) {
         new CustomError(error.toString());
@@ -101,4 +119,5 @@ module.exports = {
     removeShipment,
     userShipments,
     getOneUserShipment,
+    getPrimary
 };

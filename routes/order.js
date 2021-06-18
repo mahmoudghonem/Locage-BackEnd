@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getOrders, getVendorOrdersItems, cancel, changeStatus, getPaymentToken } = require('../services/order');
+const { createOrder, getOrders, getOrder, getVendorOrdersItems, cancel, changeStatus, getPaymentToken } = require('../services/order');
 const authjwt = require("../middlewares/authjwt");
 const { adminRole, vendorRole } = require("../middlewares/roles");
 
@@ -10,6 +10,8 @@ router.get('/client-token', getToken);
 router.post('/checkout', authjwt, placeOrder);
 //TODO: Move To Admin Section
 router.get('/', authjwt, adminRole, retrieveAllOrders);
+
+router.get('/:id', authjwt, retrieveOrder);
 
 router.get('/vendor', authjwt, vendorRole, retrieveVendorOrdersItems);
 
@@ -40,6 +42,14 @@ function retrieveAllOrders(req, res, next) {
     getOrders(page, limit)
         .then(result => res.json({ result: result }))
         .catch(error => next(error));
+}
+
+function retrieveOrder(req, res, next) {
+    const { userId } = req;
+    const { id: orderId } = req.params;
+    getOrder(orderId, userId)
+    .then(result => res.json({ result: result }))
+    .catch(error => next(error));
 }
 
 function retrieveVendorOrdersItems(req, res, next) {
