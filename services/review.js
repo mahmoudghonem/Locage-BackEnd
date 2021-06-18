@@ -20,8 +20,8 @@ const checkIfProductAlreadyIn = async (orderId, productId) => {
 // Get reviews of product 
 const getReviews = async (req, res) => {
     const productId = req.params ;
-    const { limit } = req.query;
-    const { page } = req.query;
+    // const { limit } = req.query;
+    // const { page } = req.query;
     //const { productId }= req.query;
 
     // const query ={};
