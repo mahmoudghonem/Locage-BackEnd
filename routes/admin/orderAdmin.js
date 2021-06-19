@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { getOrders, getVendorOrdersItems, cancel, changeStatus } = require('../../services/admin/orderAdmin');
 const authjwt = require('../../middlewares/authjwt');
-const { adminRole , vendorRole} = require('../../middlewares/roles');
+const { adminRole } = require('../../middlewares/roles');
 
 
 //TODO: Move To Admin Section
 router.get('/orders/', authjwt, adminRole, retrieveAllOrders);
 
-router.get('/orders/vendor', authjwt, vendorRole, retrieveVendorOrdersItems);
+router.get('/orders/vendor', authjwt, adminRole, retrieveVendorOrdersItems);
 
 router.patch('/orders/:id/cancel', authjwt, cancelOrder);
 
