@@ -69,7 +69,14 @@ const createShipment = async (req, res) => {
     await findOneUserById(userId);
 
     const shipments = await Shipment.find({ userId: userId }).exec();
-    if (!shipments) body.primary = true;
+
+    if (shipments) {
+        if (body.primary == true) {
+            await Shipment.updateMany({ userId: userId }, { primary: false }).exec();
+        }
+    }
+    else if (!shipments) body.primary = true;
+
     body.userId = userId;
     const shipment = new Shipment(body);
 
@@ -90,6 +97,9 @@ const updateShipment = async (req, res) => {
 
     await findOneUserById(userId);
     try {
+        if (body.primary == true) {
+            await Shipment.updateMany({ userId: userId }, { primary: false }).exec();
+        }
         await Shipment.findByIdAndUpdate(shipmentId, { ...body }).exec();
         return res.status(200).json({ message: "UPDATED_SUCCESSFULLY" });
     } catch (error) {
