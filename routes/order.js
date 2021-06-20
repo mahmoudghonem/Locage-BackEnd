@@ -11,9 +11,9 @@ router.post('/checkout', authjwt, placeOrder);
 //TODO: Move To Admin Section
 router.get('/', authjwt, adminRole, retrieveAllOrders);
 
-router.get('/:id', authjwt, retrieveOrder);
-
 router.get('/vendor', authjwt, vendorRole, retrieveVendorOrdersItems);
+
+router.get('/:id', authjwt, retrieveOrder);
 
 router.patch('/:id/cancel', authjwt, cancelOrder);
 

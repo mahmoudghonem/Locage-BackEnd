@@ -16,7 +16,13 @@ const getProductsOfSubcategory = async (subcategoryId, page, limit) => {
 
     const options = {
         page: parseInt(page) || 1,
-        limit: parseInt(limit) || 10
+        limit: parseInt(limit) || 10,
+        populate: {
+            path: "subcategoryId",
+            populate: {
+                path: "categoryId"
+            }
+        }
     }
 
     if(!(await Subcategory.findById(subcategoryId))) customError("SUBCATEGORY_NOT_FOUND", 404);
