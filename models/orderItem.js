@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const mongoosePaginate = require('mongoose-paginate-v2');
+const Product = require('./product');
 
 const OrderItemSchema = new Schema({
     productId: {
         type: Schema.Types.ObjectId,
-        ref: "products",
+        ref: Product,
     },
     price: {
         type: Number,
