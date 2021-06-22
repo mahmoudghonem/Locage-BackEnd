@@ -17,23 +17,35 @@ const checkIfProductAlreadyIn = async (orderId, productId) => {
     return await OrderItem.findOne({ orderId: orderId, productId: productId }).exec();
 };
 
+const updateProductRatng = async (productId)=>{
+    var total = 0 ;
+    var count = 0 ;
+    const reviews =  await Review.find({ productId: productId});
+    for(const item of reviews ){
+         total += item.rate ;
+         count ++ ;
+    }
+    console.log(count);
+    total = total/count ;
+     await Product.findByIdAndUpdate(productId , {$set:{rating: total }});
+}
+
 // Get reviews of product 
 const getReviews = async (req, res) => {
-    const productId = req.params ;
-    // const { limit } = req.query;
-    // const { page } = req.query;
-    //const { productId }= req.query;
+    const {productId} = req.params ;
+    const { limit } = req.query;
+    const { page } = req.query;
+    const product = await Product.findById(productId).exec();
+    if (!product)
+        new CustomError('PRODUCT_NOT_FOUND', 404);
 
-    // const query ={};
-    // //query.docs.productId = productId ;
-
-    // const options = {
-    //     limit: limit || 10,
-    //     page: page || 1, 
-    // };
-  //  await Review.paginate(query,options).then((result)=>{
-    await Review.find(productId).limit(10).then((result)=>{
-        return res.status(200).json({result:result});
+     const options = {
+        limit: limit || 10,
+        page: page || 1, 
+    };
+  
+  await Review.paginate({ productId: product._id }, options).then((result)=>{
+      return res.status(200).json({result:result});
     }).catch((err)=>{
         new CustomError(err.toString());
     });
@@ -64,6 +76,7 @@ const addReview = async (req, res) => {
     const review = new Review({ ...body , userId : userId ,  productId : product._id });
 
     await review.save(review).then(( result ) => {
+        updateProductRatng(product._id );
         return res.status(200).json({ message: "REVIEW_ADDED_SUCCESSFULLY" , result:result  });
     }).catch((err) => {
         new CustomError(err.toString());
@@ -96,6 +109,8 @@ const updateRev = async (req, res) => {
 
     await Review.findByIdAndUpdate(review._id ,{...body} )
     .then(() => {
+        updateProductRatng(product._id );
+
         return res.status(200).json({ message: "UPDATED_SUCCESSFULLY"});
     }).catch((err) => {
         new CustomError(err.toString());
@@ -117,6 +132,7 @@ const removeReview = async (req, res) => {
     if (!review)
         new CustomError('REVIEW_ITEM_NOT_FOUND', 400);
     await Review.findByIdAndRemove(review._id).then((result) => {
+        updateProductRatng(product._id );
         return res.status(200).json({ message: "REMOVED_SUCCESSFULLY", result: result });
     }).catch((err) => {
         new CustomError(err.toString());
