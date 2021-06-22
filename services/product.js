@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const customError = require('../functions/errorHandler');
 const Product = require('../models/product');
+const OrderItem = require('../models/orderItem');
 const User = require('../models/user');
 const Store = require('../models/store');
 const { checkId, isEmpty } = require('../functions/checks');
@@ -101,6 +102,35 @@ const getTodayDeals = async (page, limit) => {
         }
         return await Product.paginate({ $and: [{ 'discountDate.start': { $gte: today.toISOString().split('T')[0] }},
         { 'discountDate.start': { $lt: tomorrow.toISOString().split('T')[0] }} ] }, options);
+    } catch (error) {
+        customError(error.toString(), 500);
+    }
+}
+
+const getTopSales = async () => {
+    try {
+        return await OrderItem.aggregate([
+            // create a pipline to custom an object
+            {
+                $group: {
+                    _id: '$productId',
+                    totalQuantity: { $sum: '$quantity' } 
+                } 
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'product'
+                }
+            },
+            {
+                $sort: {
+                    totalQuantity: -1
+                }
+            }
+        ]);
     } catch (error) {
         customError(error.toString(), 500);
     }
@@ -270,5 +300,6 @@ module.exports = {
     remove,
     getTopDeals,
     getTodayDeals,
+    getTopSales,
     searchProducts
 };
