@@ -7,9 +7,20 @@ const CustomError = require("../../functions/errorHandler");
 
 // Get reviews of product 
 const getProductReviews = async (req, res) => {
-    const productId = req.params ;
-    await Review.find(productId).limit(10).then((result)=>{
-        return res.status(200).json({result:result});
+    const {productId} = req.params ;
+    const { limit } = req.query;
+    const { page } = req.query;
+    const product = await Product.findById(productId).exec();
+    if (!product)
+        new CustomError('PRODUCT_NOT_FOUND', 404);
+
+     const options = {
+        limit: limit || 10,
+        page: page || 1, 
+    };
+  
+  await Review.paginate({ productId: product._id }, options).then((result)=>{
+      return res.status(200).json({result:result});
     }).catch((err)=>{
         new CustomError(err.toString());
     });
