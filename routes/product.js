@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { add, getProducts, getVendorProducts, getProduct, getTodayDeals, 
+const { add, getProducts, getVendorProducts, getProduct, getTodayDeals, getTopSales, 
     searchProducts, getTopDeals, edit, pushPhotos, deletePhoto, remove } = require('../services/product');
 const upload = require("../middlewares/image");
 //const { validate, addValidationRules } = require('../middlewares/productValidator');
@@ -12,6 +12,7 @@ router.get('/', retrieveProducts);
 router.get('/vendor', authjwt, retrieveVendorProducts);
 router.get('/top-deals', retrieveTopDeals);
 router.get('/today-deals', retrieveTodayDeals);
+router.get('/top-sales', retrieveTopSales);
 router.get('/search', getMatchedProducts);
 router.get('/:id', retrieveProduct);
 router.post('/', authjwt, /*addValidationRules(), validate,*/ upload.array("photos", 10), addProduct);
@@ -58,6 +59,14 @@ function addProduct(req, res, next) {
 function retrieveTopDeals(req, res, next){
     const { page, limit } = req.query;
     getTopDeals(page, limit)
+    .then(result => res.json({ result: result }))
+    .catch(error => next(error));
+}
+
+// Retrieve top sales
+function retrieveTopSales(req, res, next) {
+    const { page, limit } = req.query;
+    getTopSales(page, limit)
     .then(result => res.json({ result: result }))
     .catch(error => next(error));
 }

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const imageFile = require("../middlewares/image");
-const { retrieveAllCategories, createCategory, retrieveSubcategoriesOfCategory, createSubcategory,
+const { retrieveAllCategories, createCategory, retrieveSubcategoriesOfCategory, createSubcategory, getTopCategories,
     editCategory, editSubcategory, getProductsOfCategory, deleteCategory, getCategoryWithSubcategories, getAllCategoryWithSubcategories } = require('../services/category');
 const authjwt = require("../middlewares/authjwt");
 
@@ -11,6 +11,8 @@ router.route('/')
     .post(authjwt, imageFile.single("photo"), createNewCategory);
 
 router.get('/all', getAll);
+
+router.get('/top-category', getTopCategory);
 
 router.route('/:id')
     .get(getCategoryAndSubcategory)
@@ -29,6 +31,12 @@ router.patch('/:id/subcategory/:subId', authjwt, modifySubcategory);
 function getAll(req, res, next) {
     getAllCategoryWithSubcategories().then(result => res.json({ result: result }))
         .catch(error => next(error));
+}
+
+function getTopCategory(req, res, next) {
+    getTopCategories()
+    .then(result => res.json({ result: result }))
+    .catch(error => next(error));
 }
 
 function getCategories(req, res, next) {

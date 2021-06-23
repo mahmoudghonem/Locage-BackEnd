@@ -169,7 +169,11 @@ const getVendorOrdersItems = async (vendor, page, limit) => {
     const options = {
         limit: parseInt(limit) || 10,
         page: parseInt(page) || 1,
-        populate: "productId"
+        populate: ["productId",
+         {
+            path: "orderId",
+            select: "status -_id"
+        }]
     }
 
     const store = await Store.findOne({ userId: vendor._id });

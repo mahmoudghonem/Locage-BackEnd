@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const mongoosePaginate = require('mongoose-paginate-v2');
 const Product = require('./product');
+const Order = require('./order');
 
 const OrderItemSchema = new Schema({
     productId: {
@@ -19,7 +20,7 @@ const OrderItemSchema = new Schema({
     },
     orderId: {
         type: Schema.Types.ObjectId,
-        ref: "orders",
+        ref: Order,
     },
     vendorId: {
         type: Schema.Types.ObjectId,
