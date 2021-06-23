@@ -25,7 +25,7 @@
   "author": "Team3: Mahmoud Ghonem, Mohamed Serag, Salma Rakha, Abra Yehia, Dina Waheed, Nada Tayel",
   "license": "ISC",
   "dependencies": {
-    "argon2": "^0.27.2",
+    "argon2": "^0.28.1",
     "braintree": "^3.6.0",
     "cloudinary": "^1.25.1",
     "compression": "^1.7.4",
