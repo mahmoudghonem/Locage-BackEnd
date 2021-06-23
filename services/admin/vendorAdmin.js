@@ -31,7 +31,7 @@ const oneVendorDetails = async (req, res) => {
 const storeDetails = async (req, res) => {
 
     try {
-        const stores = await Store.find();
+        const stores = await Store.find({ statusCode: 'accepted'}).exec();
         return res.status(200).json({ stores: stores });
     } catch (error) {
         new CustomError(error.toString());
@@ -45,6 +45,16 @@ const oneStoreDetails = async (req, res) => {
     try {
         const store = await Store.find({ _id: id });
         return res.status(200).json({ store: store });
+    } catch (error) {
+        new CustomError(error.toString());
+    }
+};
+
+const newStores = async (req, res) => {
+
+    try {
+        const stores = await Store.find({ statusCode: 'hold'}).exec();
+        return res.status(200).json({ stores: stores});
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -126,6 +136,7 @@ module.exports = {
     oneVendorDetails,
     storeDetails,
     oneStoreDetails,
+    newStores,
     approveStore,
     disapproveStore
 };

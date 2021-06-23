@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { vendorDetails, oneVendorDetails, oneStoreDetails, storeDetails, approveStore, disapproveStore } = require('../../services/admin/vendorAdmin');
+const { vendorDetails, oneVendorDetails, oneStoreDetails, storeDetails, approveStore, disapproveStore ,newStores } = require('../../services/admin/vendorAdmin');
 const authjwt = require('../../middlewares/authjwt');
 const { staffRole } = require('../../middlewares/roles');
 
@@ -12,6 +12,9 @@ router.get('/vendors/:id', authjwt, staffRole, getOneVendor);
 router.get('/stores', authjwt, staffRole, getAllStores);
 router.route('/stores/:id')
     .get(authjwt, staffRole, getOneStore);
+
+router.get('/stores/hold', authjwt, staffRole, getNewStores);
+
 //Stores statues to be accepted or decline (role access staff and admin)    
 router.route('/stores/:id/status')
     .patch(authjwt, staffRole, acceptStore)
@@ -39,6 +42,14 @@ function getOneVendor(req, res, next) {
 //get all stores request method
 function getAllStores(req, res, next) {
     storeDetails(req, res).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        next(err);
+    });
+}
+
+function getNewStores(req, res, next) {
+    newStores(req, res).then((result) => {
         res.json(result);
     }).catch((err) => {
         next(err);
