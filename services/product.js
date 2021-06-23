@@ -126,9 +126,22 @@ const getTopSales = async () => {
                 }
             },
             {
+                $unwind:  '$product' 
+            },
+            {
                 $sort: {
                     totalQuantity: -1
                 }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    product: 1,
+                    //totalQuantity: 1
+                }
+            },
+            {
+                $limit: 5
             }
         ]);
     } catch (error) {
