@@ -5,6 +5,7 @@ const Product = require('../models/product');
 const customError = require('../functions/errorHandler');
 const cloudinary = require("../functions/cloudinary");
 const mongoose = require('mongoose');
+const orderItem = require('../models/orderItem');
 
 
 const loggedUserCheck = async (userId) => {
@@ -29,6 +30,24 @@ const retrieveAllCategories = async () => {
     } catch (error) {
         return customError(error.toString(), 500);
     }
+}
+
+function getUnique(query) {
+    let counter = 0;
+    const result = [];
+    for(let i = 0; i < query.length; i++) {
+        for(let k = i; k < query.length; k++){
+            if(query[i].subcategory.name === query[k].subcategory.name)
+                counter++;
+        }
+        if (counter > 1) {
+            counter = 0;
+            continue;
+        }  
+        result.push(query[i]);
+        counter = 0;
+    }
+    return result;
 }
 
 const createCategory = async (category, userId, photo) => {
@@ -173,6 +192,58 @@ const getAllCategoryWithSubcategories = async () => {
     }
 }
 
+const getTopCategories = async () => {
+    try {
+        const result =  await orderItem.aggregate([
+            // create a pipline to custom an object
+            {
+                $group: {
+                    _id: '$productId',
+                    totalQuantity: { $sum: '$quantity' } 
+                } 
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'product'
+                }
+            },
+            {
+                $unwind:  '$product' // return an object instead of an object inside an array
+            },
+            {
+                $lookup: {
+                    from: 'subcategories',
+                    localField: 'product.subcategoryId', // access a field inside a popualated field
+                    foreignField: '_id',
+                    as: 'subcategory'
+                }
+            },
+            {
+                $unwind:  '$subcategory' // return an object instead of an object inside an array
+            },
+            {
+                $sort: {
+                    totalQuantity: -1
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    subcategory: 1,
+                    //totalQuantity: 1
+                }
+            }
+        ]);
+        
+        return getUnique(result);
+    } catch (error) {
+        return customError(error.toString(), 500);
+    }
+}
+
 module.exports = {
     retrieveAllCategories,
     createCategory,
@@ -184,4 +255,5 @@ module.exports = {
     deleteCategory,
     getCategoryWithSubcategories,
     getAllCategoryWithSubcategories,
+    getTopCategories
 }

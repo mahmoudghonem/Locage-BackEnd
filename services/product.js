@@ -141,7 +141,7 @@ const getTopSales = async () => {
                 }
             },
             {
-                $limit: 5
+                $limit: 30
             }
         ]);
     } catch (error) {
