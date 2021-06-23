@@ -52,10 +52,28 @@ const cartDetail = async (req, res) => {
     await loggenedUser(userId);
 
     const cart = await Cart.findOne({ userId: userId }).exec();
+    const cartItem = await CartItem.find({ cartId: cart._id }).exec();
 
     const cartItems = await CartItem.find({ cartId: cart._id }).distinct('productId').exec();
   
     await Product.find({ _id: { $in: cartItems } }).then((result) => {
+          for(var i of result){
+
+            for(var c of cartItem)
+            {
+               if( i._id.equals(c.productId)){
+                i.price = c.price  ;
+                i.quantity = c.quantity  ;
+            console.log("i",i._id)
+            console.log("c",c.productId)
+
+                 console.log("i",i.quantity)
+                 console.log("c",c.quantity)
+                }
+
+                              
+            }
+        }   
         return res.status(200).json({ result: result });
     }).catch((err) => {
         new CustomError(err.toString());
