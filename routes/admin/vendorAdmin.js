@@ -18,7 +18,7 @@ router.route('/stores/:id')
 
 //Stores statues to be accepted or decline (role access staff and admin)    
 router.route('/stores/:id/status')
-    .patch(authjwt, staffRole, acceptStore)
+    .get(authjwt, staffRole, acceptStore)
     .delete(authjwt, staffRole, declineStore);
 
 //get all vendor request method
