@@ -9,7 +9,7 @@ const vendorDetails = async (req, res) => {
 
     try {
         const vendors = await User.find({ role: 'vendor' });
-        return res.status(200).json({ vendors: vendors });
+        return { vendors: vendors };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -21,7 +21,7 @@ const oneVendorDetails = async (req, res) => {
 
     try {
         const vendor = await User.find({ $and: [{ _id: id }, { role: 'vendor' }] });
-        return res.status(200).json({ vendor: vendor });
+        return { vendor: vendor };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -32,7 +32,7 @@ const storeDetails = async (req, res) => {
 
     try {
         const stores = await Store.find({ statusCode: 'accepted'}).exec();
-        return res.status(200).json({ stores: stores });
+        return { stores: stores };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -44,7 +44,7 @@ const oneStoreDetails = async (req, res) => {
 
     try {
         const store = await Store.find({ _id: id });
-        return res.status(200).json({ store: store });
+        return { store: store };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -54,7 +54,7 @@ const newStores = async (req, res) => {
 
     try {
         const stores = await Store.find({ statusCode: 'hold'}).exec();
-        return res.status(200).json({ stores: stores});
+        return { stores: stores};
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -92,7 +92,7 @@ const approveStore = async (req, res) => {
 
     try {
         await smtpTransport.sendMail(mailOptions);
-        return res.status(200).json({ message: "APPROVED" });
+        return { message: "APPROVED" };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -125,7 +125,7 @@ const disapproveStore = async (req, res) => {
     };
     try {
         await smtpTransport.sendMail(mailOptions);
-        return res.status(200).json({ message: "DISAPPROVED" });
+        return { message: "DISAPPROVED" };
     } catch (error) {
         new CustomError(error.toString());
     }

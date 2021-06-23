@@ -5,7 +5,7 @@ const CustomError = require('../../functions/errorHandler');
 const adminDetails = async (req, res) => {
     try {
         const admins = await User.find({ role: 'admin' });
-        return res.status(200).json({ admins: admins });
+        return { admins: admins };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -17,7 +17,7 @@ const oneAdminDetails = async (req, res) => {
 
     try {
         const admin = await User.find({ $and: [{ _id: id }, { role: 'admin' }] });
-        return res.status(200).json({ admin: admin });
+        return { admin: admin };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -27,7 +27,7 @@ const oneAdminDetails = async (req, res) => {
 const staffDetails = async (req, res) => {
     try {
         const staff = await User.find({ role: 'staff' });
-        return res.status(200).json({ staff: staff });
+        return { staff: staff };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -39,7 +39,7 @@ const oneStaffDetails = async (req, res) => {
 
     try {
         const staff = await User.find({ $and: [{ _id: id }, { role: 'staff' }] });
-        return res.status(200).json({ staff: staff });
+        return { staff: staff };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -51,7 +51,7 @@ const makeAccountSubAdmin = async (req, res) => {
 
     try {
         const result = await User.findByIdAndUpdate({ _id: id }, { role: 'staff' });
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -63,7 +63,7 @@ const removeSubAdminRole = async (req, res) => {
 
     try {
         const result = await User.findByIdAndUpdate({ _id: id }, { role: 'user' });
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -74,7 +74,7 @@ const moderatorDetails = async (req, res) => {
 
     try {
         const moderators = await User.find({ $or: [{ role: 'admin' }, { role: 'staff' }] });
-        return res.status(200).json({ moderators: moderators });
+        return { moderators: moderators };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -86,7 +86,7 @@ const oneModeratorDetails = async (req, res) => {
 
     try {
         const staff = await User.find({ $and: [{ _id: id }, { $or: [{ role: 'admin' }, { role: 'staff' }] }] });
-        return res.status(200).json({ staff: staff });
+        return { staff: staff };
     } catch (error) {
         new CustomError(error.toString());
     }

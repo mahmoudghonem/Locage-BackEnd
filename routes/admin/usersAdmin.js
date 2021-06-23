@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { usersDetails, oneUserDetails, oneUserRemove, manyUserRemove } = require('../../services/admin/usersAdmin');
+const { usersDetails, oneUserDetails, oneUserRemove } = require('../../services/admin/usersAdmin');
 const authjwt = require('../../middlewares/authjwt');
 const { staffRole } = require('../../middlewares/roles');
 
@@ -14,7 +14,7 @@ router.delete('/users/:id', authjwt, staffRole, deleteOneUser);
 //get all users request method
 function getAllUsers(req, res, next) {
     usersDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -23,7 +23,7 @@ function getAllUsers(req, res, next) {
 //get One user request method
 function getOneUser(req, res, next) {
     oneUserDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -32,7 +32,7 @@ function getOneUser(req, res, next) {
 //delete One user request method
 function deleteOneUser(req, res, next) {
     oneUserRemove(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -41,7 +41,7 @@ function deleteOneUser(req, res, next) {
 //delete many user request method
 // function deleteManyUser(req, res, next) {
 //     manyUserRemove(req, res).then((result) => {
-//         res.json(result);
+//         return res.status(200).json(result);
 //     }).catch((err) => {
 //         next(err);
 //     });

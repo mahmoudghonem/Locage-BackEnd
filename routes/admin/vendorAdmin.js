@@ -25,7 +25,7 @@ router.route('/stores/:id/status')
 //get all vendor request method
 function getAllVendors(req, res, next) {
     vendorDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -33,7 +33,7 @@ function getAllVendors(req, res, next) {
 //get one vendor request method
 function getOneVendor(req, res, next) {
     oneVendorDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -42,7 +42,7 @@ function getOneVendor(req, res, next) {
 //get all stores request method
 function getAllStores(req, res, next) {
     storeDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -50,7 +50,7 @@ function getAllStores(req, res, next) {
 
 function getNewStores(req, res, next) {
     newStores(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -58,7 +58,7 @@ function getNewStores(req, res, next) {
 //get one store request method
 function getOneStore(req, res, next) {
     oneStoreDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -66,7 +66,7 @@ function getOneStore(req, res, next) {
 //accept store to work request method
 function acceptStore(req, res, next) {
     approveStore(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -74,7 +74,7 @@ function acceptStore(req, res, next) {
 //decline store to work request method
 function declineStore(req, res, next) {
     disapproveStore(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });

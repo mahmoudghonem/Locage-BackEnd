@@ -27,7 +27,7 @@ router.delete('/:id', authjwt, userDeleteFun);
 //login get request method
 function getUserDetails(req, res, next) {
     getUser(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -45,7 +45,7 @@ function userLoginFun(req, res, next) {
 //reset password request method
 function userResetFun(req, res, next) {
     reset(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -54,7 +54,7 @@ function userResetFun(req, res, next) {
 //recover password request method
 function userRecoverFun(req, res, next) {
     recover(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -63,7 +63,7 @@ function userRecoverFun(req, res, next) {
 //check Email If exists
 function checkEmailRegister(req, res, next) {
     checkMail(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -72,7 +72,7 @@ function checkEmailRegister(req, res, next) {
 //user register request method
 function userRegisterFun(req, res, next) {
     register(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -81,7 +81,7 @@ function userRegisterFun(req, res, next) {
 //user update request method
 function userUpdateFun(req, res, next) {
     update(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -89,7 +89,7 @@ function userUpdateFun(req, res, next) {
 //user update password request method
 function userPasswordUpdateFun(req, res, next) {
     updatePassword(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -98,7 +98,7 @@ function userPasswordUpdateFun(req, res, next) {
 //user delete request method
 function userDeleteFun(req, res, next) {
     deleteAccount(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });

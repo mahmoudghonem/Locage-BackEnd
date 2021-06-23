@@ -7,7 +7,7 @@ const usersDetails = async (req, res) => {
 
     try {
         const users = await User.find({ role: 'user' });
-        return res.status(200).json({ users: users });
+        return { users: users };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -19,7 +19,7 @@ const oneUserDetails = async (req, res) => {
 
     try {
         const user = await User.find({ $and: [{ _id: id }, { role: 'user' }] });
-        return res.status(200).json({ user: user });
+        return { user: user };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -31,7 +31,7 @@ const oneUserRemove = async (req, res) => {
 
     try {
         const user = await User.remove({ $and: [{ _id: id }, { role: 'user' }] });
-        return res.status(200).json({ user: user });
+        return { user: user };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -47,7 +47,7 @@ const oneUserRemove = async (req, res) => {
 //     }
 //     var myQuery = { $and: [{ _id: { $in: userIds } }, { role: 'user' }] };
 //     await User.deleteMany(myQuery).then(result => {
-//         return res.status(200).json({ message: "DELETED_SUCCESSFULLY", result: result });
+//         return { message: "DELETED_SUCCESSFULLY", result: result });
 //     }).catch(err => {
 //         new CustomError(err.toString());
 //     });

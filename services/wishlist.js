@@ -29,7 +29,7 @@ const userWishList = async (req, res) => {
 
     try {
         const result = await WishListItem.find({ wishListId: wishList._id });
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -49,7 +49,7 @@ const userWishListDetails = async (req, res) => {
 
     try {
         const result = await Product.find({ _id: { $in: wishListItems } });
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -82,7 +82,7 @@ const addWishList = async (req, res) => {
     const wishListItem = new WishListItem(body);
     try {
         await wishListItem.save();
-        return res.status(200).json({ message: "ADDED_SUCCESSFULLY" });
+        return { message: "ADDED_SUCCESSFULLY" };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -108,7 +108,7 @@ const removeWishList = async (req, res) => {
 
     try {
         const result = await WishListItem.findOneAndRemove({ wishListId: wishList._id, productId: productId });
-        return res.status(200).json({ message: "REMOVED_SUCCESSFULLY", result: result });
+        return { message: "REMOVED_SUCCESSFULLY", result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -125,7 +125,7 @@ const emptyWishList = async (req, res) => {
 
     try {
         await WishListItem.deleteMany({ wishListId: wishList._id });
-        return res.status(200).json({ message: "REMOVED_ALL_SUCCESSFULLY" });
+        return { message: "REMOVED_ALL_SUCCESSFULLY" };
     } catch (error) {
         new CustomError(error.toString());
     }
