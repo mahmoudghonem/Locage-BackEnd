@@ -64,11 +64,6 @@ const cartDetail = async (req, res) => {
                if( i._id.equals(c.productId)){
                 i.price = c.price  ;
                 i.quantity = c.quantity  ;
-            console.log("i",i._id)
-            console.log("c",c.productId)
-
-                 console.log("i",i.quantity)
-                 console.log("c",c.quantity)
                 }
 
                               
