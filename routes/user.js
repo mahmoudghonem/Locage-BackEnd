@@ -36,7 +36,7 @@ function getUserDetails(req, res, next) {
 //login get request method
 function userLoginFun(req, res, next) {
     login(req, res).then((result) => {
-        res.json(result);
+       return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });

@@ -48,7 +48,7 @@ const getUser = async (req, res) => {
 };
 
 //login user and return token
-const login = async (req, res) => {
+const login = async (req) => {
     const { email, password } = req.body;
     const loadedUser = await findOneUserByEmail(email);
     //return error if email is not register
@@ -63,7 +63,7 @@ const login = async (req, res) => {
     try {
         //create token and return it
         const token = await loadedUser.generateTokenAccess();
-        return res.status(200).json({ token: token, userId: loadedUser.id });
+        return { token: token, userId: loadedUser.id };
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
