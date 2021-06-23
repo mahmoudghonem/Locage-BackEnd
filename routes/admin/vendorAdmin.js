@@ -10,17 +10,16 @@ router.get('/vendors', authjwt, staffRole, getAllVendors);
 router.get('/vendors/:id', authjwt, staffRole, getOneVendor);
 //Stores only details (role access staff and admin)
 router.get('/stores', authjwt, staffRole, getAllStores);
-router.route('/stores/:id')
-    .get(authjwt, staffRole, getOneStore);
 
 router.get('/stores/hold', authjwt, staffRole, getNewStores);
+
+router.route('/stores/:id')
+    .get(authjwt, staffRole, getOneStore);
 
 //Stores statues to be accepted or decline (role access staff and admin)    
 router.route('/stores/:id/status')
     .patch(authjwt, staffRole, acceptStore)
     .delete(authjwt, staffRole, declineStore);
-
-
 
 //get all vendor request method
 function getAllVendors(req, res, next) {
