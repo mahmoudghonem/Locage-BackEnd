@@ -10,7 +10,7 @@ router.route('/:id')
 router.get('/:id/product', authjwt, getUserWishListDetails);
 
 router.route('/:id/product/:productId')
-    .post(authjwt, addToWishList)
+    .get(authjwt, addToWishList)
     .delete(authjwt, removeFromWishList);
 
 
