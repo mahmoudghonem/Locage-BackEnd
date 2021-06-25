@@ -2,31 +2,34 @@ const express = require('express');
 const router = express.Router();
 const imageFile = require("../../middlewares/image");
 const { retrieveAllCategories, createCategory, retrieveSubcategoriesOfCategory, createSubcategory,
-    editCategory, editSubcategory, getProductsOfCategory, deleteCategory, getCategoryWithSubcategories, getAllCategoryWithSubcategories }
+    editCategory, editSubcategory, getProductsOfCategory, deleteCategory, getCategoryWithSubcategories,
+     getAllCategoryWithSubcategories, retrieveAllCategoriesWithProductsCount }
      = require('../../services/admin/catogryAdmin');
 const authjwt = require("../../middlewares/authjwt");
 const { adminRole } = require('../../middlewares/roles');
 
 
 
-router.route('/catogry/')
-    .get(authjwt,adminRole,getCategories)
+router.route('/category')
+    .get(authjwt, adminRole, getCategories)
     .post(authjwt,adminRole, imageFile.single("photo"), createNewCategory);
 
-router.get('/catogry/all', getAll);
+router.get('/category/products', authjwt, adminRole, getCategoriesWithProductsCount);
+
+router.get('/category/all', getAll);
 
 router.route('/catogry/:id')
     .get(authjwt,adminRole,getCategoryAndSubcategory)
     .patch(authjwt,adminRole, imageFile.single("photo"), modifyCategory)
     .delete(authjwt,adminRole, removeCategory);
 
-router.get('/catogry/:id/products', authjwt,adminRole, retrieveProductsOfCategory);
+router.get('/category/:id/products', authjwt,adminRole, retrieveProductsOfCategory);
 
-router.route('/catogry/:id/subcategory')
+router.route('/category/:id/subcategory')
     .get(authjwt,adminRole,getSubcategories)
     .post(authjwt,adminRole, imageFile.single("photo"), createNewSubcategory);
 
-router.patch('/catogry/:id/subcategory/:subId',authjwt,adminRole, modifySubcategory);
+router.patch('/category/:id/subcategory/:subId',authjwt,adminRole, modifySubcategory);
 
 
 function getAll(req, res, next) {
@@ -37,6 +40,12 @@ function getAll(req, res, next) {
 function getCategories(req, res, next) {
     retrieveAllCategories().then(result => res.json({ result: result }))
         .catch(error => next(error));
+}
+
+function getCategoriesWithProductsCount(req, res, next) {
+    retrieveAllCategoriesWithProductsCount()
+    .then(result => res.json({ result: result }))
+    .catch(error => next(error));
 }
 
 function createNewCategory(req, res, next) {
