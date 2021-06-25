@@ -8,7 +8,7 @@ const { adminRole } = require('../../middlewares/roles');
 //TODO: Move To Admin Section
 router.get('/orders/', authjwt, adminRole, retrieveAllOrders);
 
-router.get('/orders/vendor', authjwt, adminRole, retrieveVendorOrdersItems);
+router.get('/orders/vendor/:vendorId', authjwt, adminRole, retrieveVendorOrdersItems);
 
 router.patch('/orders/:id/cancel', authjwt, cancelOrder);
 
@@ -25,8 +25,8 @@ function retrieveAllOrders(req, res, next) {
 
 function retrieveVendorOrdersItems(req, res, next) {
     const { page, limit } = req.query;
-    const { user: vendor } = req;
-    getVendorOrdersItems(vendor, page, limit)
+
+    getVendorOrdersItems( req,page, limit)
         .then(result => res.json({ result: result }))
         .catch(error => next(error));
 }
