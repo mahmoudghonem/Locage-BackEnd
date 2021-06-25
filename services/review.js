@@ -70,10 +70,35 @@ const getReviews = async (req, res) => {
      const options = {
         limit: limit || 10,
         page: page || 1, 
+        populate: {
+            path: "userId",
+               }
     };
+    var rate1=0;
+    var rate2=0;
+    var rate3=0;
+    var rate4=0;
+    var rate5=0;
   
   await Review.paginate({ productId: product._id }, options).then((result)=>{
-      return res.status(200).json({result:result});
+      for(var i of result.docs){
+          if(i.rate == 1)
+             rate1++;
+          else if (i.rate == 2)  
+              rate2++;
+          else if (i.rate == 3)  
+              rate3++; 
+          else if (i.rate == 4)  
+              rate4++;
+           else  
+              rate5++;
+      } 
+           return res.status(200).json({totalRating :product.rating,
+                                         Rate1 :rate1 , 
+                                         Rate2 :rate2, 
+                                         Rate3 :rate3, 
+                                         Rate4 :rate4, 
+                                         Rate5 :rate5 ,result:result  });
     }).catch((err)=>{
         new CustomError(err.toString());
     });
