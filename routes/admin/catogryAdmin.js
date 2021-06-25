@@ -18,7 +18,7 @@ router.get('/category/products', authjwt, adminRole, getCategoriesWithProductsCo
 
 router.get('/category/all', getAll);
 
-router.route('/catogry/:id')
+router.route('/category/:id')
     .get(authjwt,adminRole,getCategoryAndSubcategory)
     .patch(authjwt,adminRole, imageFile.single("photo"), modifyCategory)
     .delete(authjwt,adminRole, removeCategory);
