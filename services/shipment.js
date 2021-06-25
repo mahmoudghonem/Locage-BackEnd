@@ -21,7 +21,7 @@ const getOneUserShipment = async (req, res) => {
 
     try {
         const result = await Shipment.findOne({ _id: shipmentId }).exec();
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -37,7 +37,7 @@ const getPrimary = async (req, res) => {
 
     try {
         const result = await Shipment.findOne({ userId: userId, primary: true }).exec();
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -53,7 +53,7 @@ const userShipments = async (req, res) => {
 
     try {
         const result = await Shipment.find({ userId: userId }).exec();
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -82,7 +82,7 @@ const createShipment = async (req, res) => {
 
     try {
         await shipment.save();
-        return res.status(200).json({ message: "ADDED_SUCCESSFULLY" });
+        return { message: "ADDED_SUCCESSFULLY" };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -101,7 +101,7 @@ const updateShipment = async (req, res) => {
             await Shipment.updateMany({ userId: userId }, { primary: false }).exec();
         }
         await Shipment.findByIdAndUpdate(shipmentId, { ...body }).exec();
-        return res.status(200).json({ message: "UPDATED_SUCCESSFULLY" });
+        return { message: "UPDATED_SUCCESSFULLY" };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -116,7 +116,7 @@ const removeShipment = async (req, res) => {
     await findOneUserById(userId);
     try {
         await Shipment.findByIdAndRemove(shipmentId);
-        return res.status(200).json({ message: "REMOVED_SUCCESSFULLY" });
+        return { message: "REMOVED_SUCCESSFULLY" };
     } catch (error) {
         new CustomError(error.toString());
     }

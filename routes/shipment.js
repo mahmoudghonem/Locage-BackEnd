@@ -16,7 +16,7 @@ router.route('/:id/:shipmentId')
 
 function getUserShipments(req, res, next) {
     userShipments(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -24,14 +24,14 @@ function getUserShipments(req, res, next) {
 
 function getOneShipment(req, res, next) {
     getOneUserShipment(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
 }
 function getUserPrimary(req, res, next) {
     getPrimary(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -39,7 +39,7 @@ function getUserPrimary(req, res, next) {
 
 function addUserShipment(req, res, next) {
     createShipment(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -47,7 +47,7 @@ function addUserShipment(req, res, next) {
 
 function editUserShipment(req, res, next) {
     updateShipment(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -55,7 +55,7 @@ function editUserShipment(req, res, next) {
 
 function removeOneUserShipment(req, res, next) {
     removeShipment(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });

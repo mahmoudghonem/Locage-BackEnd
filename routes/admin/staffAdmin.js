@@ -24,7 +24,7 @@ router.get('/moderators/:id', authjwt, adminRole, getOneModerator);
 //get all admins request method
 function getAllAdmins(req, res, next) {
     adminDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -32,7 +32,7 @@ function getAllAdmins(req, res, next) {
 //get one admin request method
 function getOneAdmin(req, res, next) {
     oneAdminDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -41,7 +41,7 @@ function getOneAdmin(req, res, next) {
 //get all staff request method
 function getAllStaff(req, res, next) {
     staffDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -49,7 +49,7 @@ function getAllStaff(req, res, next) {
 //get one staff request method
 function getOneStaff(req, res, next) {
     oneStaffDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -57,7 +57,7 @@ function getOneStaff(req, res, next) {
 //make account subAdmin request method
 function makeSubAdmin(req, res, next) {
     makeAccountSubAdmin(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -65,7 +65,7 @@ function makeSubAdmin(req, res, next) {
 //remove subAdmin account to user request method
 function removeSubAdmin(req, res, next) {
     removeSubAdminRole(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -74,7 +74,7 @@ function removeSubAdmin(req, res, next) {
 //get all moderators request method
 function getAllModerators(req, res, next) {
     moderatorDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -82,7 +82,7 @@ function getAllModerators(req, res, next) {
 //get one moderator request method
 function getOneModerator(req, res, next) {
     oneModeratorDetails(req, res).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });

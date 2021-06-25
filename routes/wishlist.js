@@ -16,7 +16,7 @@ router.route('/:id/product/:productId')
 
 function getUserWishList(req, res, next) {
     userWishList(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -24,7 +24,7 @@ function getUserWishList(req, res, next) {
 
 function getUserWishListDetails(req, res, next) {
     userWishListDetails(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -32,7 +32,7 @@ function getUserWishListDetails(req, res, next) {
 
 function addToWishList(req, res, next) {
     addWishList(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
@@ -40,14 +40,14 @@ function addToWishList(req, res, next) {
 
 function removeFromWishList(req, res, next) {
     removeWishList(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });
 }
 function removeAllWishList(req, res, next) {
     emptyWishList(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json(result);
     }).catch((err) => {
         next(err);
     });

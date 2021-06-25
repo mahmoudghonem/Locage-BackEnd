@@ -57,7 +57,7 @@ const userPayments = async (req, res) => {
             }
         }
         ]);
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -83,7 +83,7 @@ const addBankAccount = async (req, res) => {
 
     try {
         const result = await bankAccount.save();
-        return res.status(200).json({ message: "ADDED_SUCCESSFULLY", result: result });
+        return { message: "ADDED_SUCCESSFULLY", result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -113,7 +113,7 @@ const getBankAccount = async (req, res) => {
             }
         }]);
 
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -138,7 +138,7 @@ const updateBankAccount = async (req, res) => {
 
     try {
         const result = await BankAccount.findOneAndUpdate({ _id: bankAccount._id }, body);
-        return res.status(200).json({ message: "UPDATED_SUCCESSFULLY", result: result });
+        return { message: "UPDATED_SUCCESSFULLY", result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -162,7 +162,7 @@ const deleteBankAccount = async (req, res) => {
 
     try {
         const result = await BankAccount.findOneAndRemove({ _id: bankAccount._id });
-        return res.status(200).json({ message: "DELETED_SUCCESSFULLY", result: result });
+        return { message: "DELETED_SUCCESSFULLY", result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -182,7 +182,7 @@ const addCreditCard = async (req, res) => {
 
     try {
         const result = await creditCard.save();
-        return res.status(200).json({ message: "ADDED_SUCCESSFULLY", result: result });
+        return { message: "ADDED_SUCCESSFULLY", result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -212,7 +212,7 @@ const getCreditCard = async (req, res) => {
                 as: 'creditcard'
             }
         }]);
-        return res.status(200).json({ result: result });
+        return { result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -237,7 +237,7 @@ const updateCreditCard = async (req, res) => {
 
     try {
         const result = await CreditCard.findOneAndUpdate({ _id: cardId }, body);
-        return res.status(200).json({ message: "UPDATED_SUCCESSFULLY", result: result });
+        return { message: "UPDATED_SUCCESSFULLY", result: result };
     } catch (error) {
         new CustomError(error.toString());
     }
@@ -258,7 +258,7 @@ const deleteCreditCard = async (req, res) => {
 
     try {
         const result = await CreditCard.findOneAndRemove({ _id: cardId });
-        return res.status(200).json({ message: "DELETED_SUCCESSFULLY", result: result });
+        return { message: "DELETED_SUCCESSFULLY", result: result };
     } catch (error) {
         new CustomError(error.toString());
     }

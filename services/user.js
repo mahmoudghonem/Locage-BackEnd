@@ -40,7 +40,7 @@ const getUser = async (req, res) => {
         new CustomError('UNAUTHORIZED', 401);
 
     try {
-        return res.status(200).json({ user: loadedUser });
+        return { user: loadedUser };
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
@@ -48,7 +48,7 @@ const getUser = async (req, res) => {
 };
 
 //login user and return token
-const login = async (req, res) => {
+const login = async (req) => {
     const { email, password } = req.body;
     const loadedUser = await findOneUserByEmail(email);
     //return error if email is not register
@@ -63,7 +63,7 @@ const login = async (req, res) => {
     try {
         //create token and return it
         const token = await loadedUser.generateTokenAccess();
-        return res.status(200).json({ token: token, userId: loadedUser.id });
+        return { token: token, userId: loadedUser.id };
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
@@ -100,7 +100,7 @@ const reset = async (req, res) => {
     };
     try {
         await smtpTransport.sendMail(mailOptions);
-        return res.status(200).json({ message: 'RESET_EMAIL_SENT', email: loadedUser.email });
+        return { message: 'RESET_EMAIL_SENT', email: loadedUser.email };
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
@@ -135,7 +135,7 @@ const recover = async (req, res) => {
 
     try {
         await smtpTransport.sendMail(mailOptions);
-        return res.status(200).json({ message: 'PASSWORD_CHANGED', email: loadedUser.email });
+        return { message: 'PASSWORD_CHANGED', email: loadedUser.email };
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
@@ -159,7 +159,7 @@ const register = async (req, res) => {
     //return user data and token after create
     try {
         const token = await createdUser.generateTokenAccess();
-        return res.status(200).json({ message: "ACCOUNT_CREATED", token: token, userId: createdUser.id });
+        return { message: "ACCOUNT_CREATED", token: token, userId: createdUser.id };
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
@@ -186,7 +186,7 @@ const update = async (req, res) => {
 
     try {
         await User.findOneAndUpdate({ _id: userId }, body);
-        return res.status(200).json({ message: "ACCOUNT_UPDATED" });
+        return { message: "ACCOUNT_UPDATED" };
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
@@ -211,7 +211,7 @@ const updatePassword = async (req, res) => {
 
     try {
         await User.findOneAndUpdate({ _id: userId }, { password: body.password });
-        return res.status(200).json({ message: "PASSWORD_UPDATED" });
+        return { message: "PASSWORD_UPDATED" };
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
@@ -229,7 +229,7 @@ const deleteAccount = async (req, res) => {
 
     try {
         const result = await loadedUser.remove();
-        return res.status(200).json({ message: "ACCOUNT_DELETED", result: result });
+        return { message: "ACCOUNT_DELETED", result: result };
     } catch (error) {
         new CustomError(error.toString(), 400);
     }
@@ -243,7 +243,7 @@ const checkMail = async (req, res) => {
     if (loadedUser)
         new CustomError('EMAIL_ALREADY_REGISTER', 401);
 
-    return res.status(200).json({ message: "EMAIL_NOT_REGISTER" });
+    return { message: "EMAIL_NOT_REGISTER" };
 };
 
 module.exports = {

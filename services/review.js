@@ -30,6 +30,34 @@ const updateProductRatng = async (productId)=>{
      await Product.findByIdAndUpdate(productId , {$set:{rating: total }});
 }
 
+//Get Product not contain revew
+const getProductsNotReview = async (req, res) => {
+    const { limit } = req.query;
+    const { page } = req.query;
+    const userId = req.userId;
+
+    await logginedUser(userId);
+ 
+     const options = {
+        limit: limit || 10,
+        page: page || 1, 
+    };
+
+    const order = await Order.findOne({ userId: userId }).exec();
+     if(order.status != "pickedup")
+        return res.status(200).json({ message: "NOT_FOUND_PRODUCTS" });
+
+    const orderItem = await OrderItem.find({ orderId: order }).distinct('productId').exec();
+
+    const review = await Review.find({ userId: userId }).distinct('productId').exec();
+  
+  await Product.paginate({ _id: { $in: orderItem , $nin:review} }, options).then((result)=>{
+      return res.status(200).json({result:result});
+    }).catch((err)=>{
+        new CustomError(err.toString());
+    });
+};
+
 // Get reviews of product 
 const getReviews = async (req, res) => {
     const {productId} = req.params ;
@@ -146,6 +174,7 @@ const removeReview = async (req, res) => {
 
 
 module.exports = {
+    getProductsNotReview ,
     getReviews ,
     addReview ,
     updateRev , 
