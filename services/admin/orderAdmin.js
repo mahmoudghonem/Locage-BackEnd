@@ -21,13 +21,14 @@ const getOrders = async (page, limit) => {
     }
 }
 
-const getVendorOrdersItems = async (vendor, page, limit) => {
+const getVendorOrdersItems = async (req, page, limit) => {
+    const {vendorId} = req.params ;
     const options = {
         limit: parseInt(limit) || 10,
         page: parseInt(page) || 1
     }
 
-    const store = await Store.findOne({ userId: vendor._id });
+    const store = await Store.findOne({ _id: vendorId });
     if (!store) customError("STORE_NOT_FOUND", 404);
 
     try {
