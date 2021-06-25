@@ -25,7 +25,51 @@ const subcategoryExisitsCheck = async (subcategoryId, categoryId) => {
 
 const retrieveAllCategories = async () => {
     try {
-        return await Category.find();
+        return Category.find();
+    } catch (error) {
+        return customError(error.toString(), 500);
+    }
+}
+
+const retrieveAllCategoriesWithProductsCount = () => {
+    try {
+        return Category.aggregate([
+            {
+                $lookup: {
+                    from: "subcategories",
+                    localField: "_id",
+                    foreignField: "categoryId",
+                    as: "subcategories"
+                }
+            },
+            {
+                $unwind: "$subcategories"
+            },
+            {
+                // Ouch
+                $lookup: {
+                    from: "products",
+                    localField: "subcategories._id",
+                    foreignField: "subcategoryId",
+                    as: "products"
+                }
+            },
+            {
+                $unwind: "$products"
+            },
+            {
+                $group: {
+                    _id: {
+                        "_id": "$_id",
+                        "name": "$name",
+                        "photo": "$photo",
+                    },
+                    totalProducts: { 
+                        $sum: 1
+                    }
+                }
+            }
+        ]);
     } catch (error) {
         return customError(error.toString(), 500);
     }
@@ -184,4 +228,5 @@ module.exports = {
     deleteCategory,
     getCategoryWithSubcategories,
     getAllCategoryWithSubcategories,
+    retrieveAllCategoriesWithProductsCount
 }
