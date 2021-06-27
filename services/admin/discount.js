@@ -32,9 +32,14 @@ const createDiscount = async (discountData) => {
     isEmpty(discountData);
 
     try{
-        const discount = await Discount.find({ code :discountData.code });
-        if(discount) customError("COUD_IS_FOUNDED", 401);
-        return await Discount.create(discountData);
+        const discount = await Discount.findOne({ code :discountData.code }).exec();
+        if(!discount)
+        {
+           return await Discount.create(discountData);
+        }
+        else{
+           customError("COUD_IS_FOUNDED", 402);
+        }
     } catch(error){
         customError(error.toString(), 500);
     }
