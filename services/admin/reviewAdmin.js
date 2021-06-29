@@ -45,10 +45,10 @@ const getVendorReviews = async (req , res) => {
     }
 
     var revArr = [];
-    const VENDORE = await Store.findById(_id).exec();
-    if(!VENDORE)
+    const VENDOR = await Store.findById(_id).exec();
+    if(!VENDOR)
       new CustomError("VENDORE_NOT_FOUND","404",);
-    const products = await Product.find({vendorId: VENDORE._id});
+    const products = await Product.find({vendorId: VENDOR._id});
     if(!products)
        new CustomError("PRODUCT_NOT_FOUND","404");
        try {
@@ -58,7 +58,7 @@ const getVendorReviews = async (req , res) => {
               revArr.push("Product", key ,"Reviews",review.docs);
             
            }
-     return res.status(200).json({result : revArr});
+     return res.status(200).json({VENDOR,result : revArr});
     } catch (error) {
         CustomError(error.toString());
     }
