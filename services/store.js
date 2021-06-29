@@ -26,7 +26,7 @@ async function getAll(req, res) {
 //Getone store
 async function getOne(req, res) {
     const { id } = req.params;
-    const store = await Store.findById(id).exec();
+    const store = await Store.findById(id).populate("userId").exec();
     if (!store)
         new CustomError("NOT_FOUND", 404);
     else
@@ -36,7 +36,7 @@ async function getOne(req, res) {
 //Getone store
 async function check(req, res) {
     const { userId } = req.params;
-    const store = await Store.findOne({userId:userId}).exec();
+    const store = await Store.findOne({userId:userId}).populate("userId").exec();
     if (!store)
         new CustomError("NOT_FOUND", 404);
     else
