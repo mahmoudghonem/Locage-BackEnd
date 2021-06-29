@@ -69,7 +69,7 @@ async function create(req, res) {
             new CustomError(err.toString());
         });
     } else {
-        await Store.create({ ...body, userId: userId })
+        await Store.create({ ...body, userId: userId ,photo:null })
             .then((result) => {
                 return result;
             }).catch((err) => {
@@ -99,6 +99,7 @@ async function update(req, res) {
         body.photo = image;
         return await Store.findByIdAndUpdate({ id }, { ...body }, { new: true });
     } else {
+
         return await Store.findByIdAndUpdate(id, body, { new: true });
     }
 }
