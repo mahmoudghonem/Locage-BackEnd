@@ -55,7 +55,7 @@ const getVendorReviews = async (req , res) => {
            for(const key of products){
            const review = await Review.paginate({ productId: key._id }, options);
            if(review)
-              revArr.push("Product", key ,"Reviews",review.docs);
+              revArr.push({product:key ,review:review});
             
            }
      return res.status(200).json({VENDOR,result : revArr});
