@@ -5,7 +5,7 @@ const authjwt = require("../middlewares/authjwt");
 const { adminRole, vendorRole } = require("../middlewares/roles");
 
 
-router.get('/client-token', getToken);
+router.get('/client-token', authjwt, getToken);
 
 router.post('/checkout', authjwt, placeOrder);
 //TODO: Move To Admin Section
@@ -31,8 +31,8 @@ function getToken(req, res, next) {
 
 /* Routes Handlers */
 function placeOrder(req, res, next) {
-    const { userId, body: shipmentAndDiscount , nonce } = req;
-    createOrder(userId, shipmentAndDiscount ,nonce)
+    const { userId, body: shipmentAndDiscount, nonce } = req;
+    createOrder(userId, shipmentAndDiscount, nonce)
         .then(result => res.status(201).json({ message: "Order placed successfully.", result: result }))
         .catch(error => next(error));
 }
@@ -48,8 +48,8 @@ function retrieveOrder(req, res, next) {
     const { userId } = req;
     const { id: orderId } = req.params;
     getOrder(orderId, userId)
-    .then(result => res.json({ result: result }))
-    .catch(error => next(error));
+        .then(result => res.json({ result: result }))
+        .catch(error => next(error));
 }
 
 function retrieveVendorOrdersItems(req, res, next) {
