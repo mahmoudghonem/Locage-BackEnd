@@ -31,7 +31,8 @@ function getToken(req, res, next) {
 
 /* Routes Handlers */
 function placeOrder(req, res, next) {
-    const { userId, body: shipmentAndDiscount, nonce } = req;
+    const { userId } = req;
+    const { shipmentAndDiscount, nonce } = req.body;
     createOrder(userId, shipmentAndDiscount, nonce)
         .then(result => res.status(201).json({ message: "Order placed successfully.", result: result }))
         .catch(error => next(error));
