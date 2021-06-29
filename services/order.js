@@ -28,7 +28,7 @@ function userIsLoggedin(loggedUser) {
 // get braintree payment tokens
 const getPaymentToken = async (req, res) => {
     await gateway.clientToken.generate({}).then((response) => {
-        return res.status(200).json({ clientToken: response.clientToken });
+        return res.status(200).json({ token: response.clientToken });
     });
 };
 
