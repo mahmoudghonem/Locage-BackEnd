@@ -17,6 +17,9 @@ const getProductReviews = async (req, res) => {
      const options = {
         limit: limit || 10,
         page: page || 1, 
+        populate:{
+            path: "userId"
+               },
     };
   
   await Review.paginate({ productId: product._id }, options).then((result)=>{
@@ -35,21 +38,25 @@ const getVendorReviews = async (req , res) => {
 
     const options = {
         limit: parseInt(limit) || 10,
-        page: parseInt(page) || 1
+        page: parseInt(page) || 1,
+        populate:{
+            path: "userId"
+               },
     }
 
     var revArr = [];
     const VENDORE = await Store.findById(_id).exec();
     if(!VENDORE)
-      new CustomError("404","VENDORE_NOT_FOUND");
+      new CustomError("VENDORE_NOT_FOUND","404",);
     const products = await Product.find({vendorId: VENDORE._id});
     if(!products)
-       new CustomError("404","PRODUCT_NOT_FOUND");
+       new CustomError("PRODUCT_NOT_FOUND","404");
        try {
            for(const key of products){
            const review = await Review.paginate({ productId: key._id }, options);
            if(review)
-              revArr.push( key._id ,review.docs);
+              revArr.push("Product", key ,"Reviews",review.docs);
+            
            }
      return res.status(200).json({result : revArr});
     } catch (error) {
