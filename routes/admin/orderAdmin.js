@@ -11,7 +11,7 @@ router.get('/orders/', authjwt, adminRole, retrieveAllOrders);
 
 router.get('/orders/vendor/:vendorId', authjwt, adminRole, retrieveVendorOrdersItems);
 
-router.get('/:id', authjwt,adminRole, retrieveOrder);
+router.get('/orders/:id', authjwt,adminRole, retrieveOrder);
 
 router.patch('/orders/:id/cancel', authjwt, cancelOrder);
 
