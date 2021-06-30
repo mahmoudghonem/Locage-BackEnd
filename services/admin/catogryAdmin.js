@@ -168,9 +168,9 @@ const deleteCategory = async (categoryId, userId) => {
 
     try {
         // delete related subcategories and products
-        const subcategories = await Subcategory.find({ categoryId: categoryId });
+        //const subcategories = await Subcategory.find({ categoryId: categoryId });
 
-        await Product.deleteMany({ subcategoryId: { $in: subcategories } });
+        //await Product.deleteMany({ subcategoryId: { $in: subcategories } });
 
         await Subcategory.deleteMany({ categoryId: categoryId });
 
