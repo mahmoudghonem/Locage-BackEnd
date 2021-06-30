@@ -63,7 +63,7 @@ const deleteSubcategory = async (subcategoryId, userId) => {
 
     try{
         // delete products related to subcategory
-        await Product.deleteMany({ subcategoryId: subcategoryId });
+        //await Product.deleteMany({ subcategoryId: subcategoryId });
 
         await cloudinary.uploader.destroy(subcategory.photoPublicId);
         return await Subcategory.findByIdAndDelete(subcategoryId);
