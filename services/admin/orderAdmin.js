@@ -20,6 +20,25 @@ const getOrders = async (page, limit) => {
         customError(error.toString(), 500);
     }
 }
+const getOrder = async (orderId) => {
+    try{
+        const order =  await Order.aggregate([
+            { $match: { $and: [ { _id: mongoose.Types.ObjectId(orderId) } ]} },
+            {
+                $lookup: {
+                    from: "orderItems",
+                    localField: "_id",
+                    foreignField: "orderId",
+                    as: "orderItems"
+                }
+            }
+        ]);
+        if(order.length === 0) customError("ORDER_NOT_FOUND", 404);
+        return order;
+    } catch(error){
+        customError(error.toString(), 500);
+    }
+} 
 
 const getVendorOrdersItems = async (req, page, limit) => {
     const {vendorId} = req.params ;
@@ -83,6 +102,7 @@ const changeStatus = async (orderId, orderStatus) => {
 
 module.exports = {
     getOrders,
+    getOrder,
     getVendorOrdersItems,
     cancel,
     changeStatus

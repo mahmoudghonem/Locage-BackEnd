@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { getOrders, getVendorOrdersItems, cancel, changeStatus } = require('../../services/admin/orderAdmin');
+const { getOrders, getVendorOrdersItems, cancel, changeStatus , getOrder,
+} = require('../../services/admin/orderAdmin');
 const authjwt = require('../../middlewares/authjwt');
 const { adminRole } = require('../../middlewares/roles');
 
@@ -9,6 +10,8 @@ const { adminRole } = require('../../middlewares/roles');
 router.get('/orders/', authjwt, adminRole, retrieveAllOrders);
 
 router.get('/orders/vendor/:vendorId', authjwt, adminRole, retrieveVendorOrdersItems);
+
+router.get('/orders/:id', authjwt,adminRole, retrieveOrder);
 
 router.patch('/orders/:id/cancel', authjwt, cancelOrder);
 
@@ -51,4 +54,10 @@ function changeOrderStatus(req, res, next) {
         .catch(error => next(error));
 }
 
+function retrieveOrder(req, res, next) {
+    const { id: orderId } = req.params;
+    getOrder(orderId)
+        .then(result => res.json({ result: result }))
+        .catch(error => next(error));
+}
 module.exports = router;
