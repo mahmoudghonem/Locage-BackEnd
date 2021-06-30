@@ -6,8 +6,8 @@ const { adminRole } = require('../../middlewares/roles');
 
 
 //Admins only details (role access admin)
-router.get('/review/product/:productId', authjwt, adminRole, reviewProduct);
-router.get('/review/vendor/:_id', authjwt, adminRole, reviewVendor);
+router.get('/reviews/product/:productId', authjwt, adminRole, reviewProduct);
+router.get('/reviews/vendor/:_id', authjwt, adminRole, reviewVendor);
 
 
 
