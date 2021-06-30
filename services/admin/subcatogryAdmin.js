@@ -30,6 +30,14 @@ const getProductsOfSubcategory = async (subcategoryId, page, limit) => {
     }
 }
 
+const getSubcategories = () => {
+    try{
+        return Subcategory.find().populate("categoryId");
+    } catch(error) {
+        return customError(error.toString(), 500);
+    }
+}
+
 const editSubcategory = async (editedSubcategory, subcategoryId, userId, photo) => {
     // checks
     await loggedUserCheck (userId);
@@ -67,5 +75,6 @@ const deleteSubcategory = async (subcategoryId, userId) => {
 module.exports = {
     getProductsOfSubcategory,
     editSubcategory,
-    deleteSubcategory
+    deleteSubcategory,
+    getSubcategories
 }
