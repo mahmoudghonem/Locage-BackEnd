@@ -1,17 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const { getProductsOfSubcategory, editSubcategory, deleteSubcategory } = require('../../services/admin/subcatogryAdmin');
+const { getProductsOfSubcategory, editSubcategory, deleteSubcategory, getSubcategories } = require('../../services/admin/subcatogryAdmin');
 const authjwt = require("../../middlewares/authjwt");
 const { adminRole } = require('../../middlewares/roles');
 const imageFile = require("../../middlewares/image");
 
 
-router.get('/subcatogry/:id/products',authjwt,adminRole, retrieveProductsOfSubcategory);
+router.get('/subcategory/:id/products',authjwt,adminRole, retrieveProductsOfSubcategory);
+router.get('/subcategory',authjwt,adminRole, retrieveSubcategories);
 
-router.route('/subcatogry/:id')
+router.route('/subcategory/:id')
     .patch(authjwt,adminRole, imageFile.single("photo"), modifySubcategory)
     .delete(authjwt,adminRole, removeSubcategory)
 
+
+function retrieveSubcategories(req, res, next) {
+    getSubcategories()
+    .then(result => res.json({ result: result }))
+    .catch(error => next(error));
+}
 
 function retrieveProductsOfSubcategory(req, res, next){
     const { id: subcategoryId } = req.params;
