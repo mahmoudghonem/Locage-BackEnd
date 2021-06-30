@@ -85,22 +85,25 @@ async function create(req, res) {
 async function update(req, res) {
     const { body, userId } = req;
     const { id } = req.params;
-    const store = getOne(id);
     const getUser = await User.findById(userId).exec();
+    const store = await Store.findOne({userId: id});
 
     if (!store)
         new CustomError("NOT_FOUND", 404);
     if (getUser.role != 'vendor')
         new CustomError("UNAUTHORIZED", 401);
     const file = req.file | false;
+    const _id = store._id;
     if (file) {
         const result = await cloudinary.uploader.upload(req.file.path);
         const image = result.secure_url;
         body.photo = image;
-        return await Store.findByIdAndUpdate({ id }, { ...body }, { new: true });
+       
+        return await Store.findByIdAndUpdate({ _id }, { ...body }, { new: true });
+      
     } else {
 
-        return await Store.findByIdAndUpdate(id, body, { new: true });
+        return await Store.findByIdAndUpdate({ _id }, { ...body }, { new: true });
     }
 }
 
