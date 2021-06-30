@@ -22,18 +22,8 @@ const getOrders = async (page, limit) => {
 }
 const getOrder = async (orderId) => {
     try{
-        const order =  await Order.aggregate([
-            { $match: { $and: [ { _id: mongoose.Types.ObjectId(orderId) } ]} },
-            {
-                $lookup: {
-                    from: "orderItems",
-                    localField: "_id",
-                    foreignField: "orderId",
-                    as: "orderItems"
-                }
-            }
-        ]);
-        if(order.length === 0) customError("ORDER_NOT_FOUND", 404);
+        const order =  await Order.findById(orderId);
+        if(!order) customError("ORDER_NOT_FOUND", 404);
         return order;
     } catch(error){
         customError(error.toString(), 500);
