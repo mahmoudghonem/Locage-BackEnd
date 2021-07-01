@@ -92,13 +92,12 @@ async function update(req, res) {
         new CustomError("NOT_FOUND", 404);
     if (getUser.role != 'vendor')
         new CustomError("UNAUTHORIZED", 401);
-    const file = req.file | false;
+    const file = req.file ;
     const _id = store._id;
     if (file) {
         const result = await cloudinary.uploader.upload(req.file.path);
         const image = result.secure_url;
         body.photo = image;
-       
         return await Store.findByIdAndUpdate({ _id }, { ...body }, { new: true });
       
     } else {
