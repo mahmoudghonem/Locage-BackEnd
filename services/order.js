@@ -113,20 +113,20 @@ const createOrder = async (userId, shipmentAndDiscount /*, nonce */) => {
         }
 
         orderData.totalProducts = totalItems;
-        await Cart.findByIdAndUpdate(userCart._id, { $set: { price: 0 } });
+        await Cart.findByIdAndUpdate(userCart._id, { $set: { totalprice: 0 } });
         await Order.create(orderData);
-        // await gateway.transaction.sale({
-        //     amount: orderData.totalprice,
-        //     paymentMethodNonce: nonce,
-        //     options: {
-        //         submitForSettlement: true
-        //     }
-        // }).then((result) => {
-        //     return result;
-        // }).catch(async (err) => {
-        //     await Order.findByIdAndUpdate(orderData._id, { status: 'cancelled' }).exec();
-        //     customError(err.toString(), 500);
-        // });
+        await gateway.transaction.sale({
+            amount: orderData.totalprice,
+            paymentMethodNonce: nonce,
+            options: {
+                submitForSettlement: true
+            }
+        }).then((result) => {
+            return result;
+        }).catch(async (err) => {
+            await Order.findByIdAndUpdate(orderData._id, { status: 'cancelled' }).exec();
+            customError(err.toString(), 500);
+        });
     } catch (error) {
         // if an error occures the created order should not be completed
         customError(error.toString(), 500);
