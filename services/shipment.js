@@ -75,7 +75,10 @@ const createShipment = async (req, res) => {
             await Shipment.updateMany({ userId: userId }, { primary: false }).exec();
         }
     }
-    else if (!shipments) body.primary = true;
+    else {
+        body.primary = true;
+
+    }
 
     body.userId = userId;
     const shipment = new Shipment(body);

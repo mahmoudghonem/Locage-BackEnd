@@ -3,10 +3,19 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const ShipmentSchema = new Schema({
-    fullName: {
+    firstName: {
+        type: String
+    },
+    lastName: {
         type: String
     },
     address: {
+        type: String
+    },
+    city: {
+        type: String
+    },
+    country: {
         type: String
     },
     phoneNumber: {
@@ -31,8 +40,8 @@ const ShipmentSchema = new Schema({
     collection: 'shipments'
 });
 
-// ShipmentSchema.virtual('id').get(function () {
-//     return this._id.toHexString();
-// });
+ShipmentSchema.virtual('fullAddress').get(function () {
+    return `${this.address}, ${this.city}, ${this.country}`;
+});
 const shipment = mongoose.model('Shipment', ShipmentSchema);
 module.exports = shipment;

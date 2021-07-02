@@ -16,7 +16,7 @@ const StoreSchema = new Schema(
       type: String,
       enum: ['hold', 'accepted'],
       default: 'hold'
-  },
+    },
     address: {
       city: String,
       state: String,
@@ -28,6 +28,7 @@ const StoreSchema = new Schema(
     phoneNumber: {
       unique: true,
       require: true,
+      sparse: true,
       validate: {
         validator: function (v) {
           return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(v);

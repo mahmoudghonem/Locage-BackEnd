@@ -38,12 +38,14 @@ async function cartItemsAreValid(cartItems) {
     for (const item of cartItems) {
         const product = await Product.findById(item.productId);
 
-        if (!product) customError("PRODUCT_NOT_FOUND", 404);
+        if (!product) 
+            return customError("PRODUCT_NOT_FOUND", 404);
 
-        if (product.quantity === 0) customError("PRODUCT_OUT_OF_STOCK", 400);
+        if (product.quantity === 0) 
+            return customError("PRODUCT_OUT_OF_STOCK", 400);
 
         if (item.quantity > product.quantity)
-            customError("ITEM_QUANTITY_EXCEEDS_AVAILABLE_QUANTITY", 400);
+            return customError("ITEM_QUANTITY_EXCEEDS_AVAILABLE_QUANTITY", 400);
     }
 }
 
@@ -53,7 +55,7 @@ async function cartItemsAreValid(cartItems) {
         discountCode: "..." (String)
     }
 */
-const createOrder = async (userId, shipmentAndDiscount, nonce) => {
+const createOrder = async (userId, shipmentAndDiscount , nonce) => {
     let orderPrice = 0;
     const loggedUser = await User.findById(userId);
 
@@ -83,7 +85,7 @@ const createOrder = async (userId, shipmentAndDiscount, nonce) => {
 
     // Create initial order data
     let orderData = new Order({
-        name: shipmentData.fullName,
+        name: shipmentData.firstName + " " + shipmentData.lastName,
         address: shipmentData.address,
         phoneNumber: shipmentData.phoneNumber,
         userId: userId,
@@ -92,7 +94,7 @@ const createOrder = async (userId, shipmentAndDiscount, nonce) => {
 
     try {
         // check the validity of cart items
-        cartItemsAreValid(cartItems);
+        await cartItemsAreValid(cartItems);
 
         // create orderItems
         let totalItems = 0;
@@ -111,7 +113,7 @@ const createOrder = async (userId, shipmentAndDiscount, nonce) => {
         }
 
         orderData.totalProducts = totalItems;
-        await Cart.findByIdAndUpdate(userCart._id, { $set: { price: 0 } });
+        await Cart.findByIdAndUpdate(userCart._id, { $set: { totalprice: 0 } });
         await Order.create(orderData);
         await gateway.transaction.sale({
             amount: orderData.totalprice,
@@ -127,6 +129,7 @@ const createOrder = async (userId, shipmentAndDiscount, nonce) => {
         });
     } catch (error) {
         // if an error occures the created order should not be completed
+        await Cart.findByIdAndUpdate(userCart._id, { $set: { totalprice: 0 } });
         customError(error.toString(), 500);
     }
 };
@@ -146,9 +149,9 @@ const getOrders = async (page, limit) => {
 }
 
 const getOrder = async (orderId, userId) => {
-    try{
-        const order =  await Order.aggregate([
-            { $match: { $and: [ { _id: mongoose.Types.ObjectId(orderId) }, { userId: mongoose.Types.ObjectId(userId) } ]} },
+    try {
+        const order = await Order.aggregate([
+            { $match: { $and: [{ _id: mongoose.Types.ObjectId(orderId) }, { userId: mongoose.Types.ObjectId(userId) }] } },
             {
                 $lookup: {
                     from: "orderItems",
@@ -158,9 +161,9 @@ const getOrder = async (orderId, userId) => {
                 }
             }
         ]);
-        if(order.length === 0) customError("ORDER_NOT_FOUND", 404);
+        if (order.length === 0) customError("ORDER_NOT_FOUND", 404);
         return order;
-    } catch(error){
+    } catch (error) {
         customError(error.toString(), 500);
     }
 }
@@ -170,10 +173,10 @@ const getVendorOrdersItems = async (vendor, page, limit) => {
         limit: parseInt(limit) || 10,
         page: parseInt(page) || 1,
         populate: ["productId",
-         {
-            path: "orderId",
-            select: "status -_id"
-        }]
+            {
+                path: "orderId",
+                select: "status -_id"
+            }]
     }
 
     const store = await Store.findOne({ userId: vendor._id });
