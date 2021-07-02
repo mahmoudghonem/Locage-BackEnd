@@ -69,7 +69,7 @@ const cartDetail = async (req, res) => {
                               
             }
         }   
-        return res.status(200).json({ result: result });
+        return res.status(200).json({ result: result ,cart });
     }).catch((err) => {
         new CustomError(err.toString());
     });
@@ -81,7 +81,7 @@ const addCart = async (req, res) => {
     const { body } = req ;
     const { productId } = req.params;
     const userId = req.userId;
-
+    var mess ;
     await loggenedUser(userId);
 
     const product = await Product.findById(productId).exec();
@@ -97,22 +97,35 @@ const addCart = async (req, res) => {
         return res.status(200).json({ message: "PRODUCT_ALREADY_ADDED" });
     }
     var totalPrice = 0 ;
-
-
-    if(Object.keys(req.body).length === 0){
-
-        totalPrice = product.price * 1;
+    var Prquantity = 0;
+    var productPrice
+    if(product.discount > 0 ){
+        var discount = product.price *(product.discount /100)
+         productPrice= product.price - discount ;
     }
     else{
-        totalPrice = product.price * body.quantity;
+        productPrice= product.price ;
     }
+   
+
+    if (Object.keys(req.body).length === 0) {
+        Prquantity = 1;
+        totalPrice = productPrice * 1;
+      } else if (product.quantity < body.quantity) {
+          mess = "CANT ADD MORE THAN  " +product.quantity  ;
+        Prquantity = product.quantity
+        totalPrice = productPrice * product.quantity;
+      } else {
+        Prquantity = body.quantity ;
+        totalPrice = productPrice * body.quantity;
+      }
   
-    const cartItem = new CartItem({ ...body , price :totalPrice , cartId: cart._id,  productId: product._id });
+    const cartItem = new CartItem({ ...body , price :totalPrice , cartId: cart._id,  productId: product._id , quantity : Prquantity});
     //await Product.findByIdAndUpdate(product._id,{$inc: {quantity:-1 }});
 
     await cartItem.save(cartItem).then(() => {
         calPrice(cart._id);
-        return res.status(200).json({ message: "ADDED_SUCCESSFULLY" });
+        return res.status(200).json({ message: "ADDED_SUCCESSFULLY" , mess });
     }).catch((err) => {
         new CustomError(err.toString());
     });
@@ -123,7 +136,7 @@ const addCart = async (req, res) => {
 const addItemsCart = async (req, res) => {
     const arr  = req.body ;
     const userId = req.userId;
-
+     var mess;
     await loggenedUser(userId);
     const cart = await Cart.findOne({ userId: userId }).exec();
     const items = [];
@@ -135,28 +148,45 @@ const addItemsCart = async (req, res) => {
         }
         const fondedItem = await checkIfProductAlreadyIn(cart._id, product._id);
         var totalPrice = 0 ;
+        var Prquantity = 0 ;
+        var productPrice;
+    if(product.discount > 0 ){
+        var discount = product.price *(product.discount /100)
+         productPrice= product.price - discount ;
+    }
+    else{
+        productPrice= product.price ;
+    }
         if(Object.keys(req.body).length === 0){
-            totalPrice = product.price * 1;
+            Prquantity = 1 ; 
+            totalPrice = productPrice * 1;
         }
+        else if (product.quantity < key.quantity) {
+            mess = "CANT ADD MORE THAN  " +product.quantity +"IN" + product.title; 
+            Prquantity = product.quantity ;
+            totalPrice = productPrice * product.quantity;
+          } 
         else{
-            totalPrice = product.price * key.quantity;
+            Prquantity = key.quantity ;
+
+            totalPrice = productPrice * key.quantity;
         }
 
         if (fondedItem){
             if( fondedItem.quantity != key.quantity){
-                await CartItem.findByIdAndUpdate(fondedItem ,{$set:{price :totalPrice , quantity : key.quantity} })
+                await CartItem.findByIdAndUpdate(fondedItem ,{$set:{price :totalPrice , quantity : Prquantity} })
             }
             else{
                 res.status(200).json({ message: "PRODUCT_ALREADY_ADDED" });
             }
              continue;
         }
-        const cartItem = new CartItem({ ...key , price :totalPrice , cartId: cart._id});
+        const cartItem = new CartItem({ ...key , price :totalPrice , cartId: cart._id ,quantity : Prquantity});
        items.push(cartItem);
     }
     await CartItem.insertMany(items).then(() => {
         calPrice(cart._id);
-        return res.status(200).json({ message: "ADDED_SUCCESSFULLY" });
+        return res.status(200).json({ message: "ADDED_SUCCESSFULLY" , mess});
     }).catch((err) => {
         return res.Error(err.toString());
    });
@@ -168,12 +198,13 @@ const updateCart = async (req, res) => {
     const {body} = req ;
     const { productId } = req.params;
     const userId = req.userId;
-
+    var mess;
+    var Prquantity =0;
     await loggenedUser(userId);
 
     const product = await Product.findById(productId).exec();
     const cart = await Cart.findOne({ userId: userId }).exec();
-
+   
     if (!product){
         new CustomError('PRODUCT_NOT_FOUND', 404);
     }
@@ -187,13 +218,30 @@ const updateCart = async (req, res) => {
         return res.status(200).json({ message: "NOTHING_UPDATE" });
     }
 
+    var productPrice
+    if(product.discount > 0 ){
+        var discount = product.price *(product.discount /100)
+         productPrice= product.price - discount ;
+    }
+    else{
+        productPrice= product.price ;
+    }
     var totalPrice = 0 ;
-    totalPrice = product.price * body.quantity;
+     if (product.quantity < body.quantity) {
+        mess = "CANT ADD MORE THAN  " +product.quantity +"IN" + product.title ;
+        Prquantity= product.quantity ;
+        totalPrice = productPrice * product.quantity;
+      } 
+    else{
+        Prquantity = body.quantity ;
+        totalPrice = productPrice * body.quantity;
+    }
 
-    await CartItem.findByIdAndUpdate(fondedItem ,{$set:{price :totalPrice , quantity : body.quantity} })
+
+    await CartItem.findByIdAndUpdate(fondedItem ,{$set:{price :totalPrice , quantity : Prquantity} })
     .then(() => {
         calPrice(cart._id);
-        return res.status(200).json({ message: "UPDATED_SUCCESSFULLY"});
+        return res.status(200).json({ message: "UPDATED_SUCCESSFULLY" , mess});
     }).catch((err) => {
         new CustomError(err.toString());
     });
