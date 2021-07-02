@@ -55,7 +55,7 @@ async function cartItemsAreValid(cartItems) {
         discountCode: "..." (String)
     }
 */
-const createOrder = async (userId, shipmentAndDiscount /*, nonce */) => {
+const createOrder = async (userId, shipmentAndDiscount , nonce) => {
     let orderPrice = 0;
     const loggedUser = await User.findById(userId);
 
@@ -129,6 +129,7 @@ const createOrder = async (userId, shipmentAndDiscount /*, nonce */) => {
         });
     } catch (error) {
         // if an error occures the created order should not be completed
+        await Cart.findByIdAndUpdate(userCart._id, { $set: { totalprice: 0 } });
         customError(error.toString(), 500);
     }
 };
