@@ -83,7 +83,7 @@ const createOrder = async (userId, shipmentAndDiscount, nonce) => {
 
     // Create initial order data
     let orderData = new Order({
-        name: shipmentData.fullName,
+        name: shipmentData.firstName + " " + shipmentData.lastName,
         address: shipmentData.address,
         phoneNumber: shipmentData.phoneNumber,
         userId: userId,
@@ -146,9 +146,9 @@ const getOrders = async (page, limit) => {
 }
 
 const getOrder = async (orderId, userId) => {
-    try{
-        const order =  await Order.aggregate([
-            { $match: { $and: [ { _id: mongoose.Types.ObjectId(orderId) }, { userId: mongoose.Types.ObjectId(userId) } ]} },
+    try {
+        const order = await Order.aggregate([
+            { $match: { $and: [{ _id: mongoose.Types.ObjectId(orderId) }, { userId: mongoose.Types.ObjectId(userId) }] } },
             {
                 $lookup: {
                     from: "orderItems",
@@ -158,9 +158,9 @@ const getOrder = async (orderId, userId) => {
                 }
             }
         ]);
-        if(order.length === 0) customError("ORDER_NOT_FOUND", 404);
+        if (order.length === 0) customError("ORDER_NOT_FOUND", 404);
         return order;
-    } catch(error){
+    } catch (error) {
         customError(error.toString(), 500);
     }
 }
@@ -170,10 +170,10 @@ const getVendorOrdersItems = async (vendor, page, limit) => {
         limit: parseInt(limit) || 10,
         page: parseInt(page) || 1,
         populate: ["productId",
-         {
-            path: "orderId",
-            select: "status -_id"
-        }]
+            {
+                path: "orderId",
+                select: "status -_id"
+            }]
     }
 
     const store = await Store.findOne({ userId: vendor._id });
