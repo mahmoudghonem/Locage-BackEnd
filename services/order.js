@@ -38,12 +38,14 @@ async function cartItemsAreValid(cartItems) {
     for (const item of cartItems) {
         const product = await Product.findById(item.productId);
 
-        if (!product) customError("PRODUCT_NOT_FOUND", 404);
+        if (!product) 
+            return customError("PRODUCT_NOT_FOUND", 404);
 
-        if (product.quantity === 0) customError("PRODUCT_OUT_OF_STOCK", 400);
+        if (product.quantity === 0) 
+            return customError("PRODUCT_OUT_OF_STOCK", 400);
 
         if (item.quantity > product.quantity)
-            customError("ITEM_QUANTITY_EXCEEDS_AVAILABLE_QUANTITY", 400);
+            return customError("ITEM_QUANTITY_EXCEEDS_AVAILABLE_QUANTITY", 400);
     }
 }
 
@@ -53,7 +55,7 @@ async function cartItemsAreValid(cartItems) {
         discountCode: "..." (String)
     }
 */
-const createOrder = async (userId, shipmentAndDiscount, nonce) => {
+const createOrder = async (userId, shipmentAndDiscount /*, nonce */) => {
     let orderPrice = 0;
     const loggedUser = await User.findById(userId);
 
@@ -92,7 +94,7 @@ const createOrder = async (userId, shipmentAndDiscount, nonce) => {
 
     try {
         // check the validity of cart items
-        cartItemsAreValid(cartItems);
+        await cartItemsAreValid(cartItems);
 
         // create orderItems
         let totalItems = 0;
@@ -113,18 +115,18 @@ const createOrder = async (userId, shipmentAndDiscount, nonce) => {
         orderData.totalProducts = totalItems;
         await Cart.findByIdAndUpdate(userCart._id, { $set: { price: 0 } });
         await Order.create(orderData);
-        await gateway.transaction.sale({
-            amount: orderData.totalprice,
-            paymentMethodNonce: nonce,
-            options: {
-                submitForSettlement: true
-            }
-        }).then((result) => {
-            return result;
-        }).catch(async (err) => {
-            await Order.findByIdAndUpdate(orderData._id, { status: 'cancelled' }).exec();
-            customError(err.toString(), 500);
-        });
+        // await gateway.transaction.sale({
+        //     amount: orderData.totalprice,
+        //     paymentMethodNonce: nonce,
+        //     options: {
+        //         submitForSettlement: true
+        //     }
+        // }).then((result) => {
+        //     return result;
+        // }).catch(async (err) => {
+        //     await Order.findByIdAndUpdate(orderData._id, { status: 'cancelled' }).exec();
+        //     customError(err.toString(), 500);
+        // });
     } catch (error) {
         // if an error occures the created order should not be completed
         customError(error.toString(), 500);
