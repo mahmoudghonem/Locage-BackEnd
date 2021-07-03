@@ -26,7 +26,7 @@ function getProducts(req, res, next) {
 // Get All reviews of product 
 function getProductReviews(req, res, next) {
     getReviews(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json({result: result });
     }).catch((err) => {
         next(err);
     });
