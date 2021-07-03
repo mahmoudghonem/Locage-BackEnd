@@ -48,7 +48,7 @@ const getProductsNotReview = async (req) => {
     const orderItem = await OrderItem.find({ orderId: { $in: order } }).distinct('productId').exec();
 
     const review = await Review.find({ userId: userId }).distinct('productId').exec();
-    for(var item in order){
+    for(var item of order){
         if(item.status == "pickedup" )
           var productInOrder= await Product.paginate({ _id: { $in: orderItem, $nin: review } }, options)
         result.push(productInOrder)
