@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getOrders, getOrder, getVendorOrdersItems, cancel, changeStatus, getPaymentToken } = require('../services/order');
+const { createOrder, getOrders, getOrder, getVendorOrdersItems, cancel, changeStatus, getPaymentToken, getUserOrders } = require('../services/order');
 const authjwt = require("../middlewares/authjwt");
 const { adminRole, vendorRole } = require("../middlewares/roles");
 
@@ -10,6 +10,8 @@ router.get('/client-token', authjwt, getToken);
 router.post('/checkout', authjwt, placeOrder);
 //TODO: Move To Admin Section
 router.get('/', authjwt, adminRole, retrieveAllOrders);
+
+router.get('/user', authjwt, retrieveUserOrders);
 
 router.get('/vendor', authjwt, vendorRole, retrieveVendorOrdersItems);
 
@@ -41,6 +43,14 @@ function placeOrder(req, res, next) {
 function retrieveAllOrders(req, res, next) {
     const { page, limit } = req.query;
     getOrders(page, limit)
+        .then(result => res.json({ result: result }))
+        .catch(error => next(error));
+}
+
+function retrieveUserOrders(req, res, next) {
+    const { userId } = req;
+    const { page, limit } = req.query;
+    getUserOrders(page, limit, userId)
         .then(result => res.json({ result: result }))
         .catch(error => next(error));
 }
