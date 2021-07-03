@@ -90,6 +90,12 @@ const ProductSchema = new Schema({
 ProductSchema.virtual('realPrice').get(function () {
   return this.price;
 });
+ProductSchema.virtual('discountPrice').get(function () {
+  return (this.price - ((this.price * this.discount) / 100));
+});
+ProductSchema.virtual('discountAmount').get(function () {
+  return (this.price * this.discount) / 100;
+});
 
 ProductSchema.plugin(mongoosePaginate);
 
