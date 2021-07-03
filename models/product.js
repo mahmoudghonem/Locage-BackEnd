@@ -74,14 +74,14 @@ const ProductSchema = new Schema({
   }
 }, {
   toJSON: {
-    //virtuals: true,
+    virtuals: true,
     transform: (doc, ret) => {
       delete ret.photosPublicId;
       return ret;
     },
   },
   toObject: {
-    //virtuals: true
+    virtuals: true
   },
   versionKey: false,
   collection: "products",
