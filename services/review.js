@@ -14,7 +14,7 @@ const logginedUser = async (id) => {
 };
 //Check if You order this product 
 const checkIfProductAlreadyIn = async (orderId, productId) => {
-    return await OrderItem.findOne({ orderId: orderId, productId: productId }).exec();
+    return await OrderItem.find({ orderId: orderId, productId: productId }).exec();
 };
 
 const updateProductRatng = async (productId) => {
