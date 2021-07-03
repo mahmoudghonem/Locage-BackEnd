@@ -35,7 +35,7 @@ const getProductsNotReview = async (req) => {
     const { limit } = req.query;
     const { page } = req.query;
     const userId = req.userId;
-
+    const result =[];
     await logginedUser(userId);
 
     const options = {
@@ -50,9 +50,10 @@ const getProductsNotReview = async (req) => {
     const review = await Review.find({ userId: userId }).distinct('productId').exec();
     for(var item in order){
         if(item.status == "pickedup" )
-            await Product.paginate({ _id: { $in: orderItem, $nin: review } }, options);
+          var productInOrder= await Product.paginate({ _id: { $in: orderItem, $nin: review } }, options)
+        result.push(productInOrder)
     }
-       
+     return result;  
 };
 
 // Get reviews of product 
