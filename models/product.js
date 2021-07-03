@@ -72,24 +72,24 @@ const ProductSchema = new Schema({
     required: true,
     type: String,
   }
-},{
-    toJSON: {
-      //virtuals: true,
-      transform: (doc, ret) => {
-        delete ret.photosPublicId;
-        return ret;
+}, {
+  toJSON: {
+    //virtuals: true,
+    transform: (doc, ret) => {
+      delete ret.photosPublicId;
+      return ret;
     },
-    },
-    toObject: {
-      //virtuals: true
-    },
-    versionKey: false,
-    collection: "products",
+  },
+  toObject: {
+    //virtuals: true
+  },
+  versionKey: false,
+  collection: "products",
 });
 
-// ProductSchema.virtual('id').get(function () {
-//   return this._id.toHexString();
-// });
+ProductSchema.virtual('realPrice').get(function () {
+  return this.price;
+});
 
 ProductSchema.plugin(mongoosePaginate);
 
