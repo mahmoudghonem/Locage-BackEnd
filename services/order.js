@@ -148,6 +148,33 @@ const getOrders = async (page, limit) => {
     }
 }
 
+const getUserOrders = async (page, limit, userId) => {
+    // console.log(userId)
+    // const options = {
+    //     limit: parseInt(limit) || 10,
+    //     page: parseInt(page) || 1,
+    //     // populate: {
+    //     //     path: "orderId"
+    //     // }
+    // }
+
+    try {
+        return Order.aggregate([
+            { $match: { userId: mongoose.Types.ObjectId(userId) } },
+            {
+                $lookup: {
+                    from: "orderItems",
+                    localField: "_id",
+                    foreignField: "orderId",
+                    as: "orderItems"
+                }
+            }
+        ]);
+    } catch (error) {
+        customError(error.toString(), 500);
+    }
+}
+
 const getOrder = async (orderId, userId) => {
     try {
         const order = await Order.aggregate([
@@ -237,6 +264,7 @@ module.exports = {
     createOrder,
     getOrders,
     getOrder,
+    getUserOrders,
     getVendorOrdersItems,
     cancel,
     changeStatus
