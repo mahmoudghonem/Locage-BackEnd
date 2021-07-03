@@ -112,13 +112,10 @@ const addReview = async (req, res) => {
     await logginedUser(userId);
 
     const product = await Product.findById(productId).exec();
-    const order = await Order.findOne({ userId: userId }).exec();
+    const order = await Order.find({ userId: userId }).exec();
 
     if (!product)
         new CustomError('PRODUCT_NOT_FOUND', 404);
-
-    if (order.status != "pickedup")
-        return res.status(200).json({ message: "CAN`T_WRITE_REVIEW" });
 
     const fondedItem = await checkIfProductAlreadyIn(order._id, product._id);
 
