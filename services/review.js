@@ -44,8 +44,6 @@ const getProductsNotReview = async (req, res) => {
     };
 
     const order = await Order.find({ userId: userId }).exec();
-    if (order.status != "pickedup")
-        return res.status(200).json({ message: "NOT_FOUND_PRODUCTS" });
 
     const orderItem = await OrderItem.find({ orderId: { $in: order } }).distinct('productId').exec();
 
