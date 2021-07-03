@@ -12,21 +12,21 @@ const loggenedUser = async (id) => {
         new CustomError('UNAUTHORIZED', 401);
     return userId;
 };
- 
+
 //Check if product found in cart 
 const checkIfProductAlreadyIn = async (cartId, productId) => {
     return await CartItem.findOne({ cartId: cartId, productId: productId }).exec();
 };
 
 //calculate cart price
-const calPrice = async (id)=>{
-    var total = 0 ;
-    const cartItems =  await CartItem.find({ cartId: id});
-    for(const item of cartItems ){
-         total += item.price ;
+const calPrice = async (id) => {
+    var total = 0;
+    const cartItems = await CartItem.find({ cartId: id });
+    for (const item of cartItems) {
+        total += item.price;
     }
-    await Cart.findByIdAndUpdate(id , {$set:{totalprice: total }});
-   };
+    await Cart.findByIdAndUpdate(id, { $set: { totalprice: total } });
+};
 
 
 //get All items in cart
@@ -36,9 +36,9 @@ const getUserCart = async (req, res) => {
     await loggenedUser(userId);
     const cart = await Cart.findOne({ userId: userId }).exec();
 
-    await CartItem.find({ cartId: cart._id }).then((result) => {  
-                          
-        return res.status(200).json({ result: result , cart });
+    await CartItem.find({ cartId: cart._id }).then((result) => {
+
+        return res.status(200).json({ result: result, cart });
     }).catch((err) => {
         new CustomError(err.toString());
     });
@@ -55,21 +55,20 @@ const cartDetail = async (req, res) => {
     const cartItem = await CartItem.find({ cartId: cart._id }).exec();
 
     const cartItems = await CartItem.find({ cartId: cart._id }).distinct('productId').exec();
-  
-    await Product.find({ _id: { $in: cartItems } }).then((result) => {
-          for(var i of result){
 
-            for(var c of cartItem)
-            {
-               if( i._id.equals(c.productId)){
-                i.price = c.price  ;
-                i.quantity = c.quantity  ;
+    await Product.find({ _id: { $in: cartItems } }).then((result) => {
+        for (var i of result) {
+
+            for (var c of cartItem) {
+                if (i._id.equals(c.productId)) {
+                    i.discountPrice = c.price;
+                    i.quantity = c.quantity;
                 }
 
-                              
+
             }
-        }   
-        return res.status(200).json({ result: result ,cart });
+        }
+        return res.status(200).json({ result: result, cart });
     }).catch((err) => {
         new CustomError(err.toString());
     });
@@ -78,54 +77,54 @@ const cartDetail = async (req, res) => {
 
 //add item to cart
 const addCart = async (req, res) => {
-    const { body } = req ;
+    const { body } = req;
     const { productId } = req.params;
     const userId = req.userId;
-    var mess ;
+    var mess;
     await loggenedUser(userId);
 
     const product = await Product.findById(productId).exec();
     const cart = await Cart.findOne({ userId: userId }).exec();
 
-    if (!product){
+    if (!product) {
         new CustomError('PRODUCT_NOT_FOUND', 404);
     }
-    
+
     const fondedItem = await checkIfProductAlreadyIn(cart._id, product._id);
 
-    if (fondedItem){
+    if (fondedItem) {
         return res.status(200).json({ message: "PRODUCT_ALREADY_ADDED" });
     }
-    var totalPrice = 0 ;
+    var totalPrice = 0;
     var Prquantity = 0;
     var productPrice
-    if(product.discount > 0 ){
-        var discount = product.price *(product.discount /100)
-         productPrice= product.price - discount ;
+    if (product.discount > 0) {
+        var discount = product.price * (product.discount / 100)
+        productPrice = product.price - discount;
     }
-    else{
-        productPrice= product.price ;
+    else {
+        productPrice = product.price;
     }
-   
+
 
     if (Object.keys(req.body).length === 0) {
         Prquantity = 1;
         totalPrice = productPrice * 1;
-      } else if (product.quantity < body.quantity) {
-          mess = "CANT ADD MORE THAN  " +product.quantity  ;
+    } else if (product.quantity < body.quantity) {
+        mess = "CANT ADD MORE THAN  " + product.quantity;
         Prquantity = product.quantity
         totalPrice = productPrice * product.quantity;
-      } else {
-        Prquantity = body.quantity ;
+    } else {
+        Prquantity = body.quantity;
         totalPrice = productPrice * body.quantity;
-      }
-  
-    const cartItem = new CartItem({ ...body , price :totalPrice , cartId: cart._id,  productId: product._id , quantity : Prquantity});
+    }
+
+    const cartItem = new CartItem({ ...body, price: totalPrice, cartId: cart._id, productId: product._id, quantity: Prquantity });
     //await Product.findByIdAndUpdate(product._id,{$inc: {quantity:-1 }});
 
     await cartItem.save(cartItem).then(() => {
         calPrice(cart._id);
-        return res.status(200).json({ message: "ADDED_SUCCESSFULLY" , mess });
+        return res.status(200).json({ message: "ADDED_SUCCESSFULLY", mess });
     }).catch((err) => {
         new CustomError(err.toString());
     });
@@ -134,117 +133,117 @@ const addCart = async (req, res) => {
 
 //add array of item to cart 
 const addItemsCart = async (req, res) => {
-    const arr  = req.body ;
+    const arr = req.body;
     const userId = req.userId;
-     var mess;
+    var mess;
     await loggenedUser(userId);
     const cart = await Cart.findOne({ userId: userId }).exec();
     const items = [];
     for (var key of arr) {
         const product = await Product.findById(key.productId).exec();
-        if (!product){
+        if (!product) {
             res.status(404).json({ message: "PRODUCT_NOT_FOUND" });
-             continue;
+            continue;
         }
         const fondedItem = await checkIfProductAlreadyIn(cart._id, product._id);
-        var totalPrice = 0 ;
-        var Prquantity = 0 ;
+        var totalPrice = 0;
+        var Prquantity = 0;
         var productPrice;
-    if(product.discount > 0 ){
-        var discount = product.price *(product.discount /100)
-         productPrice= product.price - discount ;
-    }
-    else{
-        productPrice= product.price ;
-    }
-        if(Object.keys(req.body).length === 0){
-            Prquantity = 1 ; 
+        if (product.discount > 0) {
+            var discount = product.price * (product.discount / 100)
+            productPrice = product.price - discount;
+        }
+        else {
+            productPrice = product.price;
+        }
+        if (Object.keys(req.body).length === 0) {
+            Prquantity = 1;
             totalPrice = productPrice * 1;
         }
         else if (product.quantity < key.quantity) {
-            mess = "CANT ADD MORE THAN  " +product.quantity +"IN" + product.title; 
-            Prquantity = product.quantity ;
+            mess = "CANT ADD MORE THAN  " + product.quantity + "IN" + product.title;
+            Prquantity = product.quantity;
             totalPrice = productPrice * product.quantity;
-          } 
-        else{
-            Prquantity = key.quantity ;
+        }
+        else {
+            Prquantity = key.quantity;
 
             totalPrice = productPrice * key.quantity;
         }
 
-        if (fondedItem){
-            if( fondedItem.quantity != key.quantity){
-                await CartItem.findByIdAndUpdate(fondedItem ,{$set:{price :totalPrice , quantity : Prquantity} })
+        if (fondedItem) {
+            if (fondedItem.quantity != key.quantity) {
+                await CartItem.findByIdAndUpdate(fondedItem, { $set: { price: totalPrice, quantity: Prquantity } })
             }
-            else{
+            else {
                 res.status(200).json({ message: "PRODUCT_ALREADY_ADDED" });
             }
-             continue;
+            continue;
         }
-        const cartItem = new CartItem({ ...key , price :totalPrice , cartId: cart._id ,quantity : Prquantity});
-       items.push(cartItem);
+        const cartItem = new CartItem({ ...key, price: totalPrice, cartId: cart._id, quantity: Prquantity });
+        items.push(cartItem);
     }
     await CartItem.insertMany(items).then(() => {
         calPrice(cart._id);
-        return res.status(200).json({ message: "ADDED_SUCCESSFULLY" , mess});
+        return res.status(200).json({ message: "ADDED_SUCCESSFULLY", mess });
     }).catch((err) => {
         return res.Error(err.toString());
-   });
+    });
 
 };
 
 //update item in cart 
 const updateCart = async (req, res) => {
-    const {body} = req ;
+    const { body } = req;
     const { productId } = req.params;
     const userId = req.userId;
     var mess;
-    var Prquantity =0;
+    var Prquantity = 0;
     await loggenedUser(userId);
 
     const product = await Product.findById(productId).exec();
     const cart = await Cart.findOne({ userId: userId }).exec();
-   
-    if (!product){
+
+    if (!product) {
         new CustomError('PRODUCT_NOT_FOUND', 404);
     }
 
     const fondedItem = await checkIfProductAlreadyIn(cart._id, product._id);
 
-    if (!fondedItem){
+    if (!fondedItem) {
         return res.status(200).json({ message: "ITEM_NOT_FOUND" });
     }
-    if(Object.keys(req.body).length === 0){
+    if (Object.keys(req.body).length === 0) {
         return res.status(200).json({ message: "NOTHING_UPDATE" });
     }
 
     var productPrice
-    if(product.discount > 0 ){
-        var discount = product.price *(product.discount /100)
-         productPrice= product.price - discount ;
+    if (product.discount > 0) {
+        var discount = product.price * (product.discount / 100)
+        productPrice = product.price - discount;
     }
-    else{
-        productPrice= product.price ;
+    else {
+        productPrice = product.price;
     }
-    var totalPrice = 0 ;
-     if (product.quantity < body.quantity) {
-        mess = "CANT ADD MORE THAN  " +product.quantity +"IN" + product.title ;
-        Prquantity= product.quantity ;
+    var totalPrice = 0;
+    if (product.quantity < body.quantity) {
+        mess = "CANT ADD MORE THAN  " + product.quantity + "IN" + product.title;
+        Prquantity = product.quantity;
         totalPrice = productPrice * product.quantity;
-      } 
-    else{
-        Prquantity = body.quantity ;
+    }
+    else {
+        Prquantity = body.quantity;
         totalPrice = productPrice * body.quantity;
     }
 
 
-    await CartItem.findByIdAndUpdate(fondedItem ,{$set:{price :totalPrice , quantity : Prquantity} })
-    .then(() => {
-        calPrice(cart._id);
-        return res.status(200).json({ message: "UPDATED_SUCCESSFULLY" , mess});
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    await CartItem.findByIdAndUpdate(fondedItem, { $set: { price: totalPrice, quantity: Prquantity } })
+        .then(() => {
+            calPrice(cart._id);
+            return res.status(200).json({ message: "UPDATED_SUCCESSFULLY", mess });
+        }).catch((err) => {
+            new CustomError(err.toString());
+        });
 
 };
 
@@ -278,7 +277,7 @@ const emptyCart = async (req, res) => {
 
     await loggenedUser(userId);
     const cart = await Cart.findOne({ userId: userId }).exec();
-     
+
     await CartItem.deleteMany({ cartId: cart._id }).then(() => {
         calPrice(cart._id);
         return res.status(200).json({ message: "REMOVED_ALL_SUCCESSFULLY" });
@@ -290,11 +289,11 @@ const emptyCart = async (req, res) => {
 
 
 module.exports = {
-    getUserCart ,
-    cartDetail ,
-    addCart ,
+    getUserCart,
+    cartDetail,
+    addCart,
     addItemsCart,
     updateCart,
-    removeCart ,
+    removeCart,
     emptyCart
 };
