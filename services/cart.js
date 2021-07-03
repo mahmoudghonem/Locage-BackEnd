@@ -61,7 +61,7 @@ const cartDetail = async (req, res) => {
 
             for (var c of cartItem) {
                 if (i._id.equals(c.productId)) {
-                    i.discountPrice = c.price;
+                    i.price = c.price;
                     i.quantity = c.quantity;
                 }
 
