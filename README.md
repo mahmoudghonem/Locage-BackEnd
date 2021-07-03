@@ -8,10 +8,14 @@
 
 **Build With MEAN Stack Technology (MongoDB, Express.js, Angular, Node.js) As a part of ( [ITI](http://iti.gov.eg/iti/home) ) information technology institute internship**
 
-![GitHub Repo stars](https://img.shields.io/github/stars/mahmoudghonem/Locage-BackEnd?style=social)  ![GitHub forks](https://img.shields.io/github/forks/mahmoudghonem/Locage-BackEnd?style=social) ![GitHub watchers](https://img.shields.io/github/watchers/mahmoudghonem/Locage-BackEnd?style=social)
 
-**This is The Back-End Repo For the Project**
-**You Can Access Front-End Repo From Here (...) [GitHub](http://)**
+**You Can Access Back-End Repo From Here (...) [GitHub](https://github.com/mahmoudghonem/Locage-BackEnd)**
+
+**You Can Access Front-End Repo From Here (...) [GitHub](https://github.com/mahmoudghonem/locage-front)**
+**Front-End Deployment (...) [Live](https://locage.vercel.app)**
+
+**You Can Access Dashboard Repo From Here (...) [GitHub](https://github.com/mahmoudghonem/locage-dashboard)**
+**Dashboard Deployment (...) [Live](https://locage-dashboard.vercel.app)**
 
 **Description ..... (Not Written Yet) ... (Stay Alert) :satisfied:**
 ##### Table of Contents  
@@ -31,7 +35,7 @@
 
 **Mohamed Serag** | **Dina Wahied** | **Nada Tayel**
 ------------ | ------------ | ------------  
-![GitHub followers](https://img.shields.io/github/followers/mohamedosamaserag?style=social) |  | ![GitHub followers](https://img.shields.io/github/followers/nadatayel?style=social) 
+![GitHub followers](https://img.shields.io/github/followers/mohamedosamaserag?style=social) | ![GitHub followers](https://img.shields.io/github/followers/sehamwaheed?style=social) | ![GitHub followers](https://img.shields.io/github/followers/nadatayel?style=social) 
 ![Twitter Follow](https://img.shields.io/twitter/follow/dev_serag?style=social) |  | ![Twitter Follow](https://img.shields.io/twitter/follow/nada_tayel?style=social)
 
 
