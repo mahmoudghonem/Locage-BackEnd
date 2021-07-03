@@ -31,7 +31,7 @@ const updateProductRatng = async (productId) => {
 }
 
 //Get Product not contain revew
-const getProductsNotReview = async (req, res) => {
+const getProductsNotReview = async (req) => {
     const { limit } = req.query;
     const { page } = req.query;
     const userId = req.userId;
@@ -48,12 +48,11 @@ const getProductsNotReview = async (req, res) => {
     const orderItem = await OrderItem.find({ orderId: { $in: order } }).distinct('productId').exec();
 
     const review = await Review.find({ userId: userId }).distinct('productId').exec();
-
-    await Product.paginate({ _id: { $in: orderItem, $nin: review } }, options).then((result) => {
-        return res.status(200).json({ result: result });
-    }).catch((err) => {
-        new CustomError(err.toString());
-    });
+    for(var item in order){
+        if(item.status == "pickedup" )
+            await Product.paginate({ _id: { $in: orderItem, $nin: review } }, options);
+    }
+       
 };
 
 // Get reviews of product 
