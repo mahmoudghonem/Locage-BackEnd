@@ -45,14 +45,18 @@ const getProductsNotReview = async (req) => {
 
     const order = await Order.find({ userId: userId }).exec();
 
-    const orderItem = await OrderItem.find({ orderId: { $in: order } }).distinct('productId').exec();
 
     const review = await Review.find({ userId: userId }).distinct('productId').exec();
     for(var item of order){
-        if(item.status == "pickedup" )
-          var productInOrder= await Product.paginate({ _id: { $in: orderItem, $nin: review } }, options)
-        result.push(productInOrder)
+        const orderItem = await OrderItem.find({ orderId: item._id }).distinct('productId').exec();
+        if(item.status == "pickedup" ){
+           var productInOrder= await Product.paginate({ _id: { $in: orderItem, $nin: review } }, options)
+           result.push(productInOrder)
+        }
+        
+         
     }
+    //console.log(result)
      return result;  
 };
 
