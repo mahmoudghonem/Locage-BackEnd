@@ -18,7 +18,7 @@ router.delete('/:id', authjwt, deletReview);
 // Get All products want review
 function getProducts(req, res, next) {
     getProductsNotReview(req, res, next).then((result) => {
-        res.json(result);
+        return res.status(200).json({result: result });
     }).catch((err) => {
         next(err);
     });
