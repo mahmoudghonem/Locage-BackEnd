@@ -92,16 +92,15 @@ const getTopDeals = async (page, limit) => {
 }
 
 const getTodayDeals = async (page, limit) => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    const today = Date(new Date().toISOString().split('T')[0]).split(' ');
+    const constructToday = today[0] + " " + today[1] + " " + today[2] + " " + today[3];
     try {
         const options = {
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10
         }
-        return await Product.paginate({ $and: [{ 'discountDate.start': { $gte: today.toISOString().split('T')[0] }},
-        { 'discountDate.start': { $lt: tomorrow.toISOString().split('T')[0] }} ] }, options);
+        return await Product.paginate({ $and: [{ 'discountDate.start': { $regex: constructToday }},
+        { 'discountDate.end': { $regex: constructToday}} ] }, options);
     } catch (error) {
         customError(error.toString(), 500);
     }
