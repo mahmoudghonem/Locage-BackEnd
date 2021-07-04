@@ -34,27 +34,15 @@ const updateProductRatng = async (productId) => {
 const getProductsNotReview = async (req) => {
 
     const userId = req.userId;
-    const result =[];
     await logginedUser(userId);
 
-
-    const order = await Order.find({ userId: userId }).exec();
-
+    const order = await Order.find({ userId: userId, status: "pickedup" }).distinct('_id').exec();
 
     const review = await Review.find({ userId: userId }).distinct('productId').exec();
-    for(var item of order){
-        const orderItem = await OrderItem.find({ orderId: item._id }).distinct('productId').exec();
-        if(item.status == "pickedup" ){
-           var productInOrder= await Product.find({ _id: { $in: orderItem, $nin: review } });
-            console.log(productInOrder._id)
+    const orderItem = await OrderItem.find({ orderId: { $in: order } }).distinct('productId').exec();
+    const productInOrder = await Product.find({ _id: { $in: orderItem, $nin: review } }).exec();
 
-           result.push(productInOrder)
-        }
-        
-         
-    }
-    //console.log(result)
-     return result;  
+    return productInOrder;
 };
 
 // Get reviews of product 
@@ -111,7 +99,7 @@ const addReview = async (req, res) => {
     const userId = req.userId;
 
     await logginedUser(userId);
-    var review ;
+    var review;
     const product = await Product.findById(productId).exec();
     const order = await Order.find({ userId: userId }).exec();
 
@@ -122,11 +110,11 @@ const addReview = async (req, res) => {
 
     if (!fondedItem)
         return res.status(200).json({ message: "PRODUCT_NOT_FOUND_IN_ORDER" });
-        for(var item of order){
-              if(item.status == "pickedup" )
-                     review = new Review({ ...body, userId: userId, productId: product._id });
-              }
- 
+    for (var item of order) {
+        if (item.status == "pickedup")
+            review = new Review({ ...body, userId: userId, productId: product._id });
+    }
+
 
     await review.save(review).then((result) => {
         updateProductRatng(product._id);
