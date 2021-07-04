@@ -32,28 +32,17 @@ const updateProductRatng = async (productId) => {
 
 //Get Product not contain revew
 const getProductsNotReview = async (req) => {
-    const { limit } = req.query;
-    const { page } = req.query;
+
     const userId = req.userId;
-    const result =[];
     await logginedUser(userId);
 
-    const options = {
-        limit: limit || 10,
-        page: page || 1,
-    };
-
-    const order = await Order.find({ userId: userId }).exec();
-
-    const orderItem = await OrderItem.find({ orderId: { $in: order } }).distinct('productId').exec();
+    const order = await Order.find({ userId: userId, status: "pickedup" }).distinct('_id').exec();
 
     const review = await Review.find({ userId: userId }).distinct('productId').exec();
-    for(var item of order){
-        if(item.status == "pickedup" )
-          var productInOrder= await Product.paginate({ _id: { $in: orderItem, $nin: review } }, options)
-        result.push(productInOrder)
-    }
-     return result;  
+    const orderItem = await OrderItem.find({ orderId: { $in: order } }).distinct('productId').exec();
+    const productInOrder = await Product.find({ _id: { $in: orderItem, $nin: review } }).exec();
+
+    return productInOrder;
 };
 
 // Get reviews of product 
@@ -110,7 +99,7 @@ const addReview = async (req, res) => {
     const userId = req.userId;
 
     await logginedUser(userId);
-
+    var review;
     const product = await Product.findById(productId).exec();
     const order = await Order.find({ userId: userId }).exec();
 
@@ -121,9 +110,11 @@ const addReview = async (req, res) => {
 
     if (!fondedItem)
         return res.status(200).json({ message: "PRODUCT_NOT_FOUND_IN_ORDER" });
+    for (var item of order) {
+        if (item.status == "pickedup")
+            review = new Review({ ...body, userId: userId, productId: product._id });
+    }
 
-
-    const review = new Review({ ...body, userId: userId, productId: product._id });
 
     await review.save(review).then((result) => {
         updateProductRatng(product._id);
