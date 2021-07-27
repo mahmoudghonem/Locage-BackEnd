@@ -27,7 +27,7 @@
   "dependencies": {
     "argon2": "^0.28.1",
     "braintree": "^3.6.0",
-    "cloudinary": "^1.26.0",
+    "cloudinary": "^1.26.2",
     "compression": "^1.7.4",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
